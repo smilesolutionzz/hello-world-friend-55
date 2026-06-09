@@ -74,6 +74,8 @@ export default function SchedulePage() {
   const [clients, setClients] = useState<any[]>([]);
   const [programs, setPrograms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const [statusFilter, setStatusFilter] = useState<Record<StatusCode, boolean>>({
     scheduled: true, completed: true, cancelled: true, cancelled_makeup: true, cancelled_carry: true,
@@ -84,6 +86,7 @@ export default function SchedulePage() {
   const [importRefresh, setImportRefresh] = useState(0);
   const [therapistFilter, setTherapistFilter] = useState<Record<string, boolean>>({});
   const [showTFilter, setShowTFilter] = useState(false);
+  const soloSnapshotRef = useRef<Record<string, boolean> | null>(null);
   const isMobile = useIsMobile();
 
   // 치료사 색상 화면에서 수정 → 저장

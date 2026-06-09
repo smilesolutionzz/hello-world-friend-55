@@ -2,11 +2,15 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Filter, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Filter, Check, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ImportWizard from "@/components/b2b-center/ImportWizard";
 import ImportHistoryPanel from "@/components/b2b-center/ImportHistoryPanel";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+
+const SIDEBAR_OPEN_KEY = "b2b_schedule_sidebar_open_v1";
 
 type Ctx = { centerId: string; demo?: boolean };
 

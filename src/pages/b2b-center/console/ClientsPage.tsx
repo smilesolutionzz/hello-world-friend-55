@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, UserPlus, Upload, Send } from "lucide-react";
+import { Search, UserPlus, Upload, Send, Settings2, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import ClientRegisterDialog from "@/components/b2b-center/ClientRegisterDialog";
 import InviteParentDialog from "@/components/b2b-center/InviteParentDialog";
@@ -43,6 +43,60 @@ const statusCode = (status: string) => {
   return status;
 };
 
+type ColKey =
+  | "gender" | "birth_date" | "age_months" | "disability_info" | "disability_grade" | "disability_secondary"
+  | "phone" | "email" | "address" | "school" | "initial_consult_date" | "member_no"
+  | "referral_source" | "referral_note" | "status" | "note" | "last_modified_at";
+
+const COLUMNS: { key: ColKey; label: string; default: boolean; align?: "right" }[] = [
+  { key: "gender", label: "성별", default: true },
+  { key: "birth_date", label: "생년월일", default: true },
+  { key: "age_months", label: "개월수", default: true },
+  { key: "disability_info", label: "장애유형", default: true },
+  { key: "disability_grade", label: "장애등급", default: true },
+  { key: "disability_secondary", label: "중복장애", default: false },
+  { key: "phone", label: "연락처", default: true },
+  { key: "email", label: "이메일", default: false },
+  { key: "address", label: "주소", default: false },
+  { key: "school", label: "학교", default: false },
+  { key: "initial_consult_date", label: "초기상담일시", default: false },
+  { key: "member_no", label: "회원번호", default: true },
+  { key: "referral_source", label: "유입경로", default: false },
+  { key: "referral_note", label: "유입참고", default: false },
+  { key: "status", label: "상태", default: true },
+  { key: "note", label: "메모", default: false },
+  { key: "last_modified_at", label: "최종수정", default: false },
+];
+
+const STORAGE_KEY = "b2b_clients_visible_cols_v1";
+
+function renderCell(key: ColKey, r: Client) {
+  switch (key) {
+    case "gender": return <span className="text-neutral-700">{v(r.gender)}</span>;
+    case "birth_date": return <span className="text-neutral-600 whitespace-nowrap">{v(r.birth_date)}</span>;
+    case "age_months": return <span className="text-neutral-600">{v(r.meta?.age_months ?? r.meta?.age_text)}</span>;
+    case "disability_info": return <span className="text-neutral-600">{v(r.disability_info)}</span>;
+    case "disability_grade": return <span className="text-neutral-600">{v(r.meta?.disability_grade)}</span>;
+    case "disability_secondary": return <span className="text-neutral-600">{v(r.meta?.disability_secondary)}</span>;
+    case "phone": return <span className="text-neutral-600 whitespace-nowrap">{v(r.guardian_phone ?? r.phone)}</span>;
+    case "email": return <span className="text-neutral-600">{v(r.meta?.email)}</span>;
+    case "address": return <span className="text-neutral-600">{v(r.address)}</span>;
+    case "school": return <span className="text-neutral-600">{v(r.meta?.school)}</span>;
+    case "initial_consult_date": return <span className="text-neutral-600 whitespace-nowrap">{v(r.initial_consult_date)}</span>;
+    case "member_no": return <span className="font-mono text-xs text-neutral-500">{v(r.member_no)}</span>;
+    case "referral_source": return <span className="text-neutral-600">{v(r.meta?.referral_source)}</span>;
+    case "referral_note": return <span className="text-neutral-600">{v(r.meta?.referral_note)}</span>;
+    case "status":
+      return (
+        <span className={`px-2 py-0.5 rounded-full text-xs border ${statusTone[r.status] ?? "bg-neutral-100"}`}>
+          {statusLabel[r.status] ?? r.status}
+        </span>
+      );
+    case "note": return <span className="text-neutral-600">{v(r.meta?.note)}</span>;
+    case "last_modified_at": return <span className="text-neutral-600 whitespace-nowrap">{v(r.meta?.last_modified_at)}</span>;
+  }
+}
+
 export default function ClientsPage() {
   const { centerId, demo } = useOutletContext<Ctx>();
   const [rows, setRows] = useState<Client[]>([]);
@@ -51,6 +105,30 @@ export default function ClientsPage() {
   const [loading, setLoading] = useState(true);
   const [registerOpen, setRegisterOpen] = useState(false);
   const [inviteFor, setInviteFor] = useState<{ id: string; name: string } | null>(null);
+
+  const [visible, setVisible] = useState<Record<ColKey, boolean>>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch {}
+    }
+    return Object.fromEntries(COLUMNS.map((c) => [c.key, c.default])) as Record<ColKey, boolean>;
+  });
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(visible)); } catch {}
+  }, [visible]);
+
+  const [colMenuOpen, setColMenuOpen] = useState(false);
+  const colMenuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!colMenuOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (colMenuRef.current && !colMenuRef.current.contains(e.target as Node)) setColMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [colMenuOpen]);
 
   const load = useCallback(() => {
     if (demo) {
@@ -93,6 +171,11 @@ export default function ClientsPage() {
     terminated: rows.filter(r => statusCode(r.status) === "terminated").length,
   };
 
+  const activeCols = useMemo(() => COLUMNS.filter((c) => visible[c.key]), [visible]);
+  const visibleCount = activeCols.length;
+  const totalCount = COLUMNS.length;
+  const colSpan = activeCols.length + 2; // 이용자 + 컬럼들 + AIHPRO
+
   return (
     <div className="p-8">
       <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
@@ -111,13 +194,46 @@ export default function ClientsPage() {
         </div>
       </div>
 
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         {(["all", "enrolled", "waiting", "terminated"] as const).map((s) => (
           <button key={s} onClick={() => setFilter(s)}
             className={`px-4 py-2 rounded-full text-sm transition ${filter === s ? "bg-neutral-900 text-white" : "bg-white border border-neutral-200 text-neutral-600 hover:bg-neutral-50"}`}>
             {s === "all" ? `전체 ${rows.length}` : `${statusLabel[s]} ${counts[s as keyof typeof counts]}`}
           </button>
         ))}
+        <div className="ml-auto relative" ref={colMenuRef}>
+          <button onClick={() => setColMenuOpen((v) => !v)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border border-neutral-200 text-sm text-neutral-700 hover:bg-neutral-50">
+            <Settings2 className="w-4 h-4" /> 컬럼 <span className="text-neutral-400">{visibleCount}/{totalCount}</span>
+          </button>
+          {colMenuOpen && (
+            <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl border border-neutral-200 shadow-lg p-2 z-30">
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <span className="text-xs text-neutral-500">표시할 컬럼</span>
+                <div className="flex gap-1">
+                  <button onClick={() => setVisible(Object.fromEntries(COLUMNS.map((c) => [c.key, true])) as Record<ColKey, boolean>)}
+                    className="text-[11px] text-neutral-500 hover:text-neutral-900 px-1.5">전체</button>
+                  <button onClick={() => setVisible(Object.fromEntries(COLUMNS.map((c) => [c.key, c.default])) as Record<ColKey, boolean>)}
+                    className="text-[11px] text-neutral-500 hover:text-neutral-900 px-1.5">기본</button>
+                </div>
+              </div>
+              <div className="max-h-72 overflow-auto">
+                {COLUMNS.map((c) => {
+                  const on = visible[c.key];
+                  return (
+                    <button key={c.key} onClick={() => setVisible((p) => ({ ...p, [c.key]: !p[c.key] }))}
+                      className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-neutral-50 text-sm">
+                      <span className={on ? "text-neutral-900" : "text-neutral-400"}>{c.label}</span>
+                      <span className={`w-4 h-4 rounded border flex items-center justify-center ${on ? "bg-neutral-900 border-neutral-900" : "border-neutral-300"}`}>
+                        {on && <Check className="w-3 h-3 text-white" />}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="relative mb-4">
@@ -127,35 +243,21 @@ export default function ClientsPage() {
       </div>
 
       <div className="bg-white rounded-2xl border border-neutral-200 overflow-auto max-h-[calc(100vh-260px)]">
-        <table className="min-w-[2400px] w-full text-sm border-separate border-spacing-0">
+        <table className="w-full text-sm border-separate border-spacing-0">
           <thead className="text-neutral-500 text-xs sticky top-0 z-20">
             <tr>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">이용자</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">성별</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">생년월일</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">개월수</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">장애유형</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">장애등급</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">중복장애내용</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">연락처</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">이메일</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">주소</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">학교</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">초기상담일시</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">회원번호</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">유입경로</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">유입경로 관련 참고사항</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">상태</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">메모</th>
-              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">최종수정일시</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-r border-neutral-200 bg-neutral-50 sticky left-0 z-30 min-w-[140px]">이용자</th>
+              {activeCols.map((c) => (
+                <th key={c.key} className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">{c.label}</th>
+              ))}
               <th className="text-right p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">AIHPRO</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={19} className="p-12 text-center text-neutral-400">불러오는 중…</td></tr>
+              <tr><td colSpan={colSpan} className="p-12 text-center text-neutral-400">불러오는 중…</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={19} className="p-12 text-center text-neutral-400">
+              <tr><td colSpan={colSpan} className="p-12 text-center text-neutral-400">
                 <p className="mb-3">아직 등록된 이용자가 없습니다.</p>
                 <div className="inline-flex gap-2">
                   <button onClick={() => setRegisterOpen(true)} className="px-4 py-2 rounded-full bg-neutral-900 text-white text-sm">이용자 등록</button>
@@ -163,30 +265,12 @@ export default function ClientsPage() {
                 </div>
               </td></tr>
             ) : filtered.map((r) => (
-              <tr key={r.id} className="border-t border-neutral-100 hover:bg-neutral-50/50">
-                <td className="p-3 font-medium text-neutral-900">{r.name}</td>
-                <td className="p-3">{v(r.gender)}</td>
-                <td className="p-3 text-neutral-600 whitespace-nowrap">{v(r.birth_date)}</td>
-                <td className="p-3 text-neutral-600">{v(r.meta?.age_months ?? r.meta?.age_text)}</td>
-                <td className="p-3 text-neutral-600">{v(r.disability_info)}</td>
-                <td className="p-3 text-neutral-600">{v(r.meta?.disability_grade)}</td>
-                <td className="p-3 text-neutral-600">{v(r.meta?.disability_secondary)}</td>
-                <td className="p-3 text-neutral-600 whitespace-nowrap">{v(r.guardian_phone ?? r.phone)}</td>
-                <td className="p-3 text-neutral-600">{v(r.meta?.email)}</td>
-                <td className="p-3 text-neutral-600 min-w-[180px]">{v(r.address)}</td>
-                <td className="p-3 text-neutral-600">{v(r.meta?.school)}</td>
-                <td className="p-3 text-neutral-600 whitespace-nowrap">{v(r.initial_consult_date)}</td>
-                <td className="p-3 font-mono text-xs text-neutral-500">{v(r.member_no)}</td>
-                <td className="p-3 text-neutral-600">{v(r.meta?.referral_source)}</td>
-                <td className="p-3 text-neutral-600 min-w-[180px]">{v(r.meta?.referral_note)}</td>
-                <td className="p-3">
-                  <span className={`px-2 py-0.5 rounded-full text-xs border ${statusTone[r.status] ?? "bg-neutral-100"}`}>
-                    {statusLabel[r.status] ?? r.status}
-                  </span>
-                </td>
-                <td className="p-3 text-neutral-600 min-w-[180px]">{v(r.meta?.note)}</td>
-                <td className="p-3 text-neutral-600 whitespace-nowrap">{v(r.meta?.last_modified_at)}</td>
-                <td className="p-3 text-right">
+              <tr key={r.id} className="hover:bg-neutral-50/50 group">
+                <td className="p-3 font-medium text-neutral-900 border-t border-r border-neutral-100 bg-white sticky left-0 z-10 group-hover:bg-neutral-50/80 whitespace-nowrap">{r.name}</td>
+                {activeCols.map((c) => (
+                  <td key={c.key} className="p-3 border-t border-neutral-100">{renderCell(c.key, r)}</td>
+                ))}
+                <td className="p-3 border-t border-neutral-100 text-right whitespace-nowrap">
                   <button onClick={() => setInviteFor({ id: r.id, name: r.name })}
                     className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs bg-[#FAF6E8] text-neutral-800 hover:bg-[#F0E8C8] border border-[#C8B88A]/30">
                     <Send className="w-3 h-3" /> 초대

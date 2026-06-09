@@ -173,8 +173,10 @@ export default function SchedulePage() {
   }, [view, cursor]);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
       setLoading(true);
+      setLoadError(null);
       if (demo) {
         setSessions(DEMO_SESSIONS);
         setTherapists(DEMO_THERAPISTS.map((x: any, i: number) => ({ ...x, _idx: i, color: isDefaultOrEmpty(x.color) ? PALETTE[i % PALETTE.length] : x.color })));
@@ -182,36 +184,89 @@ export default function SchedulePage() {
         setPrograms(DEMO_PROGRAMS);
         setLoading(false); return;
       }
-      const [s, t, c, p] = await Promise.all([
-        supabase.from("center_sessions").select("*").eq("center_id", centerId)
-          .gte("session_date", fmt(range.start)).lte("session_date", fmt(range.end)),
-        supabase.from("center_therapists").select("*").eq("center_id", centerId),
-        supabase.from("center_clients").select("id, name").eq("center_id", centerId),
-        supabase.from("center_programs").select("*").eq("center_id", centerId),
-      ]);
-      setSessions(s.data ?? []);
-      setTherapists((t.data ?? []).map((x: any, i: number) => {
-        const raw = x.calendar_color ?? x.color;
-        return { ...x, _idx: i, color: isDefaultOrEmpty(raw) ? PALETTE[i % PALETTE.length] : raw };
-      }));
-      setClients(c.data ?? []);
-      setPrograms(p.data ?? []);
-      setLoading(false);
+      try {
+        const [s, t, c, p] = await Promise.all([
+          supabase.from("center_sessions").select("*").eq("center_id", centerId)
+            .gte("session_date", fmt(range.start)).lte("session_date", fmt(range.end)),
+          supabase.from("center_therapists").select("*").eq("center_id", centerId),
+          supabase.from("center_clients").select("id, name").eq("center_id", centerId),
+          supabase.from("center_programs").select("*").eq("center_id", centerId),
+        ]);
+        if (cancelled) return;
+        const firstErr = s.error ?? t.error ?? c.error ?? p.error;
+        if (firstErr) {
+          setLoadError(firstErr.message ?? "일정을 불러오지 못했어요.");
+          setLoading(false);
+          return;
+        }
+        setSessions(s.data ?? []);
+        setTherapists((t.data ?? []).map((x: any, i: number) => {
+          const raw = x.calendar_color ?? x.color;
+          return { ...x, _idx: i, color: isDefaultOrEmpty(raw) ? PALETTE[i % PALETTE.length] : raw };
+        }));
+        setClients(c.data ?? []);
+        setPrograms(p.data ?? []);
+      } catch (err: any) {
+        if (!cancelled) setLoadError(err?.message ?? "네트워크 오류로 일정을 불러오지 못했어요.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     })();
-  }, [centerId, demo, range.start.getTime(), range.end.getTime()]);
+    return () => { cancelled = true; };
+  }, [centerId, demo, range.start.getTime(), range.end.getTime(), reloadKey]);
 
-  // 치료사 목록/세션 바뀌면 필터 키 동기화 — 등록된 치료사 + 세션에만 있는 orphan id 도 모두 포함, 기본 ON
+  // 치료사 목록/세션 바뀌면 필터 키 동기화 — 등록된 치료사 + 세션에만 있는 orphan id 모두 포함.
+  // 더 이상 존재하지 않는 키는 제거해 사이드바 상태와 표시 데이터 불일치를 방지한다.
   useEffect(() => {
     setTherapistFilter((prev) => {
       const next: Record<string, boolean> = { __none: prev.__none ?? true };
-      for (const t of therapists) next[t.id] = prev[t.id] ?? true;
-      for (const s of sessions) {
-        const key = s.therapist_id;
-        if (key && next[key] === undefined) next[key] = prev[key] ?? true;
+      const validIds = new Set<string>();
+      for (const t of therapists) validIds.add(t.id);
+      for (const s of sessions) if (s.therapist_id) validIds.add(s.therapist_id);
+      for (const id of validIds) next[id] = prev[id] ?? true;
+      // 솔로 스냅샷 키도 정리
+      if (soloSnapshotRef.current) {
+        const snap: Record<string, boolean> = { __none: soloSnapshotRef.current.__none ?? true };
+        for (const id of validIds) snap[id] = soloSnapshotRef.current[id] ?? true;
+        soloSnapshotRef.current = snap;
       }
       return next;
     });
   }, [therapists, sessions]);
+
+  // 솔로 토글: 한 명만 보이게 / 다시 누르면 직전 상태 복원
+  const soloTherapist = useCallback((id: string) => {
+    setTherapistFilter((p) => {
+      const onlyThis = p[id] === true
+        && Object.entries(p).every(([k, v]) => (k === id ? v === true : v === false));
+      if (onlyThis) {
+        // 직전 스냅샷이 있고, 그 안에 의미있는 true가 1개 이상 있으면 복원, 아니면 전부 true
+        const snap = soloSnapshotRef.current;
+        soloSnapshotRef.current = null;
+        if (snap && Object.values(snap).some(Boolean)) {
+          // 현재 키와 일치시킨다 (새 키는 true 기본)
+          const restored: Record<string, boolean> = {};
+          for (const k of Object.keys(p)) restored[k] = snap[k] ?? true;
+          return restored;
+        }
+        return Object.fromEntries(Object.keys(p).map((k) => [k, true]));
+      }
+      // 솔로 진입: 첫 진입이면 현재 상태 스냅샷
+      if (!soloSnapshotRef.current) soloSnapshotRef.current = { ...p };
+      return Object.fromEntries(Object.keys(p).map((k) => [k, k === id]));
+    });
+  }, []);
+
+  // 사용자 직접 체크박스 토글 → 스냅샷 무효화 (의도가 바뀐 것으로 간주)
+  const toggleTherapist = useCallback((id: string, value: boolean) => {
+    soloSnapshotRef.current = null;
+    setTherapistFilter((p) => ({ ...p, [id]: value }));
+  }, []);
+
+  const setAllTherapists = useCallback((value: boolean) => {
+    soloSnapshotRef.current = null;
+    setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, value])));
+  }, []);
 
   const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? "—";
   const programName = (id: string) => programs.find((p) => p.id === id)?.name ?? "—";

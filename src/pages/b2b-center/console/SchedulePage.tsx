@@ -76,6 +76,23 @@ export default function SchedulePage() {
   const { toast } = useToast();
   const [cursor, setCursor] = useState<Date>(new Date());
 
+  // 데모 모드에서 "저장되지 않음" 안내 토스트 — 액션 버튼으로 실제 시작 유도
+  const notifyDemoNoSave = useCallback((actionLabel: string) => {
+    toast({
+      variant: "destructive",
+      title: "데모 모드 — 저장되지 않았습니다",
+      description: `${actionLabel} 내용은 새로고침하면 사라져요. 실제로 운영하려면 60일 무료 체험을 시작하세요.`,
+      action: (
+        <ToastAction
+          altText="무료로 시작"
+          onClick={() => { window.location.href = "/b2b-center/import"; }}
+        >
+          무료로 시작
+        </ToastAction>
+      ),
+    });
+  }, [toast]);
+
   const [sessions, setSessions] = useState<any[]>([]);
   const [therapists, setTherapists] = useState<any[]>([]);
   const [clients, setClients] = useState<any[]>([]);

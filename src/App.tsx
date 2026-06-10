@@ -175,6 +175,8 @@ import MedicalDisclaimerPage from "./pages/legal/MedicalDisclaimerPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminMindTrackContent from "./pages/AdminMindTrackContent";
 import AdminPaymentMonitor from "./pages/AdminPaymentMonitor";
+import AdminLeads from "./pages/AdminLeads";
+import PartnerLeads from "./pages/PartnerLeads";
 
 // Utility
 import ShareView from "./pages/ShareView";
@@ -457,6 +459,8 @@ const App = () => {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/mind-track-content" element={<AdminMindTrackContent />} />
           <Route path="/admin/payment-monitor" element={<AdminPaymentMonitor />} />
+          <Route path="/admin/leads" element={<AdminLeads />} />
+          <Route path="/partner/leads" element={<PartnerLeads />} />
 
           {/* Utility */}
           <Route path="/shared-report/demo" element={<DemoSharedReport />} />

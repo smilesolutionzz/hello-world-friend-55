@@ -3417,6 +3417,57 @@ export type Database = {
           },
         ]
       }
+      centers: {
+        Row: {
+          category: string | null
+          contact_channel: string | null
+          created_at: string
+          external_link: string | null
+          id: string
+          intro: string | null
+          name: string
+          region: string | null
+          status: string
+          strength1: string | null
+          strength2: string | null
+          strength3: string | null
+          updated_at: string
+          voucher: boolean
+        }
+        Insert: {
+          category?: string | null
+          contact_channel?: string | null
+          created_at?: string
+          external_link?: string | null
+          id?: string
+          intro?: string | null
+          name: string
+          region?: string | null
+          status?: string
+          strength1?: string | null
+          strength2?: string | null
+          strength3?: string | null
+          updated_at?: string
+          voucher?: boolean
+        }
+        Update: {
+          category?: string | null
+          contact_channel?: string | null
+          created_at?: string
+          external_link?: string | null
+          id?: string
+          intro?: string | null
+          name?: string
+          region?: string | null
+          status?: string
+          strength1?: string | null
+          strength2?: string | null
+          strength3?: string | null
+          updated_at?: string
+          voucher?: boolean
+        }
+        Relationships: []
+      }
       challenge_baselines: {
         Row: {
           baseline_scores: Json
@@ -9133,6 +9184,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      leads: {
+        Row: {
+          center_id: string | null
+          child_age: string | null
+          concern: string | null
+          created_at: string
+          id: string
+          parent_name: string | null
+          phone: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          center_id?: string | null
+          child_age?: string | null
+          concern?: string | null
+          created_at?: string
+          id?: string
+          parent_name?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          center_id?: string | null
+          child_age?: string | null
+          concern?: string | null
+          created_at?: string
+          id?: string
+          parent_name?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "centers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       legacy_memories: {
         Row: {

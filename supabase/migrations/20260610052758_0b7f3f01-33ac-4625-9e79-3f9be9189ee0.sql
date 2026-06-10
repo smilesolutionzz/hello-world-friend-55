@@ -1,0 +1,2 @@
+ALTER TABLE public.centers ALTER COLUMN voucher DROP DEFAULT;
+ALTER TABLE public.centers ALTER COLUMN voucher TYPE text USING (CASE WHEN voucher IS NULL THEN NULL WHEN voucher THEN '운영' ELSE '미운영' END);

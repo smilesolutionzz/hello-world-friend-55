@@ -175,6 +175,8 @@ import MedicalDisclaimerPage from "./pages/legal/MedicalDisclaimerPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminMindTrackContent from "./pages/AdminMindTrackContent";
 import AdminPaymentMonitor from "./pages/AdminPaymentMonitor";
+import AdminLeads from "./pages/AdminLeads";
+import PartnerLeads from "./pages/PartnerLeads";
 
 // Utility
 import ShareView from "./pages/ShareView";

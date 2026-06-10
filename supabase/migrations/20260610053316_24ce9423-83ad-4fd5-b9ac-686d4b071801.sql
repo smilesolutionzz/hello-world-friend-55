@@ -1,0 +1,1 @@
+ALTER TABLE public.centers ALTER COLUMN voucher DROP NOT NULL;

@@ -3432,7 +3432,7 @@ export type Database = {
           strength2: string | null
           strength3: string | null
           updated_at: string
-          voucher: boolean
+          voucher: string
         }
         Insert: {
           category?: string | null
@@ -3448,7 +3448,7 @@ export type Database = {
           strength2?: string | null
           strength3?: string | null
           updated_at?: string
-          voucher?: boolean
+          voucher: string
         }
         Update: {
           category?: string | null
@@ -3464,7 +3464,7 @@ export type Database = {
           strength2?: string | null
           strength3?: string | null
           updated_at?: string
-          voucher?: boolean
+          voucher?: string
         }
         Relationships: []
       }

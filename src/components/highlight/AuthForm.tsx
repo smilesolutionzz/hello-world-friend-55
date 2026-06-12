@@ -11,7 +11,14 @@ import { Loader2, Mail, Lock, User as UserIcon, Gift, Phone, ArrowLeft } from 'l
 import type { User, Session } from '@supabase/supabase-js';
 import { OnboardingOverlay } from '@/components/ui/onboarding-overlay';
 import { SocialLoginButtons } from '@/components/social/SocialLoginButtons';
-import logo from '@/assets/logo.png';
+import { AihproLogoMark } from '@/components/brand/AihproLogoMark';
+import {
+  persistPendingAccountChoice,
+  type AccountType,
+  type ExpertScope,
+} from '@/lib/accountTypeRouting';
+import { Users, Briefcase, Building2, UserCog } from 'lucide-react';
+
 
 export const AuthForm = () => {
   const [loading, setLoading] = useState(false);

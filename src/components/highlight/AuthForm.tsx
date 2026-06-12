@@ -302,7 +302,13 @@ export const AuthForm = () => {
 
     try {
       const redirectUrl = `${window.location.origin}/`;
-      
+
+      // 가입 경로 선택을 로컬에 저장 (이메일 확인 후 첫 로그인 시 프로필에 반영)
+      persistPendingAccountChoice(
+        accountType,
+        accountType === 'therapist' ? expertScope : undefined,
+      );
+
       const { data, error } = await supabase.auth.signUp({
         email: signUpData.email.trim(),
         password: signUpData.password,
@@ -311,7 +317,9 @@ export const AuthForm = () => {
           data: {
             display_name: signUpData.nickname.trim(),
             phone: cleanPhone,  // 하이픈 제거된 전화번호 사용
-            referral_code: signUpData.referralCode.trim()
+            referral_code: signUpData.referralCode.trim(),
+            account_type: accountType,
+            expert_scope: accountType === 'therapist' ? expertScope : null,
           }
         }
       });
@@ -324,20 +332,30 @@ export const AuthForm = () => {
           description: "이메일을 확인하여 계정을 활성화해주세요.",
         });
       } else if (data.session) {
-        // 추천 코드가 있는 경우 추가 토큰 안내
+        // 신규 가입자 프로필에 account_type 즉시 반영
+        try {
+          await supabase
+            .from('profiles')
+            .update({ account_type: accountType })
+            .eq('user_id', data.user!.id);
+        } catch (e) {
+          console.warn('프로필 account_type 업데이트 실패', e);
+        }
+
         const bonusMessage = signUpData.referralCode ? "추천 보너스 2토큰 포함!" : "";
         toast({
-          title: "회원가입 완료", 
+          title: "회원가입 완료",
           description: `환영합니다! 검사 이용권 2개가 지급되었습니다. ${bonusMessage}`,
         });
-        // 신규 가입자에게만 온보딩 표시 (한 번만)
+        // 신규 가입자에게만 온보딩 표시 (한 번만) — 학부모만
         const userOnboardingKey = `hasSeenOnboarding_${data.user?.id}`;
-        if (!localStorage.getItem(userOnboardingKey)) {
+        if (accountType === 'parent' && !localStorage.getItem(userOnboardingKey)) {
           setShowOnboarding(true);
         }
         // 추천 코드 localStorage에서 제거
         localStorage.removeItem('referralCode');
       }
+
 
     } catch (error: any) {
       let errorMessage = '회원가입 중 오류가 발생했습니다.';

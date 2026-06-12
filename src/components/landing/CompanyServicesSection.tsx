@@ -43,11 +43,7 @@ const CompanyServicesSection = () => {
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <img 
-              src={aihproLogo} 
-              alt="AIH PRO Logo" 
-              className="w-16 h-16 object-contain"
-            />
+            <AihproLogoMark className="w-16 h-16 rounded-2xl" />
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
               <span className="text-white">AIH </span>
               <span className="text-orange-500">PRO</span>

@@ -101,11 +101,7 @@ const CompanyServicesSection = () => {
 
         {/* Footer with Logo */}
         <div className="text-center space-y-4">
-          <img 
-            src={aihproLogo} 
-            alt="AIH PRO Logo" 
-            className="w-12 h-12 object-contain mx-auto"
-          />
+          <AihproLogoMark className="w-12 h-12 mx-auto rounded-xl" />
           <div className="space-y-2 text-sm text-slate-500">
             <p>© 2025 AIH PRO. All rights reserved.</p>
             <p>AI시대에 Human touch는 필수입니다.</p>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BookHeart, Zap, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import aihproLogo from '@/assets/aihpro-logo.png';
+import { AihproLogoMark } from '@/components/brand/AihproLogoMark';
 
 const CompanyServicesSection = () => {
   const services = [

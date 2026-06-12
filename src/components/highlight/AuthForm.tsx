@@ -50,6 +50,12 @@ export const AuthForm = () => {
     referralCode: ''
   });
 
+  // 가입 경로 선택 (parent = 학부모·일반, therapist = 전문가·기관)
+  const [accountType, setAccountType] = useState<AccountType>('parent');
+  // 전문가·기관 선택 시 세부 경로 (B2B 센터 운영자 vs 개인 전문가)
+  const [expertScope, setExpertScope] = useState<ExpertScope>('center_admin');
+
+
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();

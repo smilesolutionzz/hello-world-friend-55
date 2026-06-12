@@ -598,7 +598,86 @@ export const AuthForm = () => {
                 
                 {/* 회원가입 탭 */}
                 <TabsContent value="signup" className="mt-0 space-y-4">
+                  {/* 가입 경로 선택 */}
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-foreground/80 px-1">
+                      어떤 사용자로 가입하시나요?
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setAccountType('parent')}
+                        className={`flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition-all ${
+                          accountType === 'parent'
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                            : 'border-border/60 bg-background/40 hover:border-primary/40'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-semibold">학부모·일반</span>
+                        </div>
+                        <span className="text-[11px] leading-snug text-muted-foreground">
+                          자가검사 · 마인드 트랙 · 전문가 상담
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAccountType('therapist')}
+                        className={`flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition-all ${
+                          accountType === 'therapist'
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                            : 'border-border/60 bg-background/40 hover:border-primary/40'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-semibold">전문가·기관</span>
+                        </div>
+                        <span className="text-[11px] leading-snug text-muted-foreground">
+                          센터 운영 · 상담 의뢰 관리
+                        </span>
+                      </button>
+                    </div>
+
+                    {accountType === 'therapist' && (
+                      <div className="mt-2 grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setExpertScope('center_admin')}
+                          className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left transition-all ${
+                            expertScope === 'center_admin'
+                              ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                              : 'border-border/60 bg-background/40 hover:border-primary/40'
+                          }`}
+                        >
+                          <Building2 className="w-4 h-4 text-primary" />
+                          <div className="flex flex-col">
+                            <span className="text-xs font-semibold">센터 운영자</span>
+                            <span className="text-[10px] text-muted-foreground">B2B 콘솔</span>
+                          </div>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setExpertScope('individual_expert')}
+                          className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left transition-all ${
+                            expertScope === 'individual_expert'
+                              ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                              : 'border-border/60 bg-background/40 hover:border-primary/40'
+                          }`}
+                        >
+                          <UserCog className="w-4 h-4 text-primary" />
+                          <div className="flex flex-col">
+                            <span className="text-xs font-semibold">개인 전문가</span>
+                            <span className="text-[10px] text-muted-foreground">매칭 관리</span>
+                          </div>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <form onSubmit={handleSignUp} className="space-y-3">
+
                     {error && (
                       <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-xl border border-destructive/20 flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />

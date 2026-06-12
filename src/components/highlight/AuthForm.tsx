@@ -11,7 +11,14 @@ import { Loader2, Mail, Lock, User as UserIcon, Gift, Phone, ArrowLeft } from 'l
 import type { User, Session } from '@supabase/supabase-js';
 import { OnboardingOverlay } from '@/components/ui/onboarding-overlay';
 import { SocialLoginButtons } from '@/components/social/SocialLoginButtons';
-import logo from '@/assets/logo.png';
+import { AihproLogoMark } from '@/components/brand/AihproLogoMark';
+import {
+  persistPendingAccountChoice,
+  type AccountType,
+  type ExpertScope,
+} from '@/lib/accountTypeRouting';
+import { Users, Briefcase, Building2, UserCog } from 'lucide-react';
+
 
 export const AuthForm = () => {
   const [loading, setLoading] = useState(false);
@@ -43,6 +50,12 @@ export const AuthForm = () => {
     referralCode: ''
   });
 
+  // 가입 경로 선택 (parent = 학부모·일반, therapist = 전문가·기관)
+  const [accountType, setAccountType] = useState<AccountType>('parent');
+  // 전문가·기관 선택 시 세부 경로 (B2B 센터 운영자 vs 개인 전문가)
+  const [expertScope, setExpertScope] = useState<ExpertScope>('center_admin');
+
+
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
@@ -72,33 +85,24 @@ export const AuthForm = () => {
       setSignUpData(prev => ({ ...prev, referralCode: storedReferralCode }));
     }
 
-    // 인증 상태 리스너 설정
+    // 인증 상태 리스너 — 세션만 갱신하고, 라우팅은 HighlightAuth가 account_type 기반으로 처리
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         console.log('📱 Auth state change:', event, session?.user?.id);
         setSession(session);
         setUser(session?.user ?? null);
-        
-        if (event === 'SIGNED_IN' && session?.user) {
-          console.log('✅ 로그인 성공:', session.user.email);
-          navigate('/');
-        }
       }
     );
 
-    // 기존 세션 확인
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('📱 초기 세션 확인:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        navigate('/');
-      }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
 
   // 전화번호 중복 체크 (실시간) - RPC 함수 사용
   const checkPhoneAvailability = async (phone: string) => {
@@ -289,7 +293,13 @@ export const AuthForm = () => {
 
     try {
       const redirectUrl = `${window.location.origin}/`;
-      
+
+      // 가입 경로 선택을 로컬에 저장 (이메일 확인 후 첫 로그인 시 프로필에 반영)
+      persistPendingAccountChoice(
+        accountType,
+        accountType === 'therapist' ? expertScope : undefined,
+      );
+
       const { data, error } = await supabase.auth.signUp({
         email: signUpData.email.trim(),
         password: signUpData.password,
@@ -298,7 +308,9 @@ export const AuthForm = () => {
           data: {
             display_name: signUpData.nickname.trim(),
             phone: cleanPhone,  // 하이픈 제거된 전화번호 사용
-            referral_code: signUpData.referralCode.trim()
+            referral_code: signUpData.referralCode.trim(),
+            account_type: accountType,
+            expert_scope: accountType === 'therapist' ? expertScope : null,
           }
         }
       });
@@ -311,20 +323,30 @@ export const AuthForm = () => {
           description: "이메일을 확인하여 계정을 활성화해주세요.",
         });
       } else if (data.session) {
-        // 추천 코드가 있는 경우 추가 토큰 안내
+        // 신규 가입자 프로필에 account_type 즉시 반영
+        try {
+          await supabase
+            .from('profiles')
+            .update({ account_type: accountType })
+            .eq('user_id', data.user!.id);
+        } catch (e) {
+          console.warn('프로필 account_type 업데이트 실패', e);
+        }
+
         const bonusMessage = signUpData.referralCode ? "추천 보너스 2토큰 포함!" : "";
         toast({
-          title: "회원가입 완료", 
+          title: "회원가입 완료",
           description: `환영합니다! 검사 이용권 2개가 지급되었습니다. ${bonusMessage}`,
         });
-        // 신규 가입자에게만 온보딩 표시 (한 번만)
+        // 신규 가입자에게만 온보딩 표시 (한 번만) — 학부모만
         const userOnboardingKey = `hasSeenOnboarding_${data.user?.id}`;
-        if (!localStorage.getItem(userOnboardingKey)) {
+        if (accountType === 'parent' && !localStorage.getItem(userOnboardingKey)) {
           setShowOnboarding(true);
         }
         // 추천 코드 localStorage에서 제거
         localStorage.removeItem('referralCode');
       }
+
 
     } catch (error: any) {
       let errorMessage = '회원가입 중 오류가 발생했습니다.';
@@ -465,11 +487,10 @@ export const AuthForm = () => {
 
           {/* 로고 헤더 */}
           <div className="text-center mb-6">
-            <img 
-              src={logo} 
-              alt="AIHPRO" 
-              className="w-20 h-20 mx-auto mb-4 object-contain"
-            />
+            <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+              <AihproLogoMark className="w-20 h-20" />
+            </div>
+
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
               AIHPRO
             </h1>
@@ -577,7 +598,86 @@ export const AuthForm = () => {
                 
                 {/* 회원가입 탭 */}
                 <TabsContent value="signup" className="mt-0 space-y-4">
+                  {/* 가입 경로 선택 */}
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-foreground/80 px-1">
+                      어떤 사용자로 가입하시나요?
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setAccountType('parent')}
+                        className={`flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition-all ${
+                          accountType === 'parent'
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                            : 'border-border/60 bg-background/40 hover:border-primary/40'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-semibold">학부모·일반</span>
+                        </div>
+                        <span className="text-[11px] leading-snug text-muted-foreground">
+                          자가검사 · 마인드 트랙 · 전문가 상담
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAccountType('therapist')}
+                        className={`flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition-all ${
+                          accountType === 'therapist'
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                            : 'border-border/60 bg-background/40 hover:border-primary/40'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-semibold">전문가·기관</span>
+                        </div>
+                        <span className="text-[11px] leading-snug text-muted-foreground">
+                          센터 운영 · 상담 의뢰 관리
+                        </span>
+                      </button>
+                    </div>
+
+                    {accountType === 'therapist' && (
+                      <div className="mt-2 grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setExpertScope('center_admin')}
+                          className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left transition-all ${
+                            expertScope === 'center_admin'
+                              ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                              : 'border-border/60 bg-background/40 hover:border-primary/40'
+                          }`}
+                        >
+                          <Building2 className="w-4 h-4 text-primary" />
+                          <div className="flex flex-col">
+                            <span className="text-xs font-semibold">센터 운영자</span>
+                            <span className="text-[10px] text-muted-foreground">B2B 콘솔</span>
+                          </div>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setExpertScope('individual_expert')}
+                          className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left transition-all ${
+                            expertScope === 'individual_expert'
+                              ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                              : 'border-border/60 bg-background/40 hover:border-primary/40'
+                          }`}
+                        >
+                          <UserCog className="w-4 h-4 text-primary" />
+                          <div className="flex flex-col">
+                            <span className="text-xs font-semibold">개인 전문가</span>
+                            <span className="text-[10px] text-muted-foreground">매칭 관리</span>
+                          </div>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <form onSubmit={handleSignUp} className="space-y-3">
+
                     {error && (
                       <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-xl border border-destructive/20 flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />

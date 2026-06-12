@@ -38,7 +38,7 @@ import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useMindTrackDashboard } from '@/hooks/useMindTrackDashboard';
 import { supabase } from '@/integrations/supabase/client';
-import logo from '@/assets/logo.png';
+import { AihproLogoMark } from '@/components/brand/AihproLogoMark';
 import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 
 import { useContext } from 'react';
@@ -123,7 +123,7 @@ const UnifiedNavigationInner = () => {
               onClick={() => navigate(localePath('/'))}
             >
               <div className="relative">
-                <img src={logo} alt="AIHPRO" className="h-9 w-9 rounded-xl object-contain flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                <AihproLogoMark className="h-9 w-9 rounded-xl flex-shrink-0" />
                 <div className="absolute inset-0 bg-primary/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
@@ -363,7 +363,7 @@ const UnifiedNavigationInner = () => {
             className="flex items-center gap-2 cursor-pointer"
             onClick={() => navigate(localePath('/'))}
           >
-            <img src={logo} alt="AIHPRO" className="h-8 w-8 rounded-lg object-contain flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            <AihproLogoMark className="h-8 w-8 rounded-lg flex-shrink-0" />
             <span className="text-lg font-bold">AIHPRO</span>
           </div>
 

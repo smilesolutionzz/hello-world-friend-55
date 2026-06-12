@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import StoreSection from '@/components/store/StoreSection';
 import PartnerTrustSection from '@/components/landing/PartnerTrustSection';
-import aihproLogo from '@/assets/aihpro-logo.png';
+import { AihproLogoMark } from '@/components/brand/AihproLogoMark';
 import { AudienceModeToggle } from '@/components/navigation/AudienceModeToggle';
 import { Crown, Menu, X } from 'lucide-react';
 import { useLanguage } from '@/i18n';
@@ -126,7 +126,7 @@ const MobileHome: React.FC = () => {
       {/* 헤더 */}
       <header className="px-5 pt-6 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src={aihproLogo} alt="AIHPRO" className="w-8 h-8 object-contain" />
+          <AihproLogoMark className="w-8 h-8 rounded-lg" />
           <span className="text-[17px] font-bold tracking-tight">
             AIH<span className="text-[#8a7a4d]">PRO</span>
           </span>

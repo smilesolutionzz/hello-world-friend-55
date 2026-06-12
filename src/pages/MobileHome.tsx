@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import StoreSection from '@/components/store/StoreSection';
 import PartnerTrustSection from '@/components/landing/PartnerTrustSection';
-import aihproLogo from '@/assets/aihpro-logo.png';
+import { AihproLogoMark } from '@/components/brand/AihproLogoMark';
 import { AudienceModeToggle } from '@/components/navigation/AudienceModeToggle';
 import { Crown, Menu, X } from 'lucide-react';
 import { useLanguage } from '@/i18n';

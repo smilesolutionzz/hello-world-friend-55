@@ -126,7 +126,7 @@ const MobileHome: React.FC = () => {
       {/* 헤더 */}
       <header className="px-5 pt-6 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src={aihproLogo} alt="AIHPRO" className="w-8 h-8 object-contain" />
+          <AihproLogoMark className="w-8 h-8 rounded-lg" />
           <span className="text-[17px] font-bold tracking-tight">
             AIH<span className="text-[#8a7a4d]">PRO</span>
           </span>

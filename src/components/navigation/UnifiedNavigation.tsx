@@ -38,7 +38,7 @@ import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useMindTrackDashboard } from '@/hooks/useMindTrackDashboard';
 import { supabase } from '@/integrations/supabase/client';
-import logo from '@/assets/logo.png';
+import { AihproLogoMark } from '@/components/brand/AihproLogoMark';
 import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 
 import { useContext } from 'react';

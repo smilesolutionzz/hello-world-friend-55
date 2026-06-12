@@ -120,7 +120,7 @@ export const HighlightNavigation = () => {
               onClick={() => navigate('/')}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <img src={logo} alt="AI Highlight" className="h-8 w-8 lg:h-10 lg:w-10" />
+              <AihproLogoMark className="h-8 w-8 lg:h-10 lg:w-10 rounded-lg" />
             </button>
             
             {/* 데스크탑 네비게이션 메뉴 */}

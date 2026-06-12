@@ -472,11 +472,10 @@ export const AuthForm = () => {
 
           {/* 로고 헤더 */}
           <div className="text-center mb-6">
-            <img 
-              src={logo} 
-              alt="AIHPRO" 
-              className="w-20 h-20 mx-auto mb-4 object-contain"
-            />
+            <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+              <AihproLogoMark className="w-20 h-20" />
+            </div>
+
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
               AIHPRO
             </h1>

@@ -7,6 +7,7 @@ import { parseWorkbook, commitImport, downloadStandardTemplate, type ParsedWorkb
 import { listMyCenters, createCenter, getActiveCenterId, setActiveCenterId, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { supabase } from "@/integrations/supabase/client";
 import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
+import CarepleImportGuide from "@/components/b2b-center/CarepleImportGuide";
 
 export default function B2BCenterImport() {
   const navigate = useNavigate();
@@ -98,6 +99,8 @@ export default function B2BCenterImport() {
         <h1 className="text-4xl font-semibold mb-3 break-keep">엑셀 한 파일로 전체 데이터 이관</h1>
         <p className="text-neutral-600 mb-3 break-keep">케어플센터 <span className="font-mono text-neutral-900">월서비스관리_YYYYMM.xlsx</span> 다운로드 파일을 그대로 올리거나, AIHPRO 표준 템플릿을 채워서 올리세요. 회기 카운트(<span className="font-mono">완료[3]</span>)는 자동으로 회기 행으로 펼쳐집니다.</p>
         <p className="text-xs text-neutral-500 mb-10">지원 포맷 · 케어플 월서비스관리 · 케어플 일반 명단 · AIHPRO 표준 템플릿</p>
+
+        <CarepleImportGuide />
 
         {/* 1. 기관 */}
         <section className="mb-8 p-6 rounded-2xl border border-neutral-200">

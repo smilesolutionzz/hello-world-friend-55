@@ -15,7 +15,7 @@ export default function B2BCenterImport() {
   const [centers, setCenters] = useState<CenterOrg[]>([]);
   const [activeId, setActive] = useState<string | null>(getActiveCenterId());
   const [newCenterName, setNewCenterName] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [parsed, setParsed] = useState<ParsedWorkbook | null>(null);
   const [committing, setCommitting] = useState(false);
   const [result, setResult] = useState<Record<string, number> | null>(null);

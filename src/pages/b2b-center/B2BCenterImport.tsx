@@ -75,7 +75,7 @@ export default function B2BCenterImport() {
     if (!parsed || !activeId) return;
     setCommitting(true);
     try {
-      const { summary } = await commitImport(activeId, parsed, file?.name ?? "upload.xlsx");
+      const { summary } = await commitImport(activeId, parsed, files.map((f) => f.name).join(", ") || "upload.xlsx");
       setResult(summary);
       toast({ title: "이관 완료", description: "콘솔에서 확인하세요." });
     } catch (e: any) {

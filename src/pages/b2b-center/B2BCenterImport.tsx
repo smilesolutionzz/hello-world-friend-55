@@ -167,12 +167,22 @@ export default function B2BCenterImport() {
             <input
               type="file"
               accept=".xlsx,.xls,.csv"
+              multiple
               className="hidden"
-              onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+              onChange={(e) => e.target.files && e.target.files.length > 0 && handleFiles(e.target.files)}
               disabled={!activeId}
             />
             <Upload className="w-8 h-8 mx-auto mb-3 text-neutral-400" />
-            <p className="text-sm text-neutral-600">{file ? file.name : "클릭하거나 파일을 끌어다 놓으세요"}</p>
+            <p className="text-sm text-neutral-600">
+              {files.length > 0
+                ? files.length === 1 ? files[0].name : `${files.length}개 파일 선택됨`
+                : "클릭하거나 파일을 끌어다 놓으세요 (여러 파일 동시 선택 가능)"}
+            </p>
+            {files.length > 1 && (
+              <ul className="text-[11px] text-neutral-500 mt-2 space-y-0.5">
+                {files.map((f) => <li key={f.name}>· {f.name}</li>)}
+              </ul>
+            )}
             <p className="text-[11px] text-neutral-400 mt-1">케어플 다운로드 .xlsx 또는 AIHPRO 표준 템플릿</p>
             {!activeId && <p className="text-xs text-red-500 mt-2">먼저 기관을 선택하세요</p>}
           </label>

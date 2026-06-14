@@ -611,7 +611,7 @@ export async function commitImport(
             initial_consult_date: parseDate(r.initial_consult_date),
             status: r.status != null && String(r.status).trim() !== "" ? mapClientStatus(r.status) : "enrolled",
             member_no: r.member_no ?? null,
-            meta: Object.keys(meta).length ? meta : null,
+            meta: Object.keys(meta).length ? meta : {},
           };
         });
       const inserts: any[] = [];

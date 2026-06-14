@@ -140,6 +140,20 @@ export default function B2BCenterImport() {
               <Download className="w-4 h-4" /> 표준 템플릿
             </button>
           </div>
+
+          <div className="mb-4 p-4 rounded-xl bg-[#FBF8F1] border border-[#C8B88A]/40">
+            <p className="text-[10px] tracking-widest text-[#8B7A4A] mb-2">어떤 파일을 올려야 하나요?</p>
+            <ul className="text-xs text-neutral-700 space-y-1.5 break-keep">
+              <li><span className="inline-block w-14 text-emerald-700 font-semibold">필수</span><span className="font-mono">이용자관리_YYYYMMDD.xlsx</span> — 케어플 &gt; 이용자 관리에서 [다운로드]</li>
+              <li><span className="inline-block w-14 text-emerald-700 font-semibold">필수</span><span className="font-mono">월서비스관리_YYYYMM.xlsx</span> — 케어플 &gt; 월 서비스 관리에서 [다운로드]</li>
+              <li><span className="inline-block w-14 text-neutral-500 font-semibold">선택</span><span className="font-mono">일일서비스_YYYYMM.xlsx</span> / <span className="font-mono">선생님별이용자_YYYYMM.xlsx</span> / <span className="font-mono">일별접수인원_YYYYMM.xlsx</span></li>
+              <li><span className="inline-block w-14 text-neutral-500 font-semibold">대체</span>위에 마지막 추천하는 <span className="font-medium">AIHPRO 표준 템플릿(.xlsx)</span></li>
+            </ul>
+            <p className="text-[11px] text-neutral-500 mt-3 break-keep">
+              한 번에 한 파일씩 올리시면 됩니다. 같은 기관으로 자동 합쳐지므로 위 5개 중 가진 파일을 순서대로 모두 올리세요. (.xlsx · .xls · .csv 지원)
+            </p>
+          </div>
+
           <label className="block border-2 border-dashed border-neutral-200 rounded-xl p-10 text-center cursor-pointer hover:border-neutral-400 transition">
             <input
               type="file"
@@ -150,6 +164,7 @@ export default function B2BCenterImport() {
             />
             <Upload className="w-8 h-8 mx-auto mb-3 text-neutral-400" />
             <p className="text-sm text-neutral-600">{file ? file.name : "클릭하거나 파일을 끌어다 놓으세요"}</p>
+            <p className="text-[11px] text-neutral-400 mt-1">케어플 다운로드 .xlsx 또는 AIHPRO 표준 템플릿</p>
             {!activeId && <p className="text-xs text-red-500 mt-2">먼저 기관을 선택하세요</p>}
           </label>
         </section>

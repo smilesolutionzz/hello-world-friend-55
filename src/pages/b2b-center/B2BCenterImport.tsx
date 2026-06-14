@@ -159,7 +159,7 @@ export default function B2BCenterImport() {
               <li><span className="inline-block w-14 text-neutral-500 font-semibold">대체</span>위에 마지막 추천하는 <span className="font-medium">AIHPRO 표준 템플릿(.xlsx)</span></li>
             </ul>
             <p className="text-[11px] text-neutral-500 mt-3 break-keep">
-              한 번에 한 파일씩 올리시면 됩니다. 같은 기관으로 자동 합쳐지므로 위 5개 중 가진 파일을 순서대로 모두 올리세요. (.xlsx · .xls · .csv 지원)
+              여러 파일을 한 번에 선택해 올릴 수 있습니다. 같은 기관으로 자동 합쳐지므로 위 5개 중 가진 파일을 모두 선택하세요. (.xlsx · .xls · .csv 지원)
             </p>
           </div>
 

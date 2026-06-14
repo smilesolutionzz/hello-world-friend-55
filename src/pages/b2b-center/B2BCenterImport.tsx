@@ -58,6 +58,7 @@ export default function B2BCenterImport() {
       const merged: ParsedWorkbook = {
         format: parsedAll.every((p) => p.format === parsedAll[0].format) ? parsedAll[0].format : ("mixed" as any),
         sheets: parsedAll.flatMap((p) => p.sheets),
+        rawSheets: parsedAll.flatMap((p) => p.rawSheets ?? []),
       };
       setParsed(merged);
       if (merged.sheets.length === 0) {

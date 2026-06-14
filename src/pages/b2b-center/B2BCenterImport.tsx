@@ -47,15 +47,23 @@ export default function B2BCenterImport() {
     }
   }
 
-  async function handleFile(f: File) {
-    setFile(f);
+  async function handleFiles(fl: FileList | File[]) {
+    const arr = Array.from(fl);
+    if (arr.length === 0) return;
+    setFiles(arr);
     setParsed(null);
     setResult(null);
     try {
-      const p = await parseWorkbook(f);
-      setParsed(p);
-      if (p.sheets.length === 0) {
+      const parsedAll = await Promise.all(arr.map((f) => parseWorkbook(f)));
+      const merged: ParsedWorkbook = {
+        format: parsedAll.every((p) => p.format === parsedAll[0].format) ? parsedAll[0].format : ("mixed" as any),
+        sheets: parsedAll.flatMap((p) => p.sheets),
+      };
+      setParsed(merged);
+      if (merged.sheets.length === 0) {
         toast({ title: "감지된 시트 없음", description: "케어플 다운로드 파일 또는 AIHPRO 템플릿을 업로드하세요.", variant: "destructive" });
+      } else {
+        toast({ title: `${arr.length}개 파일 분석 완료`, description: `${merged.sheets.length}개 시트 감지` });
       }
     } catch (e: any) {
       toast({ title: "파싱 실패", description: e.message, variant: "destructive" });

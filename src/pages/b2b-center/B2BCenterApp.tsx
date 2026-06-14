@@ -119,10 +119,10 @@ export default function B2BCenterApp() {
           <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-6 break-keep">
             ⚠️ 로그인 없이 입력한 일정·이용자 정보는 <b>저장되지 않습니다.</b> 반드시 먼저 로그인해주세요.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button onClick={() => navigate("/auth?redirect=/b2b-center/app")} className="px-6 py-3 rounded-full bg-neutral-900 text-white">로그인하고 시작</button>
-            <button onClick={() => navigate("/b2b-center/import")} className="px-6 py-3 rounded-full border border-neutral-200">60일 무료 시작</button>
-            <button onClick={() => navigate("/b2b-center/app?demo=1")} className="px-6 py-3 rounded-full border border-neutral-200 text-neutral-600">데모만 둘러보기</button>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center">
+            <button onClick={() => navigate("/auth?redirect=/b2b-center/app")} className="px-6 py-3 rounded-full bg-neutral-900 text-white text-sm font-medium whitespace-nowrap">로그인하고 시작</button>
+            <button onClick={() => navigate("/b2b-center/import")} className="px-6 py-3 rounded-full border border-neutral-200 text-sm font-medium whitespace-nowrap">60일 무료 시작</button>
+            <button onClick={() => navigate("/b2b-center/app?demo=1")} className="px-6 py-3 rounded-full border border-neutral-200 text-neutral-600 text-sm font-medium whitespace-nowrap">데모만 둘러보기</button>
           </div>
         </div>
       </div>

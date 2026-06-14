@@ -15,7 +15,7 @@ export default function B2BCenterImport() {
   const [centers, setCenters] = useState<CenterOrg[]>([]);
   const [activeId, setActive] = useState<string | null>(getActiveCenterId());
   const [newCenterName, setNewCenterName] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [parsed, setParsed] = useState<ParsedWorkbook | null>(null);
   const [committing, setCommitting] = useState(false);
   const [result, setResult] = useState<Record<string, number> | null>(null);
@@ -47,15 +47,24 @@ export default function B2BCenterImport() {
     }
   }
 
-  async function handleFile(f: File) {
-    setFile(f);
+  async function handleFiles(fl: FileList | File[]) {
+    const arr = Array.from(fl);
+    if (arr.length === 0) return;
+    setFiles(arr);
     setParsed(null);
     setResult(null);
     try {
-      const p = await parseWorkbook(f);
-      setParsed(p);
-      if (p.sheets.length === 0) {
+      const parsedAll = await Promise.all(arr.map((f) => parseWorkbook(f)));
+      const merged: ParsedWorkbook = {
+        format: parsedAll.every((p) => p.format === parsedAll[0].format) ? parsedAll[0].format : ("mixed" as any),
+        sheets: parsedAll.flatMap((p) => p.sheets),
+        rawSheets: parsedAll.flatMap((p) => p.rawSheets ?? []),
+      };
+      setParsed(merged);
+      if (merged.sheets.length === 0) {
         toast({ title: "감지된 시트 없음", description: "케어플 다운로드 파일 또는 AIHPRO 템플릿을 업로드하세요.", variant: "destructive" });
+      } else {
+        toast({ title: `${arr.length}개 파일 분석 완료`, description: `${merged.sheets.length}개 시트 감지` });
       }
     } catch (e: any) {
       toast({ title: "파싱 실패", description: e.message, variant: "destructive" });
@@ -66,7 +75,7 @@ export default function B2BCenterImport() {
     if (!parsed || !activeId) return;
     setCommitting(true);
     try {
-      const { summary } = await commitImport(activeId, parsed, file?.name ?? "upload.xlsx");
+      const { summary } = await commitImport(activeId, parsed, files.map((f) => f.name).join(", ") || "upload.xlsx");
       setResult(summary);
       toast({ title: "이관 완료", description: "콘솔에서 확인하세요." });
     } catch (e: any) {
@@ -150,7 +159,7 @@ export default function B2BCenterImport() {
               <li><span className="inline-block w-14 text-neutral-500 font-semibold">대체</span>위에 마지막 추천하는 <span className="font-medium">AIHPRO 표준 템플릿(.xlsx)</span></li>
             </ul>
             <p className="text-[11px] text-neutral-500 mt-3 break-keep">
-              한 번에 한 파일씩 올리시면 됩니다. 같은 기관으로 자동 합쳐지므로 위 5개 중 가진 파일을 순서대로 모두 올리세요. (.xlsx · .xls · .csv 지원)
+              여러 파일을 한 번에 선택해 올릴 수 있습니다. 같은 기관으로 자동 합쳐지므로 위 5개 중 가진 파일을 모두 선택하세요. (.xlsx · .xls · .csv 지원)
             </p>
           </div>
 
@@ -158,12 +167,22 @@ export default function B2BCenterImport() {
             <input
               type="file"
               accept=".xlsx,.xls,.csv"
+              multiple
               className="hidden"
-              onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+              onChange={(e) => e.target.files && e.target.files.length > 0 && handleFiles(e.target.files)}
               disabled={!activeId}
             />
             <Upload className="w-8 h-8 mx-auto mb-3 text-neutral-400" />
-            <p className="text-sm text-neutral-600">{file ? file.name : "클릭하거나 파일을 끌어다 놓으세요"}</p>
+            <p className="text-sm text-neutral-600">
+              {files.length > 0
+                ? files.length === 1 ? files[0].name : `${files.length}개 파일 선택됨`
+                : "클릭하거나 파일을 끌어다 놓으세요 (여러 파일 동시 선택 가능)"}
+            </p>
+            {files.length > 1 && (
+              <ul className="text-[11px] text-neutral-500 mt-2 space-y-0.5">
+                {files.map((f) => <li key={f.name}>· {f.name}</li>)}
+              </ul>
+            )}
             <p className="text-[11px] text-neutral-400 mt-1">케어플 다운로드 .xlsx 또는 AIHPRO 표준 템플릿</p>
             {!activeId && <p className="text-xs text-red-500 mt-2">먼저 기관을 선택하세요</p>}
           </label>

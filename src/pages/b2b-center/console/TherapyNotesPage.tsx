@@ -112,18 +112,18 @@ export default function TherapyNotesPage() {
   };
 
   const generate = async () => {
-    if (!uploads.length) { toast({ title: "업로드된 회기가 없어요" }); return; }
+    if (!selectedClient) { toast({ title: "이용자를 먼저 선택하세요" }); return; }
     setGenerating(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch(`https://hrcqxjetmzxoephgyjlb.supabase.co/functions/v1/generate-weekly-therapy-note`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${session?.access_token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ centerId, clientId: selectedClient, weekKey }),
+        body: JSON.stringify({ centerId, clientId: selectedClient, weekKey, allowEmpty: true }),
       });
       const j = await res.json();
       if (!res.ok) throw new Error(j.error || j.detail);
-      toast({ title: "주간 노트 초안 생성 완료" });
+      toast({ title: "주간 노트 초안 생성 완료", description: uploads.length === 0 ? "이번 주 일정 기반으로 작성됐어요. 일지 사진을 올리면 더 풍부해져요." : undefined });
       loadWeek();
     } catch (e: any) {
       toast({ title: "생성 실패", description: e?.message ?? String(e), variant: "destructive" });
@@ -200,7 +200,14 @@ export default function TherapyNotesPage() {
         <p className="text-sm text-neutral-500 mb-4 break-keep">손글씨 일지·프린트 기록·메모 모두 가능. 사진을 드래그하거나 버튼으로 선택하세요.</p>
         <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
         <div className="flex items-center justify-center gap-2">
-          <button disabled={uploading || !selectedClient} onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-neutral-900 text-white text-sm disabled:opacity-50">
+          <button
+            disabled={uploading}
+            onClick={() => {
+              if (!selectedClient) { toast({ title: "이용자를 먼저 선택하세요" }); return; }
+              fileRef.current?.click();
+            }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-neutral-900 text-white text-sm disabled:opacity-50"
+          >
             {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
             {uploading ? "분석 중…" : "사진 선택"}
           </button>
@@ -209,11 +216,14 @@ export default function TherapyNotesPage() {
 
       {/* Upload list */}
       <div className="bg-white rounded-3xl border border-neutral-200 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold">이번 주 회기 ({uploads.length}건)</h2>
-          <button disabled={generating || uploads.length === 0} onClick={generate} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8B88A] text-neutral-900 text-sm font-medium disabled:opacity-50">
+        <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+          <div>
+            <h2 className="font-semibold">이번 주 회기 ({uploads.length}건 일지 사진)</h2>
+            <p className="text-xs text-neutral-500 mt-0.5">사진이 없어도 일정에 잡힌 회기와 담당 선생님 기준으로 노트를 만들 수 있어요.</p>
+          </div>
+          <button disabled={generating || !selectedClient} onClick={generate} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8B88A] text-neutral-900 text-sm font-medium disabled:opacity-50">
             {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {generating ? "생성 중…" : "주간 치료노트 자동 생성"}
+            {generating ? "생성 중…" : uploads.length === 0 ? "일정 기반 자동 생성" : "주간 치료노트 자동 생성"}
           </button>
         </div>
         {uploads.length === 0 ? (

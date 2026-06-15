@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
+import ImportWizard from "@/components/b2b-center/ImportWizard";
 
-type Ctx = { centerId: string };
+type Ctx = { centerId: string; demo?: boolean };
 
 // 일정표와 동일한 팔레트
 const PALETTE = [
@@ -42,13 +43,14 @@ function nextColor(used: Set<string>, seed = 0) {
 }
 
 export default function TherapistsAdminPage() {
-  const { centerId } = useOutletContext<Ctx>();
+  const { centerId, demo } = useOutletContext<Ctx>();
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "active" | "locked" | "inactive">("all");
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState<any | null>(null);
   const [permEditing, setPermEditing] = useState<any | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -128,6 +130,7 @@ export default function TherapistsAdminPage() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={shuffleAll} className="rounded-full">색상 자동 재배정</Button>
+          <Button variant="outline" size="sm" onClick={() => setImportOpen(true)} className="rounded-full">↑ 엑셀 일괄 등록</Button>
           <Button size="sm" onClick={() => setEditing({})} className="rounded-full">+ 선생님 등록</Button>
         </div>
       </div>
@@ -255,6 +258,16 @@ export default function TherapistsAdminPage() {
             setRows((prev) => prev.map((r) => r.id === permEditing.id ? { ...r, meta: { ...(r.meta ?? {}), permissions: perms } } : r));
             setPermEditing(null);
           }}
+        />
+      )}
+
+      {importOpen && (
+        <ImportWizard
+          demo={!!demo}
+          centerId={centerId}
+          onClose={() => setImportOpen(false)}
+          onImported={load}
+          onMergeDemo={() => { /* 데모: 일정표에서 병합 */ }}
         />
       )}
     </div>

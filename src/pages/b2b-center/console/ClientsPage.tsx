@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, UserPlus, Upload, Send, Settings2, Check } from "lucide-react";
-import { Link } from "react-router-dom";
 import ClientRegisterDialog from "@/components/b2b-center/ClientRegisterDialog";
 import InviteParentDialog from "@/components/b2b-center/InviteParentDialog";
+import ImportWizard from "@/components/b2b-center/ImportWizard";
 import { DEMO_CLIENTS } from "@/lib/b2bCenter/demoData";
 
 type Ctx = { centerId: string; demo?: boolean };
@@ -104,6 +104,7 @@ export default function ClientsPage() {
   const [filter, setFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [inviteFor, setInviteFor] = useState<{ id: string; name: string } | null>(null);
 
   const [visible, setVisible] = useState<Record<ColKey, boolean>>(() => {
@@ -184,9 +185,9 @@ export default function ClientsPage() {
           <p className="text-sm text-neutral-500">총 {rows.length}명 · 등록 {counts.enrolled} · 대기 {counts.waiting} · 종결 {counts.terminated}</p>
         </div>
         <div className="flex gap-2">
-          <Link to="/b2b-center/import" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm text-neutral-700 hover:bg-neutral-50">
+          <button onClick={() => setImportOpen(true)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm text-neutral-700 hover:bg-neutral-50">
             <Upload className="w-4 h-4" /> 엑셀 일괄 등록
-          </Link>
+          </button>
           <button onClick={() => setRegisterOpen(true)}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800">
             <UserPlus className="w-4 h-4" /> 이용자 등록
@@ -261,7 +262,7 @@ export default function ClientsPage() {
                 <p className="mb-3">아직 등록된 이용자가 없습니다.</p>
                 <div className="inline-flex gap-2">
                   <button onClick={() => setRegisterOpen(true)} className="px-4 py-2 rounded-full bg-neutral-900 text-white text-sm">이용자 등록</button>
-                  <Link to="/b2b-center/import" className="px-4 py-2 rounded-full border border-neutral-200 text-sm">엑셀 일괄</Link>
+                  <button onClick={() => setImportOpen(true)} className="px-4 py-2 rounded-full border border-neutral-200 text-sm">엑셀 일괄</button>
                 </div>
               </td></tr>
             ) : filtered.map((r) => (
@@ -297,6 +298,16 @@ export default function ClientsPage() {
           client={inviteFor}
           demo={demo}
           onClose={() => setInviteFor(null)}
+        />
+      )}
+
+      {importOpen && (
+        <ImportWizard
+          demo={!!demo}
+          centerId={centerId}
+          onClose={() => setImportOpen(false)}
+          onImported={load}
+          onMergeDemo={() => { /* demo: 인메모리 병합은 일정표에서 처리 */ }}
         />
       )}
     </div>

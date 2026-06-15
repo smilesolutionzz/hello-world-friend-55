@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import ImportWizard from "@/components/b2b-center/ImportWizard";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -11,6 +12,7 @@ export default function ProgramsPage() {
   const { centerId, demo } = useOutletContext<Ctx>();
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [importOpen, setImportOpen] = useState(false);
   const [form, setForm] = useState({ category: "언어", name: "", duration_min: 40, price_krw: 55000, is_voucher: false });
 
   const load = async () => {
@@ -41,8 +43,15 @@ export default function ProgramsPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-semibold mb-1">프로그램 관리</h1>
-      <p className="text-sm text-neutral-500 mb-6">치료 프로그램·단가·바우처 여부를 관리합니다.</p>
+      <div className="flex items-start justify-between gap-3 flex-wrap mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold mb-1">프로그램 관리</h1>
+          <p className="text-sm text-neutral-500">치료 프로그램·단가·바우처 여부를 관리합니다.</p>
+        </div>
+        <button onClick={() => setImportOpen(true)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm text-neutral-700 hover:bg-neutral-50">
+          <Upload className="w-4 h-4" /> 엑셀 일괄 등록
+        </button>
+      </div>
 
       <div className="bg-white rounded-2xl border border-neutral-200 p-5 mb-4">
         <div className="grid grid-cols-6 gap-3 items-end">
@@ -83,6 +92,18 @@ export default function ProgramsPage() {
           </tbody>
         </table>
       </div>
+
+
+
+      {importOpen && (
+        <ImportWizard
+          demo={!!demo}
+          centerId={centerId}
+          onClose={() => setImportOpen(false)}
+          onImported={load}
+          onMergeDemo={() => { /* 데모: 일정표에서 병합 */ }}
+        />
+      )}
     </div>
   );
 }

@@ -260,6 +260,16 @@ export default function TherapistsAdminPage() {
           }}
         />
       )}
+
+      {importOpen && (
+        <ImportWizard
+          demo={!!demo}
+          centerId={centerId}
+          onClose={() => setImportOpen(false)}
+          onImported={load}
+          onMergeDemo={() => { /* 데모: 일정표에서 병합 */ }}
+        />
+      )}
     </div>
   );
 }

@@ -216,11 +216,14 @@ export default function TherapyNotesPage() {
 
       {/* Upload list */}
       <div className="bg-white rounded-3xl border border-neutral-200 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold">이번 주 회기 ({uploads.length}건)</h2>
-          <button disabled={generating || uploads.length === 0} onClick={generate} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8B88A] text-neutral-900 text-sm font-medium disabled:opacity-50">
+        <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+          <div>
+            <h2 className="font-semibold">이번 주 회기 ({uploads.length}건 일지 사진)</h2>
+            <p className="text-xs text-neutral-500 mt-0.5">사진이 없어도 일정에 잡힌 회기와 담당 선생님 기준으로 노트를 만들 수 있어요.</p>
+          </div>
+          <button disabled={generating || !selectedClient} onClick={generate} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8B88A] text-neutral-900 text-sm font-medium disabled:opacity-50">
             {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {generating ? "생성 중…" : "주간 치료노트 자동 생성"}
+            {generating ? "생성 중…" : uploads.length === 0 ? "일정 기반 자동 생성" : "주간 치료노트 자동 생성"}
           </button>
         </div>
         {uploads.length === 0 ? (

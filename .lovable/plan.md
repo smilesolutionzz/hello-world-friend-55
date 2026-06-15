@@ -1,114 +1,87 @@
-# B2B 센터 오픈 준비 — 케어플 수준까지의 갭 분석
+# 치료노트 키즈노트형 시스템
 
-현재 상태: 엑셀 이관(케어플 .xlsx 5종), 수납·미수금 풀, 전자바우처 청구(draft→approved + .xlsx), 5단계 온보딩 위저드, 60일 무료 트라이얼, 스토어프론트, 부모 리포트, 위험 알림까지 구축됨. 케어플과 격차가 있는 영역만 정리.
-
----
-
-## 01. 케어플 핵심 기능 중 현재 빠진/약한 모듈
-
-**A. 일정·예약 (Scheduling) — 케어플 핵심**
-- 치료사별 주간/월간 캘린더 (드래그&드롭 회기 배치)
-- 회기 충돌/중복 자동 감지, 휴일·치료사 휴무 반영
-- 보호자 예약 변경 요청 → 승인 워크플로우
-- 시간표 PDF/이미지 출력 (보호자 배포용)
-- 카카오 알림톡 회기 D-1 리마인드
-
-**B. 회기 진행 기록 (SOAP/회기노트)**
-- 회기 종료 후 치료사 노트 (목표·중재·반응·다음회기 계획)
-- 음성→텍스트 변환 (이미 STT 인프라 있음 — 재사용)
-- 보호자 공개/비공개 토글, 월말 자동 요약 리포트
-
-**C. 평가·계획 (Assessment & IEP)
-- IEP 생성기는 있으나 **센터 콘솔과 미연결**. 클라이언트별 IEP 히스토리, 분기 재평가 알림, 평가 도구 라이브러리(K-CARS, K-DST 등) 메타데이터 필요
-
-**D. 정산·세무 (현재 수납만 있음, 정산이 약함)**
-- 치료사 급여 정산 (회기당/시간당/비율제) — 월말 자동 계산서
-- 원천세 3.3% / 사업소득 분리, 지급명세서 .xlsx
-- 부가세 신고용 매출 집계 (분기)
-- 현금영수증 발행 연동 (국세청 API) — 케어플 차별점
-
-**E. 보호자 앱/포털 (현재 부모 리포트만 있음)**
-- 보호자 전용 로그인 → 자녀 스케줄·회기노트·결제내역·바우처 잔액 한 화면
-- 알림톡 + 인앱 푸시 통합
-- 결제(자동이체/카드 등록) 보호자 셀프
+기존 `center_parent_reports` (월간 부모 리포트) 위에 **주간 치료노트 + 사진 OCR + 보호자 웹 뷰**를 얹는 방향. 새 테이블 최소화, 기존 흐름 재활용.
 
 ---
 
-## 02. 운영·신뢰성 (B2B 오픈 전 필수)
+## 01. 데이터 모델 (마이그레이션 1개)
 
-**F. 데이터 안전망**
-- 일일 자동 백업 + 센터별 .xlsx 전체 내보내기 (탈퇴/이관 시)
-- 감사 로그 (누가 언제 어떤 클라이언트 정보 열람·수정) — 이미 일부 있음, 전면 확대
-- 본인부담금/바우처 데이터 변경 이력 (현재 일부만)
+**신규 1테이블 + 기존 1테이블 컬럼 추가:**
 
-**G. 권한 모델 정교화**
-- 현재: owner/admin/therapist/viewer (4단계)
-- 추가: 회계 전담(수납만), 데스크(예약만), 원장(읽기+승인) 등 커스텀 롤
-- 치료사는 본인 담당 클라이언트만 보이도록 RLS 강화
+- `center_session_uploads` (신규)
+  - `client_id`, `therapist_id`, `session_date`, `image_url`, `ocr_text`, `ai_extracted` (jsonb: 활동/감정/목표/진전도), `status` ('pending'|'parsed'|'used'), `week_key` (e.g. `2026-W24`)
+  - Storage 버킷: `center-session-uploads/{center_id}/{client_id}/{yyyy-mm-dd}-{uuid}.jpg` (private)
+- `center_parent_reports`에 컬럼 추가
+  - `period_type` ('weekly'|'monthly'), `week_key`, `source_upload_ids` uuid[], `ai_draft_json` jsonb, `edited_html` text
+- RLS: 센터 멤버만 자신의 센터 데이터 access. 보호자 공개는 기존 `get_center_parent_report_by_token` RPC + 새로 `get_session_upload_image_by_token` (서명 URL) 추가하거나, 보호자 웹 뷰는 로그인 후 `center_clients.parent_user_id` 매칭으로 권한.
 
-**H. 결제·과금 모델 (센터→AIHPRO)**
-- 60일 트라이얼 종료 후 자동 청구 (현재 trial_ends_at은 있지만 결제 전환 흐름 없음)
-- 좌석(치료사) 수 기반 월 구독: 5/10/20/무제한 티어
-- 결제 실패 시 7일 그레이스 → 읽기전용 모드
-- 세금계산서 자동 발행 (팝빌/바로빌 연동)
+## 02. 보호자 인증 (AIHPRO 웹 로그인)
 
-**I. 도입 지원**
-- 1:1 온보딩 콜 예약 페이지 (Calendly 류)
-- 데이터 이관 대행 신청 폼 (운영팀이 직접 .xlsx 매핑)
-- 라이브 채팅 (Channel.io/Crisp 위젯)
-- 영상 튜토리얼 5~10개 (각 모듈별 2분)
+- `center_clients.parent_user_id` (uuid, nullable) 추가 — 부모 초대 수락 시 채워짐
+- 초대 흐름 재활용: 기존 `center_client_invites` 사용 (이미 있음). 수락 페이지에서 부모가 AIHPRO 회원가입/로그인 후 매칭
+- 보호자용 신규 페이지 `/parent/center` — 자기 자녀의 모든 주간 치료노트 타임라인 (키즈노트 피드 UI)
+
+## 03. UI/페이지
+
+### 치료사용 (B2B Center 콘솔, `/b2b-center/app/intelligence/`)
+
+신규 페이지 1개 + 기존 페이지 확장:
+
+- **신규: `TherapyNotesPage.tsx`** — `intelligence/therapy-notes`
+  - 좌측: 이용자 선택 + 주차 선택
+  - 중앙 상단 "이번 회기 일지 업로드" (드래그/카메라/파일) → Edge Function `analyze-session-upload` 호출 → OCR + 추출 → 카드로 표시
+  - 중앙 하단 "이번주 치료노트 자동 생성" 버튼 → 해당 주 업로드 묶어 Gemini로 주간 노트 초안 생성 → 편집기 (Tiptap 또는 textarea + AI 확장 버튼)
+  - 우측: "AI 확장하기 / 톤 바꾸기 / 부모 친화적으로" 도구 모음
+  - "발행하고 보호자에게 공유" → `center_parent_reports.status='published'` + 알림 트리거
+
+- **확장: `ParentReportsPage.tsx`** — 주간 탭 추가 (기존 월간 유지)
+
+### 보호자용 (AIHPRO 웹)
+
+- 신규 `/parent/center` (로그인 필요) — 키즈노트 스타일 피드 카드 + 댓글/이모지
+- 댓글: `center_parent_report_comments` (간단 테이블)
+
+## 04. Edge Functions
+
+- **`analyze-session-upload`** (신규): 이미지 받음 → Gemini Vision (`google/gemini-3-flash-preview`)로 OCR + 활동/감정/목표/진전도 JSON 추출 → DB 저장
+- **`generate-weekly-therapy-note`** (신규): 주차+client_id → 해당 주 모든 upload 묶음 → Gemini로 부모 친화적 주간 노트 작성 → `center_parent_reports` insert(draft)
+- **`expand-therapy-note`** (신규, 또는 `ai-rewrite` 재사용 확인): 선택 영역 텍스트 + 명령("확장"/"부드럽게"/"전문가톤") → 재작성 반환
+
+스토리지 버킷 생성: `center-session-uploads` (private)
+
+## 05. 공유 흐름 (확정: AIHPRO 웹)
+
+발행 시:
+1. `center_parent_reports.status = 'published'`, `published_at = now()`
+2. 보호자 매칭된 user_id에 `user_notifications` insert ("새 치료노트가 도착했어요")
+3. 이메일/카카오는 Phase 2 — 우선 웹 알림만
+
+(구글 스프레드시트는 이번 범위에서 제외 — 추후 옵션으로 토글)
+
+## 06. 단계별 구현 순서
+
+1. 마이그레이션: `center_session_uploads` 테이블 + `center_parent_reports` 컬럼 추가 + `center_clients.parent_user_id` + 스토리지 버킷 + RLS
+2. Edge Function 3개 배포
+3. `TherapyNotesPage` (치료사용) — 업로드 → AI 분석 → 주간 노트 생성 → 편집 → 발행
+4. 보호자 페이지 `/parent/center` + 알림
+5. 사이드바 메뉴에 "치료노트" 추가, `B2BCenterApp.tsx` `navItems` 업데이트
+
+## 07. 디자인
+
+- 흰 카드 (`bg-white rounded-2xl`), 금색 포인트 `#C8B88A`, Pretendard
+- 키즈노트 느낌이지만 이모지/유아틱 컬러는 피함 — 부드러운 베이지 그라데이션 카드
+- 업로드 영역은 점선 박스 + 드래그&드롭
+
+## 08. 범위 제외 (Phase 2 후보)
+
+- 구글 스프레드시트 자동 동기화
+- 카카오/이메일 푸시 알림
+- 보호자→치료사 음성 답글
+- 동영상 업로드 (사진만)
 
 ---
 
-## 03. 차별화 (케어플이 약한 부분 — AIHPRO 우위)
-
-**J. AI 인사이트 (이미 자산 있음)**
-- 부모 자가검사 결과 자동 누적 → 치료 목표 추천
-- 회기노트 텍스트 → 자동 진척도 그래프
-- 위기 알림 (이미 있음) 강화: 보호자 점수 급변 시 원장에게 푸시
-
-**K. 보호자 참여도 점수 (Engagement Score)**
-- 자가검사 완료율, 회기 출석률, 리포트 열람률 종합 → 이탈 위험 사전 감지
-- 케어플에 없는 차별 포인트
-
----
-
-## 04. 우선순위 로드맵 (오픈 기준)
-
-**WAVE 2 (오픈 직전 — 4~6주, 필수)**
-1. **일정·예약 모듈** (A) — 케어플 사용자가 가장 먼저 찾는 기능
-2. **회기노트(SOAP)** (B) — 운영 핵심
-3. **보호자 포털 통합 화면** (E) — 외부 평가 가산점
-4. **백업/내보내기 + 감사로그 확대** (F)
-5. **구독 결제 전환 흐름** (H) — 트라이얼 종료 후 매출 발생
-
-**WAVE 3 (오픈 후 1~2개월)**
-6. 치료사 급여 정산 (D)
-7. IEP 콘솔 연동 (C)
-8. 알림톡 통합 (A/E의 연장)
-9. 커스텀 롤·RLS 강화 (G)
-10. 도입 지원 위젯/영상 (I)
-
-**WAVE 4 (차별화 — 오픈 후 본격)**
-11. AI 인사이트 통합 대시보드 (J)
-12. 보호자 참여도 점수 (K)
-13. 현금영수증/세금계산서 자동화 (D/H)
-
----
-
-## 05. 운영 준비 (코드 외)
-
-- 개인정보 위수탁 표준계약서 (센터↔AIHPRO, 센터↔보호자)
-- 의료/발달 관련 광고 심의 확인 (B2B 마케팅 페이지)
-- 데이터 이관 SLA (영업일 3일 내)
-- 24h 장애 대응 채널 (Slack/카톡 운영 알림)
-- 가격표 확정: 좌석 기반 vs 정액제 (수석 미팅 결정 필요)
-
----
-
-## 결정 필요 사항 (다음 단계 진행 전)
-
-1. **WAVE 2 시작 모듈**: 일정·예약(A) vs 회기노트(B) vs 보호자 포털(E) — 셋 다 6주 안에 다 못 들어가면 1~2개 선택
-2. **결제 모델**: 좌석당 ₩, 정액 티어, 사용량(회기 수) 중 무엇?
-3. **알림톡 채널**: 자체 발신 프로필 신청 vs 솔라피/알리고 등 BSP 위탁
-4. **도입 지원 수준**: 셀프서비스 only vs 1:1 온보딩 콜 의무화
+**확정 사항 (답변 기반):**
+- 공유 = AIHPRO 웹 (보호자 로그인, 댓글/이모지)
+- 빈도 = 주 1회 일괄 업로드 → 주간 리포트
+- 사진 분석 = Gemini Vision OCR + 활동/감정/목표 자동 추출 (치료사는 검토/편집)

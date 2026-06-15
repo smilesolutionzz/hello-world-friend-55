@@ -44,13 +44,15 @@ serve(async (req) => {
     const { data: { user } } = await admin.auth.getUser(auth.replace("Bearer ", ""));
     if (!user) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
 
-    const { centerId, clientId, weekKey } = await req.json();
+    const { centerId, clientId, weekKey, allowEmpty } = await req.json();
     if (!centerId || !clientId || !weekKey) {
       return new Response(JSON.stringify({ error: "centerId, clientId, weekKey required" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
     }
 
     const { data: mem } = await admin.from("center_members").select("user_id").eq("center_id", centerId).eq("user_id", user.id).maybeSingle();
     if (!mem) return new Response(JSON.stringify({ error: "forbidden" }), { status: 403, headers: { ...cors, "Content-Type": "application/json" } });
+
+    const { start, end } = weekRange(weekKey);
 
     // Gather uploads
     const { data: uploads } = await admin
@@ -62,28 +64,59 @@ serve(async (req) => {
       .eq("status", "parsed")
       .order("session_date", { ascending: true });
 
-    if (!uploads || uploads.length === 0) {
-      return new Response(JSON.stringify({ error: "no_parsed_uploads" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
+    // Gather scheduled sessions for the week (always — used to enrich or as sole source)
+    const { data: schedSessions } = await admin
+      .from("center_sessions")
+      .select("id, session_date, start_time, end_time, duration_min, status, note, therapist_id, program_id")
+      .eq("center_id", centerId)
+      .eq("client_id", clientId)
+      .gte("session_date", start)
+      .lte("session_date", end)
+      .order("session_date", { ascending: true });
+
+    const therapistIds = Array.from(new Set((schedSessions || []).map((s) => s.therapist_id).filter(Boolean)));
+    const programIds = Array.from(new Set((schedSessions || []).map((s) => s.program_id).filter(Boolean)));
+    const [{ data: ths }, { data: progs }] = await Promise.all([
+      therapistIds.length ? admin.from("center_therapists").select("id, name, specialty").in("id", therapistIds) : Promise.resolve({ data: [] as any[] }),
+      programIds.length ? admin.from("center_programs").select("id, name").in("id", programIds) : Promise.resolve({ data: [] as any[] }),
+    ]);
+    const thMap = new Map((ths || []).map((t: any) => [t.id, t]));
+    const pgMap = new Map((progs || []).map((p: any) => [p.id, p]));
+
+    const hasUploads = (uploads || []).length > 0;
+    const hasSessions = (schedSessions || []).length > 0;
+    if (!hasUploads && !hasSessions && !allowEmpty) {
+      return new Response(JSON.stringify({ error: "no_data", detail: "이번 주 업로드도 일정도 없어요." }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
     }
 
     const { data: client } = await admin.from("center_clients").select("name, birth_date").eq("id", clientId).maybeSingle();
 
-    const sessionsSummary = uploads.map((u, i) => {
+    const uploadSummary = hasUploads ? (uploads || []).map((u, i) => {
       const e = u.ai_extracted || {};
-      return `[${i + 1}회기 · ${u.session_date}]
+      return `[일지 ${i + 1} · ${u.session_date}]
 활동: ${(e.activities || []).join(", ")}
 감정/태도: ${(e.emotions || []).join(", ")}
 다룬 목표: ${(e.goals || []).join(", ")}
 관찰: ${e.progress_notes || ""}
 다음 회기 제안: ${(e.next_steps || []).join(", ")}`;
-    }).join("\n\n");
+    }).join("\n\n") : "(이번 주 업로드된 일지 사진 없음)";
 
-    const prompt = `당신은 보호자와 따뜻하게 소통하는 치료사입니다. 아래 이번 주 회기 기록들을 묶어, 보호자에게 보낼 **주간 치료 노트**를 작성하세요.
+    const scheduleSummary = hasSessions ? (schedSessions || []).map((s, i) => {
+      const th = s.therapist_id ? thMap.get(s.therapist_id) : null;
+      const pg = s.program_id ? pgMap.get(s.program_id) : null;
+      return `[회기 ${i + 1} · ${s.session_date} ${s.start_time?.slice(0,5) ?? ""}-${s.end_time?.slice(0,5) ?? ""}] ${pg?.name ?? "프로그램"} · 담당 ${th?.name ?? "-"}${th?.specialty ? `(${th.specialty})` : ""} · 상태 ${s.status}${s.note ? ` · 메모: ${s.note}` : ""}`;
+    }).join("\n") : "(이번 주 예약된 회기 없음)";
+
+    const prompt = `당신은 보호자와 따뜻하게 소통하는 치료사입니다. 아래 이번 주 회기 정보를 묶어, 보호자에게 보낼 **주간 치료 노트**를 작성하세요.
 
 [아동] ${client?.name ?? "—"}
-[주차] ${weekKey}
-[회기 기록]
-${sessionsSummary}
+[주차] ${weekKey} (${start} ~ ${end})
+
+[이번 주 예약/진행 회기]
+${scheduleSummary}
+
+[치료사 일지(사진)에서 추출한 내용]
+${uploadSummary}
 
 다음 JSON 구조로만 반환하세요:
 {

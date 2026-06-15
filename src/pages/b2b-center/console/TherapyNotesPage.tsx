@@ -200,7 +200,14 @@ export default function TherapyNotesPage() {
         <p className="text-sm text-neutral-500 mb-4 break-keep">손글씨 일지·프린트 기록·메모 모두 가능. 사진을 드래그하거나 버튼으로 선택하세요.</p>
         <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
         <div className="flex items-center justify-center gap-2">
-          <button disabled={uploading || !selectedClient} onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-neutral-900 text-white text-sm disabled:opacity-50">
+          <button
+            disabled={uploading}
+            onClick={() => {
+              if (!selectedClient) { toast({ title: "이용자를 먼저 선택하세요" }); return; }
+              fileRef.current?.click();
+            }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-neutral-900 text-white text-sm disabled:opacity-50"
+          >
             {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
             {uploading ? "분석 중…" : "사진 선택"}
           </button>

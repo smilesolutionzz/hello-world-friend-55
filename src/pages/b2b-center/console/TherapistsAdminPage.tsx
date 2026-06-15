@@ -130,6 +130,7 @@ export default function TherapistsAdminPage() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={shuffleAll} className="rounded-full">색상 자동 재배정</Button>
+          <Button variant="outline" size="sm" onClick={() => setImportOpen(true)} className="rounded-full">↑ 엑셀 일괄 등록</Button>
           <Button size="sm" onClick={() => setEditing({})} className="rounded-full">+ 선생님 등록</Button>
         </div>
       </div>

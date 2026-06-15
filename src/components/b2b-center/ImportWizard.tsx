@@ -139,6 +139,19 @@ export default function ImportWizard({ demo, centerId, onClose, onMergeDemo, onI
                 </ol>
                 <p className="text-[11px] text-neutral-500 mt-3 break-keep">필수 컬럼: 날짜 · 시작시간 · 이용자 이름. 그 외(치료사·프로그램·메모 등)는 비워둬도 됩니다.</p>
               </div>
+
+              <details className="rounded-xl border border-neutral-200 bg-white">
+                <summary className="cursor-pointer px-4 py-3 text-xs font-medium text-neutral-800 select-none">
+                  케어플에서 엑셀 받는 법 (1분)
+                </summary>
+                <ol className="px-5 pb-4 pt-1 space-y-1.5 text-[12px] text-neutral-700 list-decimal">
+                  <li>케어플 로그인 → 좌측 <b>서비스 관리</b> → <b>일일 서비스 관리</b> (또는 <b>월 서비스 관리</b>).</li>
+                  <li>상단에서 기간을 선택하고 <b>엑셀 다운로드</b> 클릭. 파일명이 <code className="px-1 bg-neutral-100 rounded">일일서비스관리_YYYY-MM-DD-YYYY-MM-DD.xlsx</code> 같은 형식이면 OK.</li>
+                  <li>이용자 정보(주소·보호자·장애정보 등)까지 한 번에 옮기고 싶다면 <b>이용자관리 &gt; 엑셀 다운로드</b>도 받아서 같은 파일로 합치거나 따로 업로드하면 됩니다.</li>
+                  <li>받은 파일을 그대로 아래에 끌어다 놓으세요. 시트명·헤더는 자동 인식돼요.</li>
+                </ol>
+              </details>
+
               <div className="flex flex-wrap items-center gap-2">
                 <button onClick={() => downloadStandardTemplate()} className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-full border border-neutral-200 hover:border-neutral-400">
                   <Download className="w-3.5 h-3.5" /> 표준 템플릿 다운로드

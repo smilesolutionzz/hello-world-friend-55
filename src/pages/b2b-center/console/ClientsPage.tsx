@@ -262,7 +262,7 @@ export default function ClientsPage() {
                 <p className="mb-3">아직 등록된 이용자가 없습니다.</p>
                 <div className="inline-flex gap-2">
                   <button onClick={() => setRegisterOpen(true)} className="px-4 py-2 rounded-full bg-neutral-900 text-white text-sm">이용자 등록</button>
-                  <Link to="/b2b-center/import" className="px-4 py-2 rounded-full border border-neutral-200 text-sm">엑셀 일괄</Link>
+                  <button onClick={() => setImportOpen(true)} className="px-4 py-2 rounded-full border border-neutral-200 text-sm">엑셀 일괄</button>
                 </div>
               </td></tr>
             ) : filtered.map((r) => (

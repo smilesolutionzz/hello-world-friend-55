@@ -112,18 +112,18 @@ export default function TherapyNotesPage() {
   };
 
   const generate = async () => {
-    if (!uploads.length) { toast({ title: "업로드된 회기가 없어요" }); return; }
+    if (!selectedClient) { toast({ title: "이용자를 먼저 선택하세요" }); return; }
     setGenerating(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch(`https://hrcqxjetmzxoephgyjlb.supabase.co/functions/v1/generate-weekly-therapy-note`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${session?.access_token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ centerId, clientId: selectedClient, weekKey }),
+        body: JSON.stringify({ centerId, clientId: selectedClient, weekKey, allowEmpty: true }),
       });
       const j = await res.json();
       if (!res.ok) throw new Error(j.error || j.detail);
-      toast({ title: "주간 노트 초안 생성 완료" });
+      toast({ title: "주간 노트 초안 생성 완료", description: uploads.length === 0 ? "이번 주 일정 기반으로 작성됐어요. 일지 사진을 올리면 더 풍부해져요." : undefined });
       loadWeek();
     } catch (e: any) {
       toast({ title: "생성 실패", description: e?.message ?? String(e), variant: "destructive" });

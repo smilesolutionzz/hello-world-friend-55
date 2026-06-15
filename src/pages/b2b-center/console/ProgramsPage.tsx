@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import ImportWizard from "@/components/b2b-center/ImportWizard";
 
 type Ctx = { centerId: string; demo?: boolean };
 

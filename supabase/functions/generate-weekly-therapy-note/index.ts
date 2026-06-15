@@ -159,7 +159,7 @@ ${uploadSummary}
     let draft: any = {};
     try { draft = JSON.parse(aiJson.choices?.[0]?.message?.content ?? "{}"); } catch { draft = {}; }
 
-    const { start, end } = weekRange(weekKey);
+    const uploadIds = (uploads || []).map((u) => u.id);
 
     // Upsert weekly report
     const { data: existing } = await admin
@@ -175,7 +175,7 @@ ${uploadSummary}
     if (existing) {
       const { error } = await admin.from("center_parent_reports").update({
         ai_draft_json: draft,
-        source_upload_ids: uploads.map(u => u.id),
+        source_upload_ids: uploadIds,
         title: draft.title ?? null,
         status: "draft",
         period_start: start,
@@ -193,7 +193,7 @@ ${uploadSummary}
         period_start: start,
         period_end: end,
         ai_draft_json: draft,
-        source_upload_ids: uploads.map(u => u.id),
+        source_upload_ids: uploadIds,
         title: draft.title ?? null,
         status: "draft",
         generated_at: new Date().toISOString(),
@@ -203,7 +203,9 @@ ${uploadSummary}
     }
 
     // Mark uploads as used
-    await admin.from("center_session_uploads").update({ status: "used" }).in("id", uploads.map(u => u.id));
+    if (uploadIds.length) {
+      await admin.from("center_session_uploads").update({ status: "used" }).in("id", uploadIds);
+    }
 
     return new Response(JSON.stringify({ reportId, draft }), { headers: { ...cors, "Content-Type": "application/json" } });
   } catch (e: any) {

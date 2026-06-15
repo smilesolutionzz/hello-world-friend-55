@@ -2833,13 +2833,63 @@ export type Database = {
         }
         Relationships: []
       }
+      center_parent_report_comments: {
+        Row: {
+          author_role: string
+          author_user_id: string
+          body: string
+          center_id: string
+          created_at: string
+          emoji: string | null
+          id: string
+          report_id: string
+        }
+        Insert: {
+          author_role?: string
+          author_user_id: string
+          body: string
+          center_id: string
+          created_at?: string
+          emoji?: string | null
+          id?: string
+          report_id: string
+        }
+        Update: {
+          author_role?: string
+          author_user_id?: string
+          body?: string
+          center_id?: string
+          created_at?: string
+          emoji?: string | null
+          id?: string
+          report_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_parent_report_comments_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_parent_report_comments_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "center_parent_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       center_parent_reports: {
         Row: {
+          ai_draft_json: Json | null
           ai_summary: string | null
           center_id: string
           client_id: string
           coach_comment: string | null
           created_at: string
+          edited_html: string | null
           generated_at: string | null
           html_content: string | null
           id: string
@@ -2848,18 +2898,25 @@ export type Database = {
           pdf_url: string | null
           period_end: string
           period_start: string
+          period_type: string
           period_yyyymm: string | null
+          published_at: string | null
           sent_at: string | null
           share_token: string | null
+          source_upload_ids: string[] | null
           status: string
+          title: string | null
           viewed_at: string | null
+          week_key: string | null
         }
         Insert: {
+          ai_draft_json?: Json | null
           ai_summary?: string | null
           center_id: string
           client_id: string
           coach_comment?: string | null
           created_at?: string
+          edited_html?: string | null
           generated_at?: string | null
           html_content?: string | null
           id?: string
@@ -2868,18 +2925,25 @@ export type Database = {
           pdf_url?: string | null
           period_end: string
           period_start: string
+          period_type?: string
           period_yyyymm?: string | null
+          published_at?: string | null
           sent_at?: string | null
           share_token?: string | null
+          source_upload_ids?: string[] | null
           status?: string
+          title?: string | null
           viewed_at?: string | null
+          week_key?: string | null
         }
         Update: {
+          ai_draft_json?: Json | null
           ai_summary?: string | null
           center_id?: string
           client_id?: string
           coach_comment?: string | null
           created_at?: string
+          edited_html?: string | null
           generated_at?: string | null
           html_content?: string | null
           id?: string
@@ -2888,11 +2952,16 @@ export type Database = {
           pdf_url?: string | null
           period_end?: string
           period_start?: string
+          period_type?: string
           period_yyyymm?: string | null
+          published_at?: string | null
           sent_at?: string | null
           share_token?: string | null
+          source_upload_ids?: string[] | null
           status?: string
+          title?: string | null
           viewed_at?: string | null
+          week_key?: string | null
         }
         Relationships: [
           {
@@ -3057,6 +3126,82 @@ export type Database = {
             columns: ["payment_id"]
             isOneToOne: false
             referencedRelation: "center_payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_session_uploads: {
+        Row: {
+          ai_extracted: Json
+          center_id: string
+          client_id: string
+          created_at: string
+          error_message: string | null
+          id: string
+          image_url: string | null
+          ocr_text: string | null
+          session_date: string
+          status: string
+          storage_path: string | null
+          therapist_id: string | null
+          updated_at: string
+          uploaded_by: string | null
+          week_key: string
+        }
+        Insert: {
+          ai_extracted?: Json
+          center_id: string
+          client_id: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          image_url?: string | null
+          ocr_text?: string | null
+          session_date?: string
+          status?: string
+          storage_path?: string | null
+          therapist_id?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+          week_key: string
+        }
+        Update: {
+          ai_extracted?: Json
+          center_id?: string
+          client_id?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          image_url?: string | null
+          ocr_text?: string | null
+          session_date?: string
+          status?: string
+          storage_path?: string | null
+          therapist_id?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+          week_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_session_uploads_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_session_uploads_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "center_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_session_uploads_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "center_therapists"
             referencedColumns: ["id"]
           },
         ]
@@ -17836,11 +17981,13 @@ export type Database = {
       get_center_parent_report_by_token: {
         Args: { _token: string }
         Returns: {
+          ai_draft_json: Json | null
           ai_summary: string | null
           center_id: string
           client_id: string
           coach_comment: string | null
           created_at: string
+          edited_html: string | null
           generated_at: string | null
           html_content: string | null
           id: string
@@ -17849,11 +17996,16 @@ export type Database = {
           pdf_url: string | null
           period_end: string
           period_start: string
+          period_type: string
           period_yyyymm: string | null
+          published_at: string | null
           sent_at: string | null
           share_token: string | null
+          source_upload_ids: string[] | null
           status: string
+          title: string | null
           viewed_at: string | null
+          week_key: string | null
         }[]
         SetofOptions: {
           from: "*"
@@ -17926,6 +18078,15 @@ export type Database = {
           id: string
           specializations: string[]
           updated_at: string
+        }[]
+      }
+      get_my_linked_children: {
+        Args: never
+        Returns: {
+          center_id: string
+          center_name: string
+          child_name: string
+          client_id: string
         }[]
       }
       get_parent_invite_by_token: {

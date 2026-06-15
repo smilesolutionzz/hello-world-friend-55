@@ -1,0 +1,180 @@
+// Generate a weekly parent-friendly therapy note from uploads.
+// Body: { centerId, clientId, weekKey }
+// Creates/updates a center_parent_reports row (period_type='weekly', status='draft') with AI draft.
+
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+const cors = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+function weekRange(weekKey: string): { start: string; end: string } {
+  const m = weekKey.match(/^(\d{4})-W(\d{2})$/);
+  if (!m) {
+    const today = new Date();
+    return { start: today.toISOString().slice(0, 10), end: today.toISOString().slice(0, 10) };
+  }
+  const y = parseInt(m[1]);
+  const w = parseInt(m[2]);
+  const jan4 = new Date(Date.UTC(y, 0, 4));
+  const jan4Day = jan4.getUTCDay() || 7;
+  const week1Mon = new Date(jan4);
+  week1Mon.setUTCDate(jan4.getUTCDate() - (jan4Day - 1));
+  const start = new Date(week1Mon);
+  start.setUTCDate(week1Mon.getUTCDate() + (w - 1) * 7);
+  const end = new Date(start);
+  end.setUTCDate(start.getUTCDate() + 6);
+  return { start: start.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10) };
+}
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  try {
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY missing");
+    const auth = req.headers.get("Authorization");
+    if (!auth) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
+
+    const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
+    const { data: { user } } = await admin.auth.getUser(auth.replace("Bearer ", ""));
+    if (!user) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
+
+    const { centerId, clientId, weekKey } = await req.json();
+    if (!centerId || !clientId || !weekKey) {
+      return new Response(JSON.stringify({ error: "centerId, clientId, weekKey required" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
+    }
+
+    const { data: mem } = await admin.from("center_members").select("user_id").eq("center_id", centerId).eq("user_id", user.id).maybeSingle();
+    if (!mem) return new Response(JSON.stringify({ error: "forbidden" }), { status: 403, headers: { ...cors, "Content-Type": "application/json" } });
+
+    // Gather uploads
+    const { data: uploads } = await admin
+      .from("center_session_uploads")
+      .select("*")
+      .eq("center_id", centerId)
+      .eq("client_id", clientId)
+      .eq("week_key", weekKey)
+      .eq("status", "parsed")
+      .order("session_date", { ascending: true });
+
+    if (!uploads || uploads.length === 0) {
+      return new Response(JSON.stringify({ error: "no_parsed_uploads" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
+    }
+
+    const { data: client } = await admin.from("center_clients").select("name, birth_date").eq("id", clientId).maybeSingle();
+
+    const sessionsSummary = uploads.map((u, i) => {
+      const e = u.ai_extracted || {};
+      return `[${i + 1}회기 · ${u.session_date}]
+활동: ${(e.activities || []).join(", ")}
+감정/태도: ${(e.emotions || []).join(", ")}
+다룬 목표: ${(e.goals || []).join(", ")}
+관찰: ${e.progress_notes || ""}
+다음 회기 제안: ${(e.next_steps || []).join(", ")}`;
+    }).join("\n\n");
+
+    const prompt = `당신은 보호자와 따뜻하게 소통하는 치료사입니다. 아래 이번 주 회기 기록들을 묶어, 보호자에게 보낼 **주간 치료 노트**를 작성하세요.
+
+[아동] ${client?.name ?? "—"}
+[주차] ${weekKey}
+[회기 기록]
+${sessionsSummary}
+
+다음 JSON 구조로만 반환하세요:
+{
+  "title": "이번 주 한 줄 제목",
+  "greeting": "보호자께 드리는 짧은 인사 (2-3문장)",
+  "highlights": ["이번 주 가장 인상적인 순간 2-3개"],
+  "activities_summary": "이번 주 어떤 활동을 했는지 (3-4문장)",
+  "growth": ["관찰된 성장/긍정 변화 2-3개"],
+  "home_tips": ["가정에서 해볼 수 있는 활동 2-3개 (구체적으로)"],
+  "next_week_focus": "다음 주 집중 방향 (1-2문장)"
+}
+
+규칙:
+- 전문용어 최소화, 부모님이 읽기 쉬운 따뜻한 어조
+- 의학적 진단 단어 사용 금지 (예: '자폐', 'ADHD 진단' 등)
+- 비교/평가 대신 관찰과 격려 중심
+- JSON만 출력, 다른 텍스트 금지`;
+
+    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          { role: "system", content: "당신은 보호자 친화적 주간 치료 노트를 JSON으로 작성합니다. JSON 외 출력 금지." },
+          { role: "user", content: prompt },
+        ],
+        response_format: { type: "json_object" },
+      }),
+    });
+
+    if (!aiRes.ok) {
+      const t = await aiRes.text();
+      return new Response(JSON.stringify({ error: "ai_failed", detail: t }), { status: 502, headers: { ...cors, "Content-Type": "application/json" } });
+    }
+    const aiJson = await aiRes.json();
+    let draft: any = {};
+    try { draft = JSON.parse(aiJson.choices?.[0]?.message?.content ?? "{}"); } catch { draft = {}; }
+
+    const { start, end } = weekRange(weekKey);
+
+    // Upsert weekly report
+    const { data: existing } = await admin
+      .from("center_parent_reports")
+      .select("id")
+      .eq("center_id", centerId)
+      .eq("client_id", clientId)
+      .eq("week_key", weekKey)
+      .eq("period_type", "weekly")
+      .maybeSingle();
+
+    let reportId: string;
+    if (existing) {
+      const { error } = await admin.from("center_parent_reports").update({
+        ai_draft_json: draft,
+        source_upload_ids: uploads.map(u => u.id),
+        title: draft.title ?? null,
+        status: "draft",
+        period_start: start,
+        period_end: end,
+        generated_at: new Date().toISOString(),
+      }).eq("id", existing.id);
+      if (error) throw error;
+      reportId = existing.id;
+    } else {
+      const { data: ins, error } = await admin.from("center_parent_reports").insert({
+        center_id: centerId,
+        client_id: clientId,
+        period_type: "weekly",
+        week_key: weekKey,
+        period_start: start,
+        period_end: end,
+        ai_draft_json: draft,
+        source_upload_ids: uploads.map(u => u.id),
+        title: draft.title ?? null,
+        status: "draft",
+        generated_at: new Date().toISOString(),
+      }).select("id").single();
+      if (error) throw error;
+      reportId = ins.id;
+    }
+
+    // Mark uploads as used
+    await admin.from("center_session_uploads").update({ status: "used" }).in("id", uploads.map(u => u.id));
+
+    return new Response(JSON.stringify({ reportId, draft }), { headers: { ...cors, "Content-Type": "application/json" } });
+  } catch (e: any) {
+    console.error("[generate-weekly-therapy-note]", e);
+    return new Response(JSON.stringify({ error: e?.message ?? String(e) }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+  }
+});

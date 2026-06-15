@@ -41,7 +41,8 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
   // 데이터 연동
   { to: "data/voucher-excel", label: "전자바우처 엑셀 등록", icon: FileSpreadsheet, group: "데이터 연동" },
   // 인텔리전스 / 스토어
-  { to: "intelligence/parent-reports", label: "부모 리포트", icon: FileText, group: "인텔리전스" },
+  { to: "intelligence/therapy-notes", label: "치료노트 (주간·AI)", icon: Sparkles, group: "인텔리전스" },
+  { to: "intelligence/parent-reports", label: "부모 월간 리포트", icon: FileText, group: "인텔리전스" },
   { to: "storefront", label: "스토어 (프로그램·교구)", icon: Store, group: "인텔리전스" },
 ];
 

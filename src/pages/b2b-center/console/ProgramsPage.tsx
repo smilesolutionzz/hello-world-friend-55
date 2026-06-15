@@ -92,6 +92,17 @@ export default function ProgramsPage() {
           </tbody>
         </table>
       </div>
+      </div>
+
+      {importOpen && (
+        <ImportWizard
+          demo={!!demo}
+          centerId={centerId}
+          onClose={() => setImportOpen(false)}
+          onImported={load}
+          onMergeDemo={() => { /* 데모: 일정표에서 병합 */ }}
+        />
+      )}
     </div>
   );
 }

@@ -43,13 +43,14 @@ function nextColor(used: Set<string>, seed = 0) {
 }
 
 export default function TherapistsAdminPage() {
-  const { centerId } = useOutletContext<Ctx>();
+  const { centerId, demo } = useOutletContext<Ctx>();
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "active" | "locked" | "inactive">("all");
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState<any | null>(null);
   const [permEditing, setPermEditing] = useState<any | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
 
   async function load() {
     setLoading(true);

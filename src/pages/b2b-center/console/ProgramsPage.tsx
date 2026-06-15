@@ -12,6 +12,7 @@ export default function ProgramsPage() {
   const { centerId, demo } = useOutletContext<Ctx>();
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [importOpen, setImportOpen] = useState(false);
   const [form, setForm] = useState({ category: "언어", name: "", duration_min: 40, price_krw: 55000, is_voucher: false });
 
   const load = async () => {

@@ -300,6 +300,16 @@ export default function ClientsPage() {
           onClose={() => setInviteFor(null)}
         />
       )}
+
+      {importOpen && (
+        <ImportWizard
+          demo={!!demo}
+          centerId={centerId}
+          onClose={() => setImportOpen(false)}
+          onImported={load}
+          onMergeDemo={() => { /* demo: 인메모리 병합은 일정표에서 처리 */ }}
+        />
+      )}
     </div>
   );
 }

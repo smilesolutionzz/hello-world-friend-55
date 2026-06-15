@@ -185,9 +185,9 @@ export default function ClientsPage() {
           <p className="text-sm text-neutral-500">총 {rows.length}명 · 등록 {counts.enrolled} · 대기 {counts.waiting} · 종결 {counts.terminated}</p>
         </div>
         <div className="flex gap-2">
-          <Link to="/b2b-center/import" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm text-neutral-700 hover:bg-neutral-50">
+          <button onClick={() => setImportOpen(true)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm text-neutral-700 hover:bg-neutral-50">
             <Upload className="w-4 h-4" /> 엑셀 일괄 등록
-          </Link>
+          </button>
           <button onClick={() => setRegisterOpen(true)}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800">
             <UserPlus className="w-4 h-4" /> 이용자 등록

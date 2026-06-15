@@ -214,6 +214,8 @@ import CenterMonthlyServicesPage from "./pages/b2b-center/console/MonthlyService
 import CenterVoucherAuditPage from "./pages/b2b-center/console/VoucherAuditPage";
 import CenterProgramsPage from "./pages/b2b-center/console/ProgramsPage";
 import CenterParentReportsPage from "./pages/b2b-center/console/ParentReportsPage";
+import CenterTherapyNotesPage from "./pages/b2b-center/console/TherapyNotesPage";
+import ParentCenterPage from "./pages/parent/ParentCenterPage";
 import CenterOpsDashboardPage from "./pages/b2b-center/console/OpsDashboardPage";
 import B2BCenterInvite from "./pages/b2b-center/B2BCenterInvite";
 import CenterInviteClaim from "./pages/CenterInviteClaim";
@@ -616,6 +618,7 @@ const App = () => {
             <Route path="admin/programs" element={<CenterProgramsPage />} />
             <Route path="admin/organization" element={<CenterOrganizationPage />} />
             <Route path="intelligence/parent-reports" element={<CenterParentReportsPage />} />
+            <Route path="intelligence/therapy-notes" element={<CenterTherapyNotesPage />} />
             <Route path="intelligence/ops-dashboard" element={<CenterOpsDashboardPage />} />
             <Route path="guide" element={<CenterGuidePage />} />
             <Route path="data/voucher-excel" element={<CenterVoucherExcelImportPage />} />
@@ -624,6 +627,7 @@ const App = () => {
             <Route path="storefront" element={<CenterStorefrontPage />} />
           </Route>
           <Route path="/center/:slug" element={<CenterStorefrontPublic />} />
+          <Route path="/parent/center" element={<ParentCenterPage />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

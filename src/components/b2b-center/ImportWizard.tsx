@@ -121,6 +121,24 @@ export default function ImportWizard({ demo, centerId, onClose, onMergeDemo, onI
         <div className="flex-1 overflow-auto px-5 py-4">
           {step === "upload" && (
             <div className="space-y-4">
+              <div className="rounded-xl border border-neutral-200 bg-neutral-50/60 p-4">
+                <p className="text-[10px] tracking-widest text-neutral-400 mb-2">QUICK GUIDE · 3단계로 끝</p>
+                <ol className="space-y-2 text-xs text-neutral-700">
+                  <li className="flex gap-2">
+                    <span className="shrink-0 w-5 h-5 rounded-full bg-neutral-900 text-white inline-flex items-center justify-center text-[10px] font-semibold">1</span>
+                    <span className="break-keep"><b className="text-neutral-900">표준 템플릿</b>을 받아 일정을 채우거나, 쓰던 케어플·자체 엑셀을 그대로 준비하세요. (.xlsx / .xls / .csv)</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="shrink-0 w-5 h-5 rounded-full bg-neutral-900 text-white inline-flex items-center justify-center text-[10px] font-semibold">2</span>
+                    <span className="break-keep">아래 영역에 파일을 <b className="text-neutral-900">끌어다 놓거나 클릭</b>해서 업로드. 컬럼은 자동 인식되고, 다음 화면에서 매칭만 확인하면 돼요.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="shrink-0 w-5 h-5 rounded-full bg-neutral-900 text-white inline-flex items-center justify-center text-[10px] font-semibold">3</span>
+                    <span className="break-keep">중복 처리 방식(건너뛰기·덮어쓰기·병합) 선택 → <b className="text-neutral-900">미리보기</b>에서 확인 → 시간표에 반영.</span>
+                  </li>
+                </ol>
+                <p className="text-[11px] text-neutral-500 mt-3 break-keep">필수 컬럼: 날짜 · 시작시간 · 이용자 이름. 그 외(치료사·프로그램·메모 등)는 비워둬도 됩니다.</p>
+              </div>
               <div className="flex flex-wrap items-center gap-2">
                 <button onClick={() => downloadStandardTemplate()} className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-full border border-neutral-200 hover:border-neutral-400">
                   <Download className="w-3.5 h-3.5" /> 표준 템플릿 다운로드

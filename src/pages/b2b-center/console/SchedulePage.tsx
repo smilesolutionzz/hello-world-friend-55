@@ -1359,39 +1359,44 @@ function ListView({ dayList, sessions, onPick, therapist, clientName, programNam
   );
 }
 
-// ===== 공통 카드 =====
+// ===== 공통 카드 (v2: 흰 카드 + 좌측 컬러 스트라이프 — 케어플 대비 가독성 강화) =====
 function SessionChip({ s, therapist, clientName, programName, onPick, compact }: any) {
   const th = therapist(s.therapist_id);
   const cancelled = s.status?.startsWith("cancelled");
+  const completed = s.status === "completed";
   const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
-  // 치료사 색을 강하게 노출 — 배경을 치료사 색으로 채우고 텍스트는 명도에 맞춰 자동 조정
   const safeColor = color || "#9ca3af";
-  const textColor = readableTextColor(safeColor);
-  const subTextColor = textColor === "#ffffff" ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0.6)";
   return (
     <HoverCard openDelay={120} closeDelay={60}>
       <HoverCardTrigger asChild>
         <button
           onClick={() => onPick(s)}
-          className={`w-full h-full text-left rounded-md px-1.5 py-1 leading-tight hover:ring-2 hover:ring-neutral-900 transition shadow-sm ${cancelled ? "opacity-40 line-through" : ""}`}
+          className={`group relative w-full h-full text-left rounded-md leading-tight bg-white hover:bg-neutral-50 hover:ring-1 hover:ring-neutral-900/10 transition overflow-hidden border border-neutral-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.03)] ${cancelled ? "opacity-50" : ""} ${completed ? "bg-neutral-50/60" : ""}`}
           style={{
-            background: safeColor,
-            borderLeft: `3px solid ${shadeColor(safeColor, -25)}`,
-            color: textColor,
+            paddingLeft: compact ? 8 : 10,
+            paddingRight: 6,
+            paddingTop: compact ? 2 : 4,
+            paddingBottom: compact ? 2 : 4,
           }}
         >
-          {/* 1) 시간 (가장 잘 보이게) */}
-          <p className={`font-bold tabular-nums truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
+          {/* 좌측 4px 컬러 스트라이프 — 치료사 색은 여기서만 노출 */}
+          <span
+            aria-hidden
+            className="absolute left-0 top-0 bottom-0"
+            style={{ width: 4, background: safeColor }}
+          />
+          {/* 시간 */}
+          <p className={`font-semibold tabular-nums truncate text-neutral-900 ${compact ? "text-[10.5px] leading-[1.15]" : "text-[11px] leading-[1.2]"}`}>
             {s.start_time?.slice(0, 5) ?? ""}{!compact && s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
           </p>
-          {/* 2) 이용자명 */}
-          <p className={`truncate font-medium ${compact ? "text-[11px]" : "text-[12px]"}`}>
+          {/* 이용자명 */}
+          <p className={`truncate font-medium text-neutral-800 ${compact ? "text-[11px] leading-[1.2]" : "text-[12.5px] leading-[1.25] mt-0.5"} ${cancelled ? "line-through text-neutral-400" : ""}`}>
             {clientName(s.client_id)}
           </p>
-          {/* 3) 치료사 (색깔로도 구분되지만 이름도 표기) */}
+          {/* 프로그램 (compact 아닐 때만) */}
           {!compact && (
-            <p className="truncate text-[11px]" style={{ color: subTextColor }}>
-              {th?.name ?? "미배정"}
+            <p className="truncate text-[11px] text-neutral-500 leading-[1.2] mt-px">
+              {programName(s.program_id) ?? th?.name ?? "미배정"}
             </p>
           )}
         </button>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -12,7 +12,6 @@ import ErrorBoundary from "@/components/ui/error-boundary";
 import NetworkStatus from "@/components/common/NetworkStatus";
 import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 import Analytics from "@/components/common/Analytics";
-import { FeedbackButton } from "@/components/feedback/FeedbackButton";
 import { ConversionTracker } from "@/components/analytics/ConversionTracker";
 import { useB2BFunnelAutoTrack } from "@/hooks/useB2BFunnelTracking";
 
@@ -21,220 +20,221 @@ function B2BFunnelTracker() {
   return null;
 }
 
-// Core Pages
+// Eagerly loaded (landing + fallback)
 import Index from "./pages/Index";
-import CheckFlow from "./pages/lite/CheckFlow";
-import CheckDone from "./pages/lite/CheckDone";
-import TherapistSubscriptionTeaser from "./pages/lite/TherapistSubscriptionTeaser";
-import TherapistMySchedule from "./pages/TherapistMySchedule";
-import FindCenter from "./pages/lite/FindCenter";
-import PublicCenter from "./pages/PublicCenter";
-import HighlightAuth from "./pages/HighlightAuth";
-import ResetPassword from "./pages/ResetPassword";
-import DashboardRouter from "./pages/DashboardRouter";
-import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
-import BookingManagement from "./pages/BookingManagement";
 import NotFound from "./pages/NotFound";
-import Unsubscribe from "./pages/Unsubscribe";
-import GuardianNotice from "./pages/GuardianNotice";
 
-// AI Analysis & Core Features
-import AIAssistant from "./pages/AIAssistant";
-import AiCopilotPage from "./pages/AiCopilotPage";
-import ConcernStorage from "./pages/ConcernStorage";
-import WriteConcern from "./pages/WriteConcern";
-import ReportGenerator from "./pages/ReportGenerator";
-import ReportGeneratorPro from "./pages/ReportGeneratorPro";
-import MyJourney from "./pages/MyJourney";
-import MobileHome from "./pages/MobileHome";
-import WhatsNew from "./pages/WhatsNew";
-import Store from "./pages/Store";
-import CoachingPreferences from "./pages/CoachingPreferences";
-import VerifyReport from "./pages/VerifyReport";
-import VoucherFinder from "./pages/VoucherFinder";
-import MetaverseVoice from "./pages/MetaverseVoice";
-import VoiceCounselingNew from "./pages/VoiceCounselingNew";
-import VoiceCounselingHistory from "./pages/VoiceCounselingHistory";
-// GameCounseling integrated into MetaverseVoice
+// Lazy: Core
+const MobileHome = lazy(() => import("./pages/MobileHome"));
+const WhatsNew = lazy(() => import("./pages/WhatsNew"));
+const Store = lazy(() => import("./pages/Store"));
+const CheckFlow = lazy(() => import("./pages/lite/CheckFlow"));
+const CheckDone = lazy(() => import("./pages/lite/CheckDone"));
+const TherapistSubscriptionTeaser = lazy(() => import("./pages/lite/TherapistSubscriptionTeaser"));
+const TherapistMySchedule = lazy(() => import("./pages/TherapistMySchedule"));
+const FindCenter = lazy(() => import("./pages/lite/FindCenter"));
+const PublicCenter = lazy(() => import("./pages/PublicCenter"));
+const HighlightAuth = lazy(() => import("./pages/HighlightAuth"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const DashboardRouter = lazy(() => import("./pages/DashboardRouter"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Settings = lazy(() => import("./pages/Settings"));
+const BookingManagement = lazy(() => import("./pages/BookingManagement"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const GuardianNotice = lazy(() => import("./pages/GuardianNotice"));
 
-// Assessment & Tests
-import Assessment from "./pages/Assessment";
-import PremiumAssessment from "./pages/PremiumAssessment";
-import UnifiedAssessmentHub from "./components/assessment/UnifiedAssessmentHub";
-import FreeTrialAssessment from "./pages/FreeTrialAssessment";
-import FreeTrialResult from "./pages/FreeTrialResult";
-import BasicMentalHealthTest from "./components/assessment/BasicMentalHealthTest";
-import PastLifeJobTestFree from "./components/assessment/PastLifeJobTestFree";
-import { PersonalityLoveTest } from "./components/assessment/PersonalityLoveTest";
-import RelationshipStyleTest from "./pages/RelationshipStyleTest";
-import CommunicationStyleTest from "./pages/CommunicationStyleTest";
-import DefenseMechanismTest from "./pages/DefenseMechanismTest";
-import AttachmentStyleTest from "./pages/AttachmentStyleTest";
-import MBTITest from "./pages/MBTITest";
-import EnergyFlowTest from "./pages/EnergyFlowTest";
-import RelationshipDynamicsTest from "./pages/RelationshipDynamicsTest";
-import LifePurposeTest from "./pages/LifePurposeTest";
-import ResilienceTest from "./pages/ResilienceTest";
-import PatternIQTest from "./pages/PatternIQTest";
-import InstagramAnalysis from "./pages/InstagramAnalysis";
-import InstagramFeedAnalysis from "./pages/InstagramFeedAnalysis";
-import BusinessMetacognitionTest from "./pages/BusinessMetacognitionTest";
-import AssessmentDetail from "./pages/AssessmentDetail";
-import FunTests from "./pages/FunTests";
-import FunTestResult from "./pages/FunTestResult";
-// import HanMedicineTest from "./pages/HanMedicineTest"; // 한의/사상체질 영역 비활성화
-import B2BMyRequests from "./pages/B2BMyRequests";
-import AdvancedAdhdTest from "./pages/AdvancedAdhdTest";
-import ADHDScreening from "./pages/ADHDScreening";
-import FingerprintTemperamentTest from "./pages/FingerprintTemperamentTest";
-import DrawingDiaryHTP from "./pages/DrawingDiaryHTP";
-import GrowthDevelopmentReport from "./pages/GrowthDevelopmentReport";
-import AssessmentHistory from "./components/history/AssessmentHistory";
-import SampleReport from "./pages/SampleReport";
-import ComprehensiveReporting from "./pages/ComprehensiveReporting";
-import ENFJvsINFPCompatibility from "./pages/ENFJvsINFPCompatibility";
-import SharedReport from "./pages/SharedReport";
-import DemoSharedReport from "./pages/DemoSharedReport";
+// Lazy: AI Analysis & Core Features
+const AIAssistant = lazy(() => import("./pages/AIAssistant"));
+const AiCopilotPage = lazy(() => import("./pages/AiCopilotPage"));
+const ConcernStorage = lazy(() => import("./pages/ConcernStorage"));
+const WriteConcern = lazy(() => import("./pages/WriteConcern"));
+const ReportGenerator = lazy(() => import("./pages/ReportGenerator"));
+const ReportGeneratorPro = lazy(() => import("./pages/ReportGeneratorPro"));
+const MyJourney = lazy(() => import("./pages/MyJourney"));
+const CoachingPreferences = lazy(() => import("./pages/CoachingPreferences"));
+const VerifyReport = lazy(() => import("./pages/VerifyReport"));
+const VoucherFinder = lazy(() => import("./pages/VoucherFinder"));
+const MetaverseVoice = lazy(() => import("./pages/MetaverseVoice"));
+const VoiceCounselingNew = lazy(() => import("./pages/VoiceCounselingNew"));
+const VoiceCounselingHistory = lazy(() => import("./pages/VoiceCounselingHistory"));
 
-// Observation
-import ObservationNew from "./pages/ObservationNew";
-import ObservationList from "./pages/ObservationList";
-import ObservationDetail from "./pages/ObservationDetail";
+// Lazy: Assessment & Tests
+const Assessment = lazy(() => import("./pages/Assessment"));
+const PremiumAssessment = lazy(() => import("./pages/PremiumAssessment"));
+const UnifiedAssessmentHub = lazy(() => import("./components/assessment/UnifiedAssessmentHub"));
+const FreeTrialAssessment = lazy(() => import("./pages/FreeTrialAssessment"));
+const FreeTrialResult = lazy(() => import("./pages/FreeTrialResult"));
+const BasicMentalHealthTest = lazy(() => import("./components/assessment/BasicMentalHealthTest"));
+const PastLifeJobTestFree = lazy(() => import("./components/assessment/PastLifeJobTestFree"));
+const PersonalityLoveTest = lazy(() =>
+  import("./components/assessment/PersonalityLoveTest").then(m => ({ default: m.PersonalityLoveTest }))
+);
+const RelationshipStyleTest = lazy(() => import("./pages/RelationshipStyleTest"));
+const CommunicationStyleTest = lazy(() => import("./pages/CommunicationStyleTest"));
+const DefenseMechanismTest = lazy(() => import("./pages/DefenseMechanismTest"));
+const AttachmentStyleTest = lazy(() => import("./pages/AttachmentStyleTest"));
+const MBTITest = lazy(() => import("./pages/MBTITest"));
+const EnergyFlowTest = lazy(() => import("./pages/EnergyFlowTest"));
+const RelationshipDynamicsTest = lazy(() => import("./pages/RelationshipDynamicsTest"));
+const LifePurposeTest = lazy(() => import("./pages/LifePurposeTest"));
+const ResilienceTest = lazy(() => import("./pages/ResilienceTest"));
+const PatternIQTest = lazy(() => import("./pages/PatternIQTest"));
+const InstagramAnalysis = lazy(() => import("./pages/InstagramAnalysis"));
+const InstagramFeedAnalysis = lazy(() => import("./pages/InstagramFeedAnalysis"));
+const BusinessMetacognitionTest = lazy(() => import("./pages/BusinessMetacognitionTest"));
+const AssessmentDetail = lazy(() => import("./pages/AssessmentDetail"));
+const FunTests = lazy(() => import("./pages/FunTests"));
+const FunTestResult = lazy(() => import("./pages/FunTestResult"));
+const B2BMyRequests = lazy(() => import("./pages/B2BMyRequests"));
+const AdvancedAdhdTest = lazy(() => import("./pages/AdvancedAdhdTest"));
+const ADHDScreening = lazy(() => import("./pages/ADHDScreening"));
+const FingerprintTemperamentTest = lazy(() => import("./pages/FingerprintTemperamentTest"));
+const DrawingDiaryHTP = lazy(() => import("./pages/DrawingDiaryHTP"));
+const GrowthDevelopmentReport = lazy(() => import("./pages/GrowthDevelopmentReport"));
+const AssessmentHistory = lazy(() => import("./components/history/AssessmentHistory"));
+const SampleReport = lazy(() => import("./pages/SampleReport"));
+const ComprehensiveReporting = lazy(() => import("./pages/ComprehensiveReporting"));
+const ENFJvsINFPCompatibility = lazy(() => import("./pages/ENFJvsINFPCompatibility"));
+const SharedReport = lazy(() => import("./pages/SharedReport"));
+const DemoSharedReport = lazy(() => import("./pages/DemoSharedReport"));
 
-// Expert Finding (info only)
-import ExpertHiring from "./pages/ExpertHiring";
-import UrgentExpertMatch from "./pages/UrgentExpertMatch";
-import ExpertDetail from "./pages/ExpertDetail";
-import InstitutionDetailPage from "./pages/InstitutionDetailPage";
-import PartnerDetail from "./pages/PartnerDetail";
-import PartnerConsole from "./pages/PartnerConsole";
-import InstitutionApplication from "./pages/InstitutionApplication";
-import DataSharingConsent from "./pages/DataSharingConsent";
-import InstitutionClientDashboard from "./pages/InstitutionClientDashboard";
-import ExpertApplication from "./pages/ExpertApplication";
-import ExpertContract from "./pages/ExpertContract";
-import ExpertContractSuccess from "./pages/ExpertContractSuccess";
+// Lazy: Observation
+const ObservationNew = lazy(() => import("./pages/ObservationNew"));
+const ObservationList = lazy(() => import("./pages/ObservationList"));
+const ObservationDetail = lazy(() => import("./pages/ObservationDetail"));
 
-// Payment
-import Payment from "./pages/Payment";
-import TokenSubscription from "./pages/TokenSubscription";
-import CoachingGoals from "./pages/CoachingGoals";
-import BusinessSubscription from "./pages/BusinessSubscription";
-import PaymentSuccess from "./pages/PaymentSuccess";
-import MindTrackOnboarding from "./pages/MindTrackOnboarding";
-import MindTrackOnboardingFunnel from "./pages/MindTrackOnboardingFunnel";
-import DevMindTrackGrant from "./pages/DevMindTrackGrant";
-import PaymentComplete from "./pages/PaymentComplete";
-import PaymentFail from "./pages/PaymentFail";
-import Pricing from "./pages/Pricing";
+// Lazy: Expert Finding
+const ExpertHiring = lazy(() => import("./pages/ExpertHiring"));
+const UrgentExpertMatch = lazy(() => import("./pages/UrgentExpertMatch"));
+const ExpertDetail = lazy(() => import("./pages/ExpertDetail"));
+const InstitutionDetailPage = lazy(() => import("./pages/InstitutionDetailPage"));
+const PartnerDetail = lazy(() => import("./pages/PartnerDetail"));
+const PartnerConsole = lazy(() => import("./pages/PartnerConsole"));
+const InstitutionApplication = lazy(() => import("./pages/InstitutionApplication"));
+const DataSharingConsent = lazy(() => import("./pages/DataSharingConsent"));
+const InstitutionClientDashboard = lazy(() => import("./pages/InstitutionClientDashboard"));
+const ExpertApplication = lazy(() => import("./pages/ExpertApplication"));
+const ExpertContract = lazy(() => import("./pages/ExpertContract"));
+const ExpertContractSuccess = lazy(() => import("./pages/ExpertContractSuccess"));
 
-// Mind Diary
-import MindDiary from "./pages/MindDiary";
+// Lazy: Payment
+const Payment = lazy(() => import("./pages/Payment"));
+const TokenSubscription = lazy(() => import("./pages/TokenSubscription"));
+const CoachingGoals = lazy(() => import("./pages/CoachingGoals"));
+const BusinessSubscription = lazy(() => import("./pages/BusinessSubscription"));
+const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
+const MindTrackOnboarding = lazy(() => import("./pages/MindTrackOnboarding"));
+const MindTrackOnboardingFunnel = lazy(() => import("./pages/MindTrackOnboardingFunnel"));
+const DevMindTrackGrant = lazy(() => import("./pages/DevMindTrackGrant"));
+const PaymentComplete = lazy(() => import("./pages/PaymentComplete"));
+const PaymentFail = lazy(() => import("./pages/PaymentFail"));
+const Pricing = lazy(() => import("./pages/Pricing"));
 
-// Killer Product: 30 Day Mind Track
-import MindTrack from "./pages/MindTrack";
-import MindTrackStart from "./pages/MindTrackStart";
-import MindTrackWorkbook from "./pages/MindTrackWorkbook";
-import MindTrackDashboard from "./pages/MindTrackDashboard";
-import MindTrackWorkbookPreview from "./pages/MindTrackWorkbookPreview";
-import TrackMissions from "./pages/TrackMissions";
-import MindTrackCheckResult from "./pages/MindTrackCheckResult";
-import Quiz from "./pages/Quiz";
+// Lazy: Mind Diary
+const MindDiary = lazy(() => import("./pages/MindDiary"));
 
-// Content & Column
-import Column from "./pages/Column";
-const BlogPost = React.lazy(() => import("./pages/BlogPost"));
-import IEPGenerator from "./pages/IEPGenerator";
-import IEPView from "./pages/IEPView";
+// Lazy: Mind Track (killer product)
+const MindTrack = lazy(() => import("./pages/MindTrack"));
+const MindTrackStart = lazy(() => import("./pages/MindTrackStart"));
+const MindTrackWorkbook = lazy(() => import("./pages/MindTrackWorkbook"));
+const MindTrackDashboard = lazy(() => import("./pages/MindTrackDashboard"));
+const MindTrackWorkbookPreview = lazy(() => import("./pages/MindTrackWorkbookPreview"));
+const TrackMissions = lazy(() => import("./pages/TrackMissions"));
+const MindTrackCheckResult = lazy(() => import("./pages/MindTrackCheckResult"));
+const Quiz = lazy(() => import("./pages/Quiz"));
 
-// IR / Business Docs
-import IRDeck from "./pages/IRDeck";
-import PlatformOnePager from "./pages/PlatformOnePager";
-import B2BProposal from "./pages/B2BProposal";
-import B2BJobCoach from "./pages/B2BJobCoach";
-import Business from "./pages/Business";
-import BusinessCaseStudies from "./pages/BusinessCaseStudies";
-import BusinessSecurity from "./pages/BusinessSecurity";
-import BusinessPricing from "./pages/BusinessPricing";
-import B2BDemoReport from "./pages/B2BDemoReport";
-import B2BABADemoDashboard from "./pages/B2BABADemoDashboard";
-import B2BHRDashboard from "./pages/B2BHRDashboard";
-import B2BKindergartenConsole from "./pages/B2BKindergartenConsole";
-import ParentAssessment from "./pages/ParentAssessment";
-import StartupPackage from "./pages/StartupPackage";
+// Lazy: Content & Column
+const Column = lazy(() => import("./pages/Column"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+const IEPGenerator = lazy(() => import("./pages/IEPGenerator"));
+const IEPView = lazy(() => import("./pages/IEPView"));
 
-// Legal
-import TermsOfService from "./pages/TermsOfService";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import RefundPolicy from "./pages/RefundPolicy";
-import CrisisPolicy from "./pages/legal/CrisisPolicy";
-import MedicalDisclaimerPage from "./pages/legal/MedicalDisclaimerPage";
+// Lazy: IR / Business Docs
+const IRDeck = lazy(() => import("./pages/IRDeck"));
+const PlatformOnePager = lazy(() => import("./pages/PlatformOnePager"));
+const B2BProposal = lazy(() => import("./pages/B2BProposal"));
+const B2BJobCoach = lazy(() => import("./pages/B2BJobCoach"));
+const Business = lazy(() => import("./pages/Business"));
+const BusinessCaseStudies = lazy(() => import("./pages/BusinessCaseStudies"));
+const BusinessSecurity = lazy(() => import("./pages/BusinessSecurity"));
+const BusinessPricing = lazy(() => import("./pages/BusinessPricing"));
+const B2BDemoReport = lazy(() => import("./pages/B2BDemoReport"));
+const B2BABADemoDashboard = lazy(() => import("./pages/B2BABADemoDashboard"));
+const B2BHRDashboard = lazy(() => import("./pages/B2BHRDashboard"));
+const B2BKindergartenConsole = lazy(() => import("./pages/B2BKindergartenConsole"));
+const ParentAssessment = lazy(() => import("./pages/ParentAssessment"));
+const StartupPackage = lazy(() => import("./pages/StartupPackage"));
 
-// Admin
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminMindTrackContent from "./pages/AdminMindTrackContent";
-import AdminPaymentMonitor from "./pages/AdminPaymentMonitor";
-import AdminLeads from "./pages/AdminLeads";
-import PartnerLeads from "./pages/PartnerLeads";
+// Lazy: Legal
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
+const CrisisPolicy = lazy(() => import("./pages/legal/CrisisPolicy"));
+const MedicalDisclaimerPage = lazy(() => import("./pages/legal/MedicalDisclaimerPage"));
 
-// Utility
-import ShareView from "./pages/ShareView";
-import Referral from "./pages/Referral";
-import Rewards from "./pages/Rewards";
-import InstallGuide from "./pages/InstallGuide";
-import WellnessLifestyle from "./pages/WellnessLifestyle";
-import About from "./pages/About";
-import TrackAdult from "./pages/TrackAdult";
-import TrackParent from "./pages/TrackParent";
-import TrackTeenComingSoon from "./pages/TrackTeenComingSoon";
-import CenterReferralLanding from "./pages/CenterReferralLanding";
-import PartnerCenterDashboard from "./pages/PartnerCenterDashboard";
-import PartnerCenterReferrals from "./pages/PartnerCenterReferrals";
-import BetaRecruitment from "./pages/BetaRecruitment";
-import Reviews from "./pages/Reviews";
-import AboutExpert from "./pages/AboutExpert";
+// Lazy: Admin
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const AdminMindTrackContent = lazy(() => import("./pages/AdminMindTrackContent"));
+const AdminPaymentMonitor = lazy(() => import("./pages/AdminPaymentMonitor"));
+const AdminLeads = lazy(() => import("./pages/AdminLeads"));
+const PartnerLeads = lazy(() => import("./pages/PartnerLeads"));
 
-// B2B 발달치료센터
-import B2BCenterLanding from "./pages/b2b-center/B2BCenterLanding";
-import B2BCenterImport from "./pages/b2b-center/B2BCenterImport";
-import B2BCenterApp from "./pages/b2b-center/B2BCenterApp";
-import CenterStorefrontPage from "./pages/b2b-center/console/CenterStorefrontPage";
-import CenterStorefrontPublic from "./pages/b2b-center/CenterStorefrontPublic";
-import CenterClientsPage from "./pages/b2b-center/console/ClientsPage";
-import CenterByTherapistPage from "./pages/b2b-center/console/ByTherapistPage";
-import CenterAttendancePage from "./pages/b2b-center/console/AttendancePage";
-import CenterBillingStatsPage from "./pages/b2b-center/console/BillingStatsPage";
-import CenterTherapistsAdminPage from "./pages/b2b-center/console/TherapistsAdminPage";
-import CenterPlaceholderBase from "./pages/b2b-center/console/PlaceholderPage";
-import CenterOrganizationPage from "./pages/b2b-center/console/OrganizationPage";
-import CenterSchedulePage from "./pages/b2b-center/console/SchedulePage";
-import CenterAssessmentsPage from "./pages/b2b-center/console/AssessmentsPage";
-import CenterMonthlyServicesPage from "./pages/b2b-center/console/MonthlyServicesPage";
-import CenterVoucherAuditPage from "./pages/b2b-center/console/VoucherAuditPage";
-import CenterProgramsPage from "./pages/b2b-center/console/ProgramsPage";
-import CenterParentReportsPage from "./pages/b2b-center/console/ParentReportsPage";
-import CenterTherapyNotesPage from "./pages/b2b-center/console/TherapyNotesPage";
-import ParentCenterPage from "./pages/parent/ParentCenterPage";
-import CenterOpsDashboardPage from "./pages/b2b-center/console/OpsDashboardPage";
-import B2BCenterInvite from "./pages/b2b-center/B2BCenterInvite";
-import CenterInviteClaim from "./pages/CenterInviteClaim";
-import CenterGuidePage from "./pages/b2b-center/console/GuidePage";
-import CenterVoucherExcelImportPage from "./pages/b2b-center/console/VoucherExcelImportPage";
-import CenterVoucherClaimsPage from "./pages/b2b-center/console/VoucherClaimsPage";
-import CenterOnboardingWizardPage from "./pages/b2b-center/console/OnboardingWizardPage";
-import CenterSessionRecordsPage from "./pages/b2b-center/console/SessionRecordsPage";
-const CenterPlaceholder = (props: { title: string; desc: string }) => <CenterPlaceholderBase {...props} />;
+// Lazy: Utility
+const ShareView = lazy(() => import("./pages/ShareView"));
+const Referral = lazy(() => import("./pages/Referral"));
+const Rewards = lazy(() => import("./pages/Rewards"));
+const InstallGuide = lazy(() => import("./pages/InstallGuide"));
+const WellnessLifestyle = lazy(() => import("./pages/WellnessLifestyle"));
+const About = lazy(() => import("./pages/About"));
+const TrackAdult = lazy(() => import("./pages/TrackAdult"));
+const TrackParent = lazy(() => import("./pages/TrackParent"));
+const TrackTeenComingSoon = lazy(() => import("./pages/TrackTeenComingSoon"));
+const CenterReferralLanding = lazy(() => import("./pages/CenterReferralLanding"));
+const PartnerCenterDashboard = lazy(() => import("./pages/PartnerCenterDashboard"));
+const PartnerCenterReferrals = lazy(() => import("./pages/PartnerCenterReferrals"));
+const BetaRecruitment = lazy(() => import("./pages/BetaRecruitment"));
+const Reviews = lazy(() => import("./pages/Reviews"));
+const AboutExpert = lazy(() => import("./pages/AboutExpert"));
 
-// Packages (SEO landing pages)
-import StressPackage from "./pages/StressPackage";
-import DepressionPackage from "./pages/DepressionPackage";
-import AnxietyPackage from "./pages/AnxietyPackage";
-import FocusPackage from "./pages/FocusPackage";
-import ChildPackage from "./pages/ChildPackage";
-import RelationshipPackage from "./pages/RelationshipPackage";
-import ComprehensivePackage from "./pages/ComprehensivePackage";
-import CareerPackage from "./pages/CareerPackage";
+// Lazy: B2B 발달치료센터
+const B2BCenterLanding = lazy(() => import("./pages/b2b-center/B2BCenterLanding"));
+const B2BCenterImport = lazy(() => import("./pages/b2b-center/B2BCenterImport"));
+const B2BCenterApp = lazy(() => import("./pages/b2b-center/B2BCenterApp"));
+const CenterStorefrontPage = lazy(() => import("./pages/b2b-center/console/CenterStorefrontPage"));
+const CenterStorefrontPublic = lazy(() => import("./pages/b2b-center/CenterStorefrontPublic"));
+const CenterClientsPage = lazy(() => import("./pages/b2b-center/console/ClientsPage"));
+const CenterByTherapistPage = lazy(() => import("./pages/b2b-center/console/ByTherapistPage"));
+const CenterAttendancePage = lazy(() => import("./pages/b2b-center/console/AttendancePage"));
+const CenterBillingStatsPage = lazy(() => import("./pages/b2b-center/console/BillingStatsPage"));
+const CenterTherapistsAdminPage = lazy(() => import("./pages/b2b-center/console/TherapistsAdminPage"));
+const CenterPlaceholderBase = lazy(() => import("./pages/b2b-center/console/PlaceholderPage"));
+const CenterOrganizationPage = lazy(() => import("./pages/b2b-center/console/OrganizationPage"));
+const CenterSchedulePage = lazy(() => import("./pages/b2b-center/console/SchedulePage"));
+const CenterAssessmentsPage = lazy(() => import("./pages/b2b-center/console/AssessmentsPage"));
+const CenterMonthlyServicesPage = lazy(() => import("./pages/b2b-center/console/MonthlyServicesPage"));
+const CenterVoucherAuditPage = lazy(() => import("./pages/b2b-center/console/VoucherAuditPage"));
+const CenterProgramsPage = lazy(() => import("./pages/b2b-center/console/ProgramsPage"));
+const CenterParentReportsPage = lazy(() => import("./pages/b2b-center/console/ParentReportsPage"));
+const CenterTherapyNotesPage = lazy(() => import("./pages/b2b-center/console/TherapyNotesPage"));
+const ParentCenterPage = lazy(() => import("./pages/parent/ParentCenterPage"));
+const CenterOpsDashboardPage = lazy(() => import("./pages/b2b-center/console/OpsDashboardPage"));
+const B2BCenterInvite = lazy(() => import("./pages/b2b-center/B2BCenterInvite"));
+const CenterInviteClaim = lazy(() => import("./pages/CenterInviteClaim"));
+const CenterGuidePage = lazy(() => import("./pages/b2b-center/console/GuidePage"));
+const CenterVoucherExcelImportPage = lazy(() => import("./pages/b2b-center/console/VoucherExcelImportPage"));
+const CenterVoucherClaimsPage = lazy(() => import("./pages/b2b-center/console/VoucherClaimsPage"));
+const CenterOnboardingWizardPage = lazy(() => import("./pages/b2b-center/console/OnboardingWizardPage"));
+const CenterSessionRecordsPage = lazy(() => import("./pages/b2b-center/console/SessionRecordsPage"));
+
+// Lazy: SEO Package Landing Pages
+const StressPackage = lazy(() => import("./pages/StressPackage"));
+const DepressionPackage = lazy(() => import("./pages/DepressionPackage"));
+const AnxietyPackage = lazy(() => import("./pages/AnxietyPackage"));
+const FocusPackage = lazy(() => import("./pages/FocusPackage"));
+const ChildPackage = lazy(() => import("./pages/ChildPackage"));
+const RelationshipPackage = lazy(() => import("./pages/RelationshipPackage"));
+const ComprehensivePackage = lazy(() => import("./pages/ComprehensivePackage"));
+const CareerPackage = lazy(() => import("./pages/CareerPackage"));
 
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
@@ -249,6 +249,12 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+const RouteFallback = () => (
+  <div className="min-h-[60vh] flex items-center justify-center">
+    <div className="h-6 w-6 rounded-full border-2 border-neutral-200 border-t-neutral-900 animate-spin" />
+  </div>
+);
 
 const App = () => {
   return (
@@ -268,7 +274,8 @@ const App = () => {
               <SessionManager />
               <UpdatePrompt />
               <InstallPromptBanner />
-              
+
+              <Suspense fallback={<RouteFallback />}>
               <Routes>
           {/* ===== Core Routes ===== */}
           <Route path="/" element={<Index />} />
@@ -428,7 +435,7 @@ const App = () => {
 
           {/* Content */}
           <Route path="/column" element={<Column />} />
-          <Route path="/column/:slug" element={<React.Suspense fallback={<div />}><BlogPost /></React.Suspense>} />
+          <Route path="/column/:slug" element={<BlogPost />} />
           <Route path="/iep-generator" element={<IEPGenerator />} />
           <Route path="/iep-view/:id" element={<IEPView />} />
           <Route path="/wellness-lifestyle" element={<WellnessLifestyle />} />
@@ -557,7 +564,7 @@ const App = () => {
           <Route path="/en/payment-success" element={<PaymentSuccess />} />
           <Route path="/en/payment-fail" element={<PaymentFail />} />
           <Route path="/en/column" element={<Column />} />
-          <Route path="/en/column/:slug" element={<React.Suspense fallback={<div />}><BlogPost /></React.Suspense>} />
+          <Route path="/en/column/:slug" element={<BlogPost />} />
           <Route path="/en/wellness-lifestyle" element={<WellnessLifestyle />} />
           <Route path="/en/referral" element={<Referral />} />
           <Route path="/en/install" element={<InstallGuide />} />
@@ -587,7 +594,6 @@ const App = () => {
           <Route path="/b2b-consulting" element={<Navigate to="/business#solutions" replace />} />
           <Route path="/en/b2b-consulting" element={<Navigate to="/en/business#solutions" replace />} />
           <Route path="/for-business" element={<Navigate to="/business" replace />} />
-          <Route path="/en/business" element={<Business />} />
           <Route path="/app/parent" element={<Navigate to="/dashboard" replace />} />
           <Route path="/app/center" element={<PartnerCenterDashboard />} />
           <Route path="/app/center/referrals" element={<PartnerCenterReferrals />} />
@@ -633,6 +639,7 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
 
               </Routes>
+              </Suspense>
                {/* <FeedbackButton /> */}
                <MobileBottomTab />
               </LanguageProvider>

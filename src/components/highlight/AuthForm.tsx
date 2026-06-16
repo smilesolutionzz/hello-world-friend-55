@@ -598,29 +598,12 @@ export const AuthForm = () => {
                 
                 {/* 회원가입 탭 */}
                 <TabsContent value="signup" className="mt-0 space-y-4">
-                  {/* 가입 경로 선택 */}
+                  {/* 가입 경로 선택 — B2B(기관용) 우선 노출 */}
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-foreground/80 px-1">
                       어떤 사용자로 가입하시나요?
                     </p>
                     <div className="grid grid-cols-2 gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setAccountType('parent')}
-                        className={`flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition-all ${
-                          accountType === 'parent'
-                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                            : 'border-border/60 bg-background/40 hover:border-primary/40'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-primary" />
-                          <span className="text-sm font-semibold">학부모·일반</span>
-                        </div>
-                        <span className="text-[11px] leading-snug text-muted-foreground">
-                          자가검사 · 마인드 트랙 · 전문가 상담
-                        </span>
-                      </button>
                       <button
                         type="button"
                         onClick={() => setAccountType('therapist')}
@@ -632,13 +615,34 @@ export const AuthForm = () => {
                       >
                         <div className="flex items-center gap-2">
                           <Briefcase className="w-4 h-4 text-primary" />
-                          <span className="text-sm font-semibold">전문가·기관</span>
+                          <span className="text-sm font-semibold">기관용</span>
+                          <span className="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+                            추천
+                          </span>
                         </div>
                         <span className="text-[11px] leading-snug text-muted-foreground">
-                          센터 운영 · 상담 의뢰 관리
+                          센터·전문가 · B2B 대시보드 즉시 사용
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAccountType('parent')}
+                        className={`flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition-all ${
+                          accountType === 'parent'
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                            : 'border-border/60 bg-background/40 hover:border-primary/40'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-semibold">개인용</span>
+                        </div>
+                        <span className="text-[11px] leading-snug text-muted-foreground">
+                          학부모·일반 · 자가검사 · 마인드 트랙
                         </span>
                       </button>
                     </div>
+
 
                     {accountType === 'therapist' && (
                       <div className="mt-2 grid grid-cols-2 gap-2">

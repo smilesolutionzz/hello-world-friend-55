@@ -278,7 +278,8 @@ const App = () => {
               <Suspense fallback={<RouteFallback />}>
               <Routes>
           {/* ===== Core Routes ===== */}
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Navigate to="/b2b-center" replace />} />
+          <Route path="/c2c" element={<Index />} />
           <Route path="/home" element={<MobileHome />} />
           <Route path="/whats-new" element={<WhatsNew />} />
           <Route path="/store" element={<Store />} />

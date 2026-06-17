@@ -1,8 +1,10 @@
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
-import { Check, ArrowRight, Users, Calendar, CreditCard, PlayCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Check, ArrowRight, Users, Calendar, CreditCard, PlayCircle, LogIn, LayoutDashboard } from "lucide-react";
 import { B2B_CENTER_MONTHLY, B2B_CENTER_COMPETITOR_PRICE } from "@/constants/tokenCosts";
 import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
+import { supabase } from "@/integrations/supabase/client";
 
 const KRW = (n: number) => `₩${n.toLocaleString("ko-KR")}`;
 
@@ -40,12 +42,44 @@ const compare = [
 ];
 
 export default function B2BCenterLanding() {
+  const navigate = useNavigate();
+  const [isAuthed, setIsAuthed] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => setIsAuthed(!!session));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const handleConsoleEntry = () => {
+    if (isAuthed) navigate("/b2b-center/app");
+    else navigate("/auth?redirect=/b2b-center/app");
+  };
+
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       <Helmet>
         <title>발달치료센터 ERP · 60일 무료 — AIHPRO</title>
         <meta name="description" content="이용자·일정·수납. 기존 ERP 엑셀 그대로 이관, 60일 무료 체험. 카드 등록 없음." />
       </Helmet>
+
+      {/* Top bar with console entry */}
+      <header className="absolute top-0 inset-x-0 z-20 px-6 py-4 flex items-center justify-between max-w-6xl mx-auto">
+        <Link to="/b2b-center" className="text-sm font-semibold tracking-tight text-neutral-900">
+          AIHPRO <span className="text-[#C8B88A]">Center</span>
+        </Link>
+        <button
+          onClick={handleConsoleEntry}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-xs font-medium hover:bg-neutral-800 transition"
+        >
+          {isAuthed ? (
+            <><LayoutDashboard className="w-3.5 h-3.5" /> 콘솔 입장</>
+          ) : (
+            <><LogIn className="w-3.5 h-3.5" /> 로그인 후 콘솔 입장</>
+          )}
+        </button>
+      </header>
+
 
       {/* Hero */}
       <section className="px-6 pt-24 pb-20 max-w-6xl mx-auto text-center">

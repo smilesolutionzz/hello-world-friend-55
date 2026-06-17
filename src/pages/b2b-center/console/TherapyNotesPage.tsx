@@ -181,10 +181,18 @@ export default function TherapyNotesPage() {
           <h1 className="text-2xl font-semibold">치료노트</h1>
           <p className="text-sm text-neutral-500 mt-1 break-keep">회기 일지 사진을 올리면 AI가 주간 치료노트 초안을 만들어드려요. 편집 후 보호자에게 바로 공유하세요.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white">
-            <option value="">이용자 선택</option>
-            {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+        <div className="flex items-center gap-2 flex-wrap">
+          <input
+            value={clientSearch}
+            onChange={(e) => setClientSearch(e.target.value)}
+            placeholder="이용자 이름 검색"
+            className="border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white w-40"
+          />
+          <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white max-w-[200px]">
+            <option value="">이용자 선택 ({clients.filter(c => !clientSearch || c.name?.toLowerCase().includes(clientSearch.toLowerCase())).length}명)</option>
+            {clients
+              .filter(c => !clientSearch || c.name?.toLowerCase().includes(clientSearch.toLowerCase()))
+              .map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           <input type="week" value={weekKey.replace("-W", "-W")} onChange={(e) => setWeekKey(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white" />
         </div>

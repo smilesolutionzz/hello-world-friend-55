@@ -747,16 +747,52 @@ export default function SchedulePage() {
 
 // ===== 시간표(주/일 그리드) =====
 function TimetableView({ dayList, sessions, onPick, therapist, clientName, programName, onCreate }: any) {
-  const cols = dayList.length;
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>(() => {
+    try {
+      const raw = localStorage.getItem("b2bc.schedule.collapsedDays");
+      return raw ? JSON.parse(raw) : {};
+    } catch { return {}; }
+  });
+  const toggleDay = (ds: string) => {
+    setCollapsed((prev) => {
+      const next = { ...prev, [ds]: !prev[ds] };
+      try { localStorage.setItem("b2bc.schedule.collapsedDays", JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+  const colTemplate = `60px ${dayList.map((d: Date) => collapsed[fmt(d)] ? "28px" : "minmax(120px, 1fr)").join(" ")}`;
   return (
-    <div className="grid" style={{ gridTemplateColumns: `60px repeat(${cols}, minmax(120px, 1fr))` }}>
+    <div className="grid" style={{ gridTemplateColumns: colTemplate }}>
       <div className="bg-neutral-50 border-b border-r border-neutral-200" />
       {dayList.map((d: Date) => {
         const ds = fmt(d);
         const holiday = getHoliday(ds);
         const isSunday = d.getDay() === 0;
+        const isCollapsed = !!collapsed[ds];
+        if (isCollapsed) {
+          return (
+            <button
+              key={ds}
+              onClick={() => toggleDay(ds)}
+              title="펼치기"
+              className={`bg-neutral-50 border-b border-r border-neutral-200 flex flex-col items-center justify-center gap-1 py-2 hover:bg-neutral-100 transition ${holiday || isSunday ? "bg-rose-50/60 hover:bg-rose-100/60" : ""}`}
+            >
+              <ChevronRight className="w-3 h-3 text-neutral-400" />
+              <span className={`[writing-mode:vertical-rl] text-[10px] font-semibold tracking-tight ${holiday || isSunday ? "text-rose-600" : "text-neutral-600"}`}>
+                {DAY_LABELS[(d.getDay() + 6) % 7]} {d.getMonth() + 1}.{d.getDate()}
+              </span>
+            </button>
+          );
+        }
         return (
-          <div key={ds} className={`bg-neutral-50 border-b border-neutral-200 p-2 text-center ${holiday || isSunday ? "bg-rose-50/60" : ""}`}>
+          <div key={ds} className={`relative bg-neutral-50 border-b border-neutral-200 p-2 text-center ${holiday || isSunday ? "bg-rose-50/60" : ""}`}>
+            <button
+              onClick={() => toggleDay(ds)}
+              title="접기"
+              className="absolute top-1 right-1 p-0.5 rounded hover:bg-neutral-200/70 text-neutral-400 hover:text-neutral-700 transition"
+            >
+              <ChevronLeft className="w-3 h-3" />
+            </button>
             <p className={`text-xs ${holiday || isSunday ? "text-rose-600 font-semibold" : "text-neutral-500"}`}>{DAY_LABELS[(d.getDay() + 6) % 7]}</p>
             <p className={`text-sm font-medium ${holiday || isSunday ? "text-rose-700" : ""}`}>{d.getMonth() + 1}.{d.getDate()}</p>
             {holiday && (
@@ -770,7 +806,24 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, progr
           <div className="border-b border-r border-neutral-100 text-[10px] text-neutral-400 p-1 text-right">{h}:00</div>
           {dayList.map((d: Date) => {
             const ds = fmt(d);
+            const isCollapsed = !!collapsed[ds];
+            if (isCollapsed) {
+              const dayCount = sessions.filter((s: any) => isSameDate(s.session_date, ds) && parseInt(s.start_time?.slice(0, 2) ?? "0", 10) === h).length;
+              return (
+                <div
+                  key={`${h}-${ds}`}
+                  onClick={() => toggleDay(ds)}
+                  className="border-b border-r border-neutral-100 min-h-[60px] bg-neutral-50/40 cursor-pointer hover:bg-neutral-100/60 transition flex items-center justify-center"
+                  title="펼치기"
+                >
+                  {dayCount > 0 && (
+                    <span className="text-[9px] font-semibold text-neutral-500 [writing-mode:vertical-rl]">·{dayCount}</span>
+                  )}
+                </div>
+              );
+            }
             const slot = sessions.filter((s: any) => isSameDate(s.session_date, ds) && parseInt(s.start_time?.slice(0, 2) ?? "0", 10) === h);
+            const dense = slot.length >= 4;
             return (
               <div
                 key={`${h}-${ds}`}
@@ -793,7 +846,7 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, progr
                 <div className={`h-full ${slot.length > 1 ? "flex gap-0.5" : "space-y-1"}`}>
                   {slot.map((s: any) => (
                     <div key={s.id} className={slot.length > 1 ? "flex-1 min-w-0" : ""}>
-                      <SessionChip s={s} therapist={therapist} clientName={clientName} programName={programName} onPick={onPick} compact={slot.length > 1} />
+                      <SessionChip s={s} therapist={therapist} clientName={clientName} programName={programName} onPick={onPick} compact={slot.length > 1} dense={dense} />
                     </div>
                   ))}
                 </div>
@@ -1360,12 +1413,13 @@ function ListView({ dayList, sessions, onPick, therapist, clientName, programNam
 }
 
 // ===== 공통 카드 (v2: 흰 카드 + 좌측 컬러 스트라이프 — 케어플 대비 가독성 강화) =====
-function SessionChip({ s, therapist, clientName, programName, onPick, compact }: any) {
+function SessionChip({ s, therapist, clientName, programName, onPick, compact, dense }: any) {
   const th = therapist(s.therapist_id);
   const cancelled = s.status?.startsWith("cancelled");
   const completed = s.status === "completed";
   const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
   const safeColor = color || "#9ca3af";
+  const name: string = clientName(s.client_id) ?? "";
   return (
     <HoverCard openDelay={120} closeDelay={60}>
       <HoverCardTrigger asChild>
@@ -1373,23 +1427,30 @@ function SessionChip({ s, therapist, clientName, programName, onPick, compact }:
           onClick={() => onPick(s)}
           className={`group relative w-full h-full text-left rounded-md leading-tight bg-white hover:bg-neutral-50 hover:ring-1 hover:ring-neutral-900/10 transition overflow-hidden border border-neutral-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.03)] ${cancelled ? "opacity-50" : ""} ${completed ? "bg-neutral-50/60" : ""}`}
           style={{
-            paddingLeft: compact ? 8 : 10,
-            paddingRight: 6,
-            paddingTop: compact ? 2 : 4,
-            paddingBottom: compact ? 2 : 4,
+            paddingLeft: dense ? 4 : compact ? 8 : 10,
+            paddingRight: dense ? 2 : 6,
+            paddingTop: dense ? 4 : compact ? 2 : 4,
+            paddingBottom: dense ? 4 : compact ? 2 : 4,
           }}
         >
-          {/* 좌측 4px 컬러 스트라이프 — 치료사 색은 여기서만 노출 */}
+          {/* 좌측 컬러 스트라이프 — 치료사 색은 여기서만 노출 */}
           <span
             aria-hidden
             className="absolute left-0 top-0 bottom-0"
-            style={{ width: 4, background: safeColor }}
+            style={{ width: dense ? 3 : 4, background: safeColor }}
           />
-          {compact ? (
+          {dense ? (
+            /* 매우 좁은 폭(4개 이상 겹침): 세로쓰기 이름 — 참고 이미지처럼 한 글자씩 세로로 */
+            <div className={`h-full w-full flex items-start justify-center pl-1 ${cancelled ? "line-through text-neutral-400" : "text-neutral-900"}`}>
+              <span className="[writing-mode:vertical-rl] rotate-180 text-[11px] font-semibold tracking-tight leading-none whitespace-nowrap">
+                {name}
+              </span>
+            </div>
+          ) : compact ? (
             <>
               {/* 좁은 폭: 이름을 최우선으로 노출 (겹침 시에도 누구인지 보이도록) */}
               <p className={`truncate font-semibold text-[11px] leading-[1.2] text-neutral-900 ${cancelled ? "line-through text-neutral-400" : ""}`}>
-                {clientName(s.client_id)}
+                {name}
               </p>
               <p className="truncate font-medium tabular-nums text-[10px] leading-[1.15] text-neutral-500">
                 {s.start_time?.slice(0, 5) ?? ""}
@@ -1401,7 +1462,7 @@ function SessionChip({ s, therapist, clientName, programName, onPick, compact }:
                 {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
               </p>
               <p className={`truncate font-medium text-neutral-800 text-[12.5px] leading-[1.25] mt-0.5 ${cancelled ? "line-through text-neutral-400" : ""}`}>
-                {clientName(s.client_id)}
+                {name}
               </p>
               <p className="truncate text-[11px] text-neutral-500 leading-[1.2] mt-px">
                 {programName(s.program_id) ?? th?.name ?? "미배정"}

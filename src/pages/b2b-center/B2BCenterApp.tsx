@@ -4,7 +4,7 @@ import { NavLink, Outlet, useNavigate, useSearchParams, useLocation } from "reac
 import {
   LayoutDashboard, Users, Calendar, BookOpen, CreditCard, Building2,
   UserCog, FileText, Upload, Sparkles, ShieldAlert, Compass, FileSpreadsheet,
-  Store, Menu, X, PanelLeftClose, PanelLeftOpen,
+  Store, Menu, X, PanelLeftClose, PanelLeftOpen, Wallet,
 } from "lucide-react";
 import { listMyCenters, getActiveCenterId, setActiveCenterId, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { useToast } from "@/hooks/use-toast";
@@ -40,10 +40,11 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
   { to: "admin/programs", label: "프로그램 관리", icon: BookOpen, group: "관리자" },
   // 데이터 연동
   { to: "data/voucher-excel", label: "전자바우처 엑셀 등록", icon: FileSpreadsheet, group: "데이터 연동" },
-  // 수납 (준비중) — 맨 하단
-  { to: "billing/stats", label: "수납 통계·미수금", icon: CreditCard, group: "수납 (준비중)" },
-  { to: "billing/voucher-claims", label: "전자바우처 청구", icon: FileSpreadsheet, group: "수납 (준비중)" },
-  { to: "billing/voucher-audit", label: "부정결제 찾기", icon: ShieldAlert, group: "수납 (준비중)" },
+  // 수납 — 케어플 스타일
+  { to: "billing/process", label: "수납처리", icon: Wallet, group: "수납" },
+  { to: "billing/stats", label: "수납 통계·미수금", icon: CreditCard, group: "수납" },
+  { to: "billing/voucher-claims", label: "전자바우처 청구", icon: FileSpreadsheet, group: "수납" },
+  { to: "billing/voucher-audit", label: "부정결제 찾기", icon: ShieldAlert, group: "수납" },
 ];
 
 

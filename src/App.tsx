@@ -207,6 +207,7 @@ const CenterClientsPage = lazy(() => import("./pages/b2b-center/console/ClientsP
 const CenterByTherapistPage = lazy(() => import("./pages/b2b-center/console/ByTherapistPage"));
 const CenterAttendancePage = lazy(() => import("./pages/b2b-center/console/AttendancePage"));
 const CenterBillingStatsPage = lazy(() => import("./pages/b2b-center/console/BillingStatsPage"));
+const CenterBillingProcessPage = lazy(() => import("./pages/b2b-center/console/BillingProcessPage"));
 const CenterTherapistsAdminPage = lazy(() => import("./pages/b2b-center/console/TherapistsAdminPage"));
 const CenterPlaceholderBase = lazy(() => import("./pages/b2b-center/console/PlaceholderPage"));
 const CenterOrganizationPage = lazy(() => import("./pages/b2b-center/console/OrganizationPage"));
@@ -617,6 +618,7 @@ const App = () => {
             <Route path="clients" element={<CenterClientsPage />} />
             <Route path="services/by-therapist" element={<CenterByTherapistPage />} />
             <Route path="services/attendance" element={<CenterAttendancePage />} />
+            <Route path="billing/process" element={<CenterBillingProcessPage />} />
             <Route path="billing/stats" element={<CenterBillingStatsPage />} />
             <Route path="admin/therapists" element={<CenterTherapistsAdminPage />} />
             <Route path="schedule" element={<CenterSchedulePage />} />

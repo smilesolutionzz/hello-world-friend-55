@@ -68,7 +68,7 @@ export default function BillingProcessPage() {
       const [c, t, pr, s, p] = await Promise.all([
         supabase.from("center_clients").select("id,name,birth_date,gender").eq("center_id", centerId).eq("status", "active").order("name"),
         supabase.from("center_therapists").select("id,name").eq("center_id", centerId),
-        supabase.from("center_programs").select("id,name,default_price").eq("center_id", centerId),
+        supabase.from("center_programs").select("id,name,price_krw").eq("center_id", centerId),
         supabase.from("center_sessions").select("id,client_id,therapist_id,program_id,session_date,status,price_krw,is_voucher").eq("center_id", centerId).limit(10000),
         supabase.from("center_payments").select("id,client_id,session_id,paid_at,amount_krw,method,meta").eq("center_id", centerId).limit(10000),
       ]);

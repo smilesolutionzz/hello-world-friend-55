@@ -358,6 +358,12 @@ export default function TherapyNotesPage() {
           <EditableField label="다음 주 집중 방향" value={editedDraft.next_week_focus} onChange={(v) => setEditedDraft({ ...editedDraft, next_week_focus: v })} multiline onRewrite={(inst) => rewriteField("next_week_focus", inst)} rewriting={rewriting === "next_week_focus"} />
 
           <div className="flex flex-wrap items-center justify-end gap-2 pt-4 border-t border-neutral-100">
+            <button onClick={() => downloadPDF(clientName, weekKey, editedDraft)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+              <Download className="w-4 h-4" /> PDF 다운로드
+            </button>
+            <button onClick={() => downloadXLSX(clientName, weekKey, editedDraft)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+              <FileSpreadsheet className="w-4 h-4" /> 엑셀 다운로드
+            </button>
             <button onClick={saveDraft} className="px-4 py-2 rounded-full border border-neutral-200 text-sm">초안 저장</button>
             <button onClick={publish} className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-neutral-900 text-white text-sm">
               <Send className="w-4 h-4" /> {report.status === "published" ? "다시 발행" : "보호자에게 발행"}
@@ -372,6 +378,140 @@ export default function TherapyNotesPage() {
           업로드는 있지만 아직 주간 노트가 없어요. 상단에서 <b>주간 치료노트 자동 생성</b>을 눌러주세요.
         </div>
       )}
+
+      {/* 발행 캘린더 */}
+      {selectedClient && (
+        <PublishCalendar
+          clientName={clientName}
+          history={history}
+          month={calMonth}
+          onPrevMonth={() => setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1))}
+          onNextMonth={() => setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1))}
+          onJumpToWeek={(wk) => setWeekKey(wk)}
+          onView={(rep) => setViewingHistory(rep)}
+        />
+      )}
+
+      {viewingHistory && (
+        <HistoryViewer
+          clientName={clientName}
+          report={viewingHistory}
+          onClose={() => setViewingHistory(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+function PublishCalendar({ clientName, history, month, onPrevMonth, onNextMonth, onJumpToWeek, onView }: any) {
+  const year = month.getFullYear();
+  const mon = month.getMonth();
+  const firstDay = new Date(year, mon, 1);
+  const startWeekday = firstDay.getDay();
+  const daysInMonth = new Date(year, mon + 1, 0).getDate();
+  const cells: (Date | null)[] = [];
+  for (let i = 0; i < startWeekday; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, mon, d));
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  // map date string -> report
+  const byDate = new Map<string, any>();
+  history.forEach((r: any) => {
+    const dt = r.published_at ? new Date(r.published_at) : null;
+    if (!dt) return;
+    const key = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+    if (!byDate.has(key)) byDate.set(key, r);
+  });
+
+  return (
+    <div className="bg-white rounded-3xl border border-neutral-200 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <p className="text-xs tracking-widest text-[#C8B88A] mb-1">PUBLISH CALENDAR</p>
+          <h2 className="font-semibold flex items-center gap-2"><CalendarIcon className="w-4 h-4" /> {clientName} · 발행 캘린더</h2>
+          <p className="text-xs text-neutral-500 mt-1">발행된 날짜를 클릭하면 그날 보낸 치료노트를 볼 수 있어요.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={onPrevMonth} className="p-1.5 rounded-full border border-neutral-200 hover:bg-neutral-50"><ChevronLeft className="w-4 h-4" /></button>
+          <span className="text-sm font-medium w-24 text-center">{year}년 {mon + 1}월</span>
+          <button onClick={onNextMonth} className="p-1.5 rounded-full border border-neutral-200 hover:bg-neutral-50"><ChevronRight className="w-4 h-4" /></button>
+        </div>
+      </div>
+      <div className="grid grid-cols-7 gap-1 text-center text-[11px] text-neutral-500 mb-1">
+        {["일","월","화","수","목","금","토"].map(d => <div key={d} className="py-1">{d}</div>)}
+      </div>
+      <div className="grid grid-cols-7 gap-1">
+        {cells.map((c, i) => {
+          if (!c) return <div key={i} className="h-16" />;
+          const key = `${c.getFullYear()}-${String(c.getMonth() + 1).padStart(2, "0")}-${String(c.getDate()).padStart(2, "0")}`;
+          const rep = byDate.get(key);
+          return (
+            <button
+              key={i}
+              onClick={() => rep && onView(rep)}
+              disabled={!rep}
+              className={`h-16 rounded-xl border text-left p-1.5 transition ${rep ? "border-[#C8B88A] bg-[#FAF6E8] hover:bg-[#F0E8C8] cursor-pointer" : "border-neutral-100 bg-white"}`}
+            >
+              <div className={`text-xs ${rep ? "font-semibold text-neutral-900" : "text-neutral-400"}`}>{c.getDate()}</div>
+              {rep && (
+                <div className="text-[10px] text-[#9A8B5C] mt-0.5 truncate">📝 {rep.week_key}</div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      {history.length > 0 && (
+        <div className="mt-5 pt-4 border-t border-neutral-100">
+          <p className="text-xs text-neutral-500 mb-2">최근 발행 ({history.length}건)</p>
+          <div className="space-y-1 max-h-48 overflow-y-auto">
+            {history.slice(0, 12).map((r: any) => (
+              <button
+                key={r.id}
+                onClick={() => onView(r)}
+                className="w-full flex items-center justify-between text-left text-xs px-3 py-2 rounded-lg hover:bg-neutral-50"
+              >
+                <span className="text-neutral-700 truncate">{r.title || "주간 치료노트"} · {r.week_key}</span>
+                <span className="text-neutral-400 ml-2 shrink-0">{r.published_at ? new Date(r.published_at).toLocaleDateString("ko-KR") : "-"}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function HistoryViewer({ clientName, report, onClose }: any) {
+  const d = report.ai_draft_json || {};
+  const sections = draftToPlainSections(d);
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-xs tracking-widest text-[#C8B88A] mb-1">PUBLISHED NOTE</p>
+            <h3 className="text-lg font-semibold">{d.title || "주간 치료노트"}</h3>
+            <p className="text-xs text-neutral-500 mt-1">{clientName} · {report.week_key} · 발행 {report.published_at ? new Date(report.published_at).toLocaleString("ko-KR") : "-"}</p>
+          </div>
+          <button onClick={onClose} className="text-neutral-400 hover:text-neutral-900 text-xl leading-none">×</button>
+        </div>
+        <div className="space-y-4">
+          {sections.filter(s => s.value).map((s, i) => (
+            <div key={i}>
+              <div className="text-[11px] uppercase tracking-wider text-neutral-500 mb-1">{s.label}</div>
+              <div className="text-sm whitespace-pre-wrap text-neutral-800">{s.value}</div>
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-neutral-100">
+          <button onClick={() => downloadPDF(clientName, report.week_key, d)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+            <Download className="w-4 h-4" /> PDF
+          </button>
+          <button onClick={() => downloadXLSX(clientName, report.week_key, d)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+            <FileSpreadsheet className="w-4 h-4" /> 엑셀
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1413,12 +1413,13 @@ function ListView({ dayList, sessions, onPick, therapist, clientName, programNam
 }
 
 // ===== 공통 카드 (v2: 흰 카드 + 좌측 컬러 스트라이프 — 케어플 대비 가독성 강화) =====
-function SessionChip({ s, therapist, clientName, programName, onPick, compact }: any) {
+function SessionChip({ s, therapist, clientName, programName, onPick, compact, dense }: any) {
   const th = therapist(s.therapist_id);
   const cancelled = s.status?.startsWith("cancelled");
   const completed = s.status === "completed";
   const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
   const safeColor = color || "#9ca3af";
+  const name: string = clientName(s.client_id) ?? "";
   return (
     <HoverCard openDelay={120} closeDelay={60}>
       <HoverCardTrigger asChild>
@@ -1426,23 +1427,30 @@ function SessionChip({ s, therapist, clientName, programName, onPick, compact }:
           onClick={() => onPick(s)}
           className={`group relative w-full h-full text-left rounded-md leading-tight bg-white hover:bg-neutral-50 hover:ring-1 hover:ring-neutral-900/10 transition overflow-hidden border border-neutral-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.03)] ${cancelled ? "opacity-50" : ""} ${completed ? "bg-neutral-50/60" : ""}`}
           style={{
-            paddingLeft: compact ? 8 : 10,
-            paddingRight: 6,
-            paddingTop: compact ? 2 : 4,
-            paddingBottom: compact ? 2 : 4,
+            paddingLeft: dense ? 4 : compact ? 8 : 10,
+            paddingRight: dense ? 2 : 6,
+            paddingTop: dense ? 4 : compact ? 2 : 4,
+            paddingBottom: dense ? 4 : compact ? 2 : 4,
           }}
         >
-          {/* 좌측 4px 컬러 스트라이프 — 치료사 색은 여기서만 노출 */}
+          {/* 좌측 컬러 스트라이프 — 치료사 색은 여기서만 노출 */}
           <span
             aria-hidden
             className="absolute left-0 top-0 bottom-0"
-            style={{ width: 4, background: safeColor }}
+            style={{ width: dense ? 3 : 4, background: safeColor }}
           />
-          {compact ? (
+          {dense ? (
+            /* 매우 좁은 폭(4개 이상 겹침): 세로쓰기 이름 — 참고 이미지처럼 한 글자씩 세로로 */
+            <div className={`h-full w-full flex items-start justify-center pl-1 ${cancelled ? "line-through text-neutral-400" : "text-neutral-900"}`}>
+              <span className="[writing-mode:vertical-rl] rotate-180 text-[11px] font-semibold tracking-tight leading-none whitespace-nowrap">
+                {name}
+              </span>
+            </div>
+          ) : compact ? (
             <>
               {/* 좁은 폭: 이름을 최우선으로 노출 (겹침 시에도 누구인지 보이도록) */}
               <p className={`truncate font-semibold text-[11px] leading-[1.2] text-neutral-900 ${cancelled ? "line-through text-neutral-400" : ""}`}>
-                {clientName(s.client_id)}
+                {name}
               </p>
               <p className="truncate font-medium tabular-nums text-[10px] leading-[1.15] text-neutral-500">
                 {s.start_time?.slice(0, 5) ?? ""}
@@ -1454,7 +1462,7 @@ function SessionChip({ s, therapist, clientName, programName, onPick, compact }:
                 {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
               </p>
               <p className={`truncate font-medium text-neutral-800 text-[12.5px] leading-[1.25] mt-0.5 ${cancelled ? "line-through text-neutral-400" : ""}`}>
-                {clientName(s.client_id)}
+                {name}
               </p>
               <p className="truncate text-[11px] text-neutral-500 leading-[1.2] mt-px">
                 {programName(s.program_id) ?? th?.name ?? "미배정"}

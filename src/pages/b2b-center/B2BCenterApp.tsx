@@ -217,23 +217,43 @@ export default function B2BCenterApp() {
             </div>
           </div>
           <nav className="flex-1 overflow-y-auto p-3 space-y-4">
-            {Object.entries(grouped).map(([group, items]) => (
-              <div key={group}>
-                <p className="text-[10px] tracking-widest text-neutral-400 px-3 mb-1 uppercase">{group}</p>
-                {items.map((n) => (
-                  <NavLink
-                    key={n.to}
-                    to={demo ? `${n.to}?demo=1` : n.to}
-                    className={({ isActive }) =>
-                      `flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${isActive ? "bg-neutral-900 text-white" : "text-neutral-700 hover:bg-neutral-100"}`
-                    }
-                  >
-                    <n.icon className="w-4 h-4" />
-                    {n.label}
-                  </NavLink>
-                ))}
-              </div>
-            ))}
+            {Object.entries(grouped).map(([group, items]) => {
+              const isIntel = group === "인텔리전스";
+              return (
+                <div
+                  key={group}
+                  className={isIntel ? "rounded-xl bg-gradient-to-b from-[#FAF6E8] to-white border border-[#C8B88A]/30 p-2" : ""}
+                >
+                  <div className="flex items-center gap-1.5 px-3 mb-1">
+                    {isIntel && <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#C8B88A]" />}
+                    <p className={`text-[10px] tracking-widest uppercase ${isIntel ? "text-[#8C7A3E] font-semibold" : "text-neutral-400"}`}>
+                      {isIntel ? `${group} · AI` : group}
+                    </p>
+                    {isIntel && <span className="ml-auto text-[9px] tracking-wider text-[#8C7A3E]/70">NEW</span>}
+                  </div>
+                  {items.map((n) => (
+                    <NavLink
+                      key={n.to}
+                      to={demo ? `${n.to}?demo=1` : n.to}
+                      className={({ isActive }) =>
+                        `flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
+                          isActive
+                            ? isIntel
+                              ? "bg-[#C8B88A] text-white shadow-sm"
+                              : "bg-neutral-900 text-white"
+                            : isIntel
+                              ? "text-[#5B4E26] hover:bg-[#C8B88A]/15"
+                              : "text-neutral-700 hover:bg-neutral-100"
+                        }`
+                      }
+                    >
+                      <n.icon className={`w-4 h-4 ${isIntel ? "text-[#C8B88A]" : ""}`} />
+                      {n.label}
+                    </NavLink>
+                  ))}
+                </div>
+              );
+            })}
           </nav>
           <div className="p-3 border-t border-neutral-200">
             <button onClick={() => navigate("/b2b-center/import")} className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm bg-neutral-100 hover:bg-neutral-200">

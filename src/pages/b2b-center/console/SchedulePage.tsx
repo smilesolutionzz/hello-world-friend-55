@@ -1442,7 +1442,7 @@ function SessionChip({ s, therapist, clientName, programName, onPick, compact, d
           {dense ? (
             /* 매우 좁은 폭(4개 이상 겹침): 세로쓰기 이름 — 참고 이미지처럼 한 글자씩 세로로 */
             <div className={`h-full w-full flex items-start justify-center pl-1 ${cancelled ? "line-through text-neutral-400" : "text-neutral-900"}`}>
-              <span className="[writing-mode:vertical-rl] rotate-180 text-[11px] font-semibold tracking-tight leading-none whitespace-nowrap">
+              <span className="[writing-mode:vertical-rl] [text-orientation:upright] text-[11px] font-semibold tracking-tight leading-none whitespace-nowrap">
                 {name}
               </span>
             </div>

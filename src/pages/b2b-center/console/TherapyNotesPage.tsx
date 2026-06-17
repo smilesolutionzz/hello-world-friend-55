@@ -26,6 +26,61 @@ function fileToBase64(file: File): Promise<{ b64: string; mime: string }> {
   });
 }
 
+function draftToPlainSections(d: any): { label: string; value: string }[] {
+  const J = (v: any) => Array.isArray(v) ? v.filter(Boolean).join("\n• ") : (v ?? "");
+  return [
+    { label: "제목", value: d?.title ?? "" },
+    { label: "보호자께 인사", value: d?.greeting ?? "" },
+    { label: "이번 주 하이라이트", value: Array.isArray(d?.highlights) && d.highlights.length ? "• " + J(d.highlights) : "" },
+    { label: "이번 주 활동 요약", value: d?.activities_summary ?? "" },
+    { label: "관찰된 성장", value: Array.isArray(d?.growth) && d.growth.length ? "• " + J(d.growth) : "" },
+    { label: "가정에서 해볼 활동", value: Array.isArray(d?.home_tips) && d.home_tips.length ? "• " + J(d.home_tips) : "" },
+    { label: "다음 주 집중 방향", value: d?.next_week_focus ?? "" },
+  ];
+}
+
+function downloadPDF(clientName: string, weekKey: string, draft: any) {
+  const sections = draftToPlainSections(draft);
+  const win = window.open("", "_blank", "width=820,height=900");
+  if (!win) { alert("팝업이 차단되었습니다. 팝업을 허용해주세요."); return; }
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>치료노트 ${clientName} ${weekKey}</title>
+    <style>
+      @page { size: A4; margin: 18mm; }
+      body { font-family: -apple-system, "Pretendard Variable", "Apple SD Gothic Neo", sans-serif; color:#1a1a1a; line-height:1.65; }
+      .gold { color:#C8B88A; letter-spacing:.2em; font-size:11px; }
+      h1 { font-size:22px; margin:4px 0 6px; }
+      .meta { color:#666; font-size:12px; margin-bottom:24px; }
+      .sec { margin-bottom:18px; page-break-inside: avoid; }
+      .label { font-size:11px; color:#888; margin-bottom:6px; text-transform:uppercase; letter-spacing:.1em; }
+      .val { white-space:pre-wrap; font-size:14px; }
+      hr { border:none; border-top:1px solid #eee; margin:12px 0; }
+      .foot { margin-top:30px; font-size:10px; color:#aaa; border-top:1px solid #eee; padding-top:8px; }
+    </style></head><body>
+    <div class="gold">WEEKLY THERAPY NOTE</div>
+    <h1>${escapeHTML(draft?.title || "주간 치료노트")}</h1>
+    <div class="meta">${escapeHTML(clientName)} · ${escapeHTML(weekKey)}</div>
+    ${sections.filter(s => s.value).map(s => `<div class="sec"><div class="label">${escapeHTML(s.label)}</div><div class="val">${escapeHTML(s.value)}</div></div>`).join("")}
+    <div class="foot">AIHPRO Center · 발행일 ${new Date().toLocaleDateString("ko-KR")}</div>
+    <script>window.onload=()=>{setTimeout(()=>window.print(),300);}</script>
+    </body></html>`;
+  win.document.write(html);
+  win.document.close();
+}
+
+function escapeHTML(s: string): string {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+}
+
+function downloadXLSX(clientName: string, weekKey: string, draft: any) {
+  const sections = draftToPlainSections(draft);
+  const rows = [["항목", "내용"], ...sections.map(s => [s.label, s.value])];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"] = [{ wch: 18 }, { wch: 80 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "치료노트");
+  XLSX.writeFile(wb, `치료노트_${clientName}_${weekKey}.xlsx`);
+}
+
 export default function TherapyNotesPage() {
   const { centerId, demo } = useOutletContext<Ctx>();
   const [clients, setClients] = useState<any[]>([]);

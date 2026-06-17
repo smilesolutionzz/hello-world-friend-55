@@ -243,6 +243,7 @@ export default function TherapyNotesPage() {
     }).eq("id", report.id);
     toast({ title: "발행 완료", description: "보호자가 /parent/center 에서 확인할 수 있어요." });
     loadWeek();
+    loadHistory();
   };
 
   const clientName = useMemo(() => clients.find(c => c.id === selectedClient)?.name ?? "—", [clients, selectedClient]);

@@ -58,7 +58,14 @@ export default function BillingProcessPage() {
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [unpaidOnly, setUnpaidOnly] = useState(false);
+  const [todayOnly, setTodayOnly] = useState(false);
   const [loading, setLoading] = useState(true);
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayClientIds = useMemo(() => {
+    const ids = new Set<string>();
+    sessions.forEach((s) => { if ((s.session_date ?? "").slice(0, 10) === todayStr && s.client_id) ids.add(s.client_id); });
+    return ids;
+  }, [sessions, todayStr]);
   const [modalGroup, setModalGroup] = useState<Group | null>(null);
 
   useEffect(() => {
@@ -110,13 +117,14 @@ export default function BillingProcessPage() {
     const q = search.trim();
     return clients.filter((c) => {
       if (q && !(c.name ?? "").includes(q)) return false;
+      if (todayOnly && !todayClientIds.has(c.id)) return false;
       if (unpaidOnly) {
         const r = clientSummary.get(c.id);
         if (!r || r.charge - r.paid <= 0) return false;
       }
       return true;
     });
-  }, [clients, search, unpaidOnly, clientSummary]);
+  }, [clients, search, unpaidOnly, todayOnly, todayClientIds, clientSummary]);
 
   // Active client → group sessions by (therapist, program)
   const activeClient = clients.find((c) => c.id === selectedClient) ?? null;
@@ -201,6 +209,21 @@ export default function BillingProcessPage() {
                 <Search className="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-neutral-400" />
                 <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="이용자 검색" className="w-full pl-8 pr-2 py-2 rounded-lg border border-neutral-200 text-sm" />
               </div>
+              <button
+                onClick={() => {
+                  setTodayOnly(true);
+                  const first = clients.find((c) => todayClientIds.has(c.id));
+                  if (first) setSelectedClient(first.id);
+                  else toast({ title: "오늘 일정인 이용자가 없습니다", variant: "destructive" });
+                }}
+                className="w-full inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#C8B88A]/15 text-[#8a7a4d] text-xs font-medium hover:bg-[#C8B88A]/25 border border-[#C8B88A]/30"
+              >
+                당일 이용자 불러오기 ({todayClientIds.size})
+              </button>
+              <label className="flex items-center gap-1.5 text-xs text-neutral-600">
+                <input type="checkbox" checked={todayOnly} onChange={(e) => setTodayOnly(e.target.checked)} />
+                오늘 일정만 표시
+              </label>
               <label className="flex items-center gap-1.5 text-xs text-neutral-600">
                 <input type="checkbox" checked={unpaidOnly} onChange={(e) => setUnpaidOnly(e.target.checked)} />
                 해당월 미수금만 표시

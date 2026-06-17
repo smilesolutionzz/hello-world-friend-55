@@ -1561,7 +1561,7 @@ function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, pr
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
             <DetailField k="일시" v={`${s.session_date} ${s.start_time?.slice(0, 5) ?? ""}${s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}`} />
             <DetailField k="프로그램" v={programName(s.program_id) ?? "—"} />
-            <DetailField k="선생님" v={th ? `${th.name}${th.role ? ` · ${th.role}` : th.title ? ` · ${th.title}` : ""}` : "—"} />
+            <DetailField k="선생님" v={th ? `${th.name}${th.role ? ` · ${th.role}` : th.title ? ` · ${th.title}` : ""}` : <span className="text-amber-600 font-medium">미배정</span>} />
             <DetailField k="단가" v={`₩${(s.price_krw ?? 0).toLocaleString()}`} />
             <DetailField k="바우처" v={s.is_voucher ? "전자바우처" : "일반결제"} />
             <DetailField k="본인부담금" v={s.copay_krw != null ? `₩${Number(s.copay_krw).toLocaleString()}` : "—"} />
@@ -1583,6 +1583,11 @@ function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, pr
               닫기
             </button>
             <div className="flex-1" />
+            {onEdit && !s.therapist_id && (
+              <button onClick={onEdit} className="px-5 py-2.5 rounded-full bg-amber-50 text-amber-700 text-sm font-medium border border-amber-200 hover:bg-amber-100">
+                선생님 배정하기
+              </button>
+            )}
             {onEdit && (
               <button onClick={onEdit} className="px-5 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-sm font-medium hover:bg-neutral-50">
                 일정 수정

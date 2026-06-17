@@ -104,7 +104,17 @@ export default function B2BCenterImport() {
       </Helmet>
       <div className="max-w-3xl mx-auto px-6 py-16">
         <div className="mb-10"><CenterOnboardingStepper step={centers.length > 0 ? 2 : 1} /></div>
-        <p className="text-xs tracking-widest text-neutral-500 mb-2">B2B CENTER · IMPORT</p>
+        <div className="flex items-start justify-between gap-4 mb-2">
+          <p className="text-xs tracking-widest text-neutral-500">B2B CENTER · IMPORT</p>
+          {centers.length > 0 && (
+            <button
+              onClick={() => navigate("/b2b-center/app/clients")}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-neutral-900 text-white text-xs font-medium hover:bg-neutral-800 transition shrink-0"
+            >
+              콘솔 입장 →
+            </button>
+          )}
+        </div>
         <h1 className="text-4xl font-semibold mb-3 break-keep">엑셀 한 파일로 전체 데이터 이관</h1>
         <p className="text-neutral-600 mb-3 break-keep">케어플센터 <span className="font-mono text-neutral-900">월서비스관리_YYYYMM.xlsx</span> 다운로드 파일을 그대로 올리거나, AIHPRO 표준 템플릿을 채워서 올리세요. 회기 카운트(<span className="font-mono">완료[3]</span>)는 자동으로 회기 행으로 펼쳐집니다.</p>
         <p className="text-xs text-neutral-500 mb-10">지원 포맷 · 케어플 월서비스관리 · 케어플 일반 명단 · AIHPRO 표준 템플릿</p>

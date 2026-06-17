@@ -79,8 +79,26 @@ export default function B2BCenterApp() {
   const [loaded, setLoaded] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [desktopNavCollapsed, setDesktopNavCollapsed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("b2b_center_nav_collapsed") === "1";
+  });
   const location = useLocation();
   useEffect(() => { setMobileNavOpen(false); }, [location.pathname]);
+  // Auto-collapse on schedule page for full-width calendar like Carepl
+  const isSchedule = location.pathname.includes("/schedule");
+  useEffect(() => {
+    if (isSchedule && localStorage.getItem("b2b_center_nav_collapsed") === null) {
+      setDesktopNavCollapsed(true);
+    }
+  }, [isSchedule]);
+  function toggleDesktopNav() {
+    setDesktopNavCollapsed((v) => {
+      const next = !v;
+      localStorage.setItem("b2b_center_nav_collapsed", next ? "1" : "0");
+      return next;
+    });
+  }
 
 
   useEffect(() => {

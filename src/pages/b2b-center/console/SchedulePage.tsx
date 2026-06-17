@@ -1461,40 +1461,94 @@ function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, pr
   const th = therapist(s.therapist_id);
   const meta = STATUS_META[s.status as StatusCode];
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-md p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <p className="text-xs tracking-widest text-neutral-400">SESSION</p>
-            <h3 className="text-lg font-semibold mt-1">{clientName(s.client_id)}</h3>
+// ===== 상세 화면 (Carepl 스타일 full-bleed 사이드 시트) =====
+function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, programName }: any) {
+  const th = therapist(s.therapist_id);
+  const meta = STATUS_META[s.status as StatusCode];
+  const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
+  return (
+    <div className="fixed inset-0 z-50 flex" onClick={onClose}>
+      {/* dim */}
+      <div className="flex-1 bg-black/40" />
+      {/* sheet */}
+      <aside
+        onClick={(e) => e.stopPropagation()}
+        className="w-full sm:w-[640px] md:w-[720px] bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-200"
+      >
+        {/* header */}
+        <header className="px-6 md:px-8 pt-6 pb-5 border-b border-neutral-100">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[11px] tracking-[0.2em] text-neutral-400 mb-2">SESSION DETAIL</p>
+              <div className="flex items-center gap-3 mb-1">
+                <span className="w-3 h-3 rounded-full shrink-0" style={{ background: color || "#9ca3af" }} />
+                <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-neutral-900 truncate">
+                  {clientName(s.client_id)}
+                </h2>
+              </div>
+              <p className="text-sm text-neutral-500 mt-1">
+                {s.session_date} · {s.start_time?.slice(0, 5) ?? ""}
+                {s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+              </p>
+            </div>
+            <button onClick={onClose} className="p-2 -mr-2 rounded-full hover:bg-neutral-100 shrink-0" aria-label="닫기">
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
+          {meta && (
+            <span className={`inline-flex mt-4 text-xs px-2.5 py-1 rounded-full border ${meta.tone}`}>{meta.label}</span>
+          )}
+        </header>
+
+        {/* body */}
+        <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+            <DetailField k="일시" v={`${s.session_date} ${s.start_time?.slice(0, 5) ?? ""}${s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}`} />
+            <DetailField k="프로그램" v={programName(s.program_id) ?? "—"} />
+            <DetailField k="선생님" v={th ? `${th.name}${th.role ? ` · ${th.role}` : th.title ? ` · ${th.title}` : ""}` : "—"} />
+            <DetailField k="단가" v={`₩${(s.price_krw ?? 0).toLocaleString()}`} />
+            <DetailField k="바우처" v={s.is_voucher ? "전자바우처" : "일반결제"} />
+            <DetailField k="본인부담금" v={s.copay_krw != null ? `₩${Number(s.copay_krw).toLocaleString()}` : "—"} />
+          </div>
+          {s.note && (
+            <div className="mt-8">
+              <p className="text-[11px] tracking-widest text-neutral-400 mb-2">메모</p>
+              <div className="rounded-2xl border border-neutral-200 bg-neutral-50/60 p-4 text-sm text-neutral-800 whitespace-pre-wrap break-keep">
+                {s.note}
+              </div>
+            </div>
+          )}
         </div>
-        <dl className="space-y-2 text-sm">
-          <Row k="일시" v={`${s.session_date} ${s.start_time?.slice(0, 5) ?? ""}${s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}`} />
-          <Row k="프로그램" v={programName(s.program_id)} />
-          <Row k="선생님" v={th ? `${th.name} · ${th.role ?? th.title ?? ""}` : "—"} />
-          <Row k="상태" v={<span className={`text-xs px-2 py-0.5 rounded-full border ${meta?.tone ?? ""}`}>{meta?.label}</span>} />
-          <Row k="단가" v={`₩${(s.price_krw ?? 0).toLocaleString()}`} />
-          <Row k="바우처" v={s.is_voucher ? "Y" : "N"} />
-          {s.note && <Row k="메모" v={s.note} />}
-        </dl>
+
+        {/* footer actions */}
         {(onDelete || onEdit) && (
-          <div className="flex flex-wrap gap-2 mt-5">
-            <button onClick={onClose} className="flex-1 min-w-[80px] px-4 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">닫기</button>
+          <footer className="px-6 md:px-8 py-4 border-t border-neutral-100 bg-white flex flex-wrap gap-2">
+            <button onClick={onClose} className="px-5 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+              닫기
+            </button>
+            <div className="flex-1" />
             {onEdit && (
-              <button onClick={onEdit} className="flex-1 min-w-[80px] px-4 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-sm font-medium hover:bg-neutral-50">
+              <button onClick={onEdit} className="px-5 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-sm font-medium hover:bg-neutral-50">
                 일정 수정
               </button>
             )}
             {onDelete && (
-              <button onClick={onDelete} className="flex-1 min-w-[80px] inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-rose-600 text-white text-sm font-medium hover:bg-rose-700">
+              <button onClick={onDelete} className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-rose-600 text-white text-sm font-medium hover:bg-rose-700">
                 <Trash2 className="w-3.5 h-3.5" /> 삭제
               </button>
             )}
-          </div>
+          </footer>
         )}
-      </div>
+      </aside>
+    </div>
+  );
+}
+
+function DetailField({ k, v }: { k: string; v: any }) {
+  return (
+    <div>
+      <p className="text-[11px] tracking-widest text-neutral-400 mb-1.5">{k}</p>
+      <p className="text-[15px] text-neutral-900 break-keep">{v}</p>
     </div>
   );
 }

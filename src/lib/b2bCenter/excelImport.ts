@@ -257,22 +257,33 @@ function parseCareplMonthly(sheetName: string, aoa: any[][]): DetectedSheet[] {
 }
 
 // ===== 케어플 "일일서비스관리_YYYY-MM-DD-YYYY-MM-DD" 어댑터 =====
+// 선생님 컬럼은 케어플 버전에 따라 "선생님" / "치료사" / "담당" / "담당자" / "담당치료사" 로 다를 수 있다.
+const THERAPIST_ALIASES = ["선생님", "치료사", "담당", "담당자", "담당치료사"];
+function findHeaderAlias(header: string[], aliases: string[]): number {
+  for (const a of aliases) {
+    const i = header.indexOf(a);
+    if (i >= 0) return i;
+  }
+  return -1;
+}
 function careplDailySheet(wb: XLSX.WorkBook): { sheetName: string; aoa: any[][] } | null {
   // 표준 템플릿 = 케어플 "일일서비스관리" 1시트 포맷
-  // 헤더: 이용자 / 생년월일 / 선생님 / 프로그램 / 일자 / 시작시간 / 종료시간 / 상태
+  // 헤더: 이용자 / 생년월일 / 선생님(또는 치료사/담당) / 프로그램 / 일자 / 시작시간 / 종료시간 / 상태
   // (시트명·1~3행의 요약 텍스트는 무시한다)
-  const want = ["이용자", "선생님", "프로그램", "일자", "시작시간", "종료시간", "상태"];
+  const wantStrict = ["이용자", "프로그램", "일자", "시작시간", "종료시간", "상태"];
   for (const name of wb.SheetNames) {
     const aoa = XLSX.utils.sheet_to_json<any[]>(wb.Sheets[name], { header: 1, defval: null, raw: false });
     for (const headerRow of [0, 1, 2, 3]) {
       const header = (aoa[headerRow] ?? []).map((x) => String(x ?? "").trim());
-      if (want.every((k) => header.includes(k))) {
+      const hasTherapist = findHeaderAlias(header, THERAPIST_ALIASES) >= 0;
+      if (wantStrict.every((k) => header.includes(k)) && hasTherapist) {
         return { sheetName: name, aoa: aoa.slice(headerRow) };
       }
     }
   }
   return null;
 }
+
 
 
 function parseCareplDaily(sheetName: string, aoa: any[][]): DetectedSheet[] {

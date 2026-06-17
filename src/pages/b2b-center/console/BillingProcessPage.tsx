@@ -117,13 +117,14 @@ export default function BillingProcessPage() {
     const q = search.trim();
     return clients.filter((c) => {
       if (q && !(c.name ?? "").includes(q)) return false;
+      if (todayOnly && !todayClientIds.has(c.id)) return false;
       if (unpaidOnly) {
         const r = clientSummary.get(c.id);
         if (!r || r.charge - r.paid <= 0) return false;
       }
       return true;
     });
-  }, [clients, search, unpaidOnly, clientSummary]);
+  }, [clients, search, unpaidOnly, todayOnly, todayClientIds, clientSummary]);
 
   // Active client → group sessions by (therapist, program)
   const activeClient = clients.find((c) => c.id === selectedClient) ?? null;

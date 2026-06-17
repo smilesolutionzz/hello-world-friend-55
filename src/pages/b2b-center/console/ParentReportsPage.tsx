@@ -125,7 +125,7 @@ export default function ParentReportsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-semibold">부모 월간 리포트</h1>
-          <p className="text-sm text-neutral-500 mt-1">이용자별 월간 회기 기록을 묶어 보호자용 리포트를 자동 생성합니다.</p>
+          <p className="text-sm text-neutral-500 mt-1">발행된 주간 치료노트를 자동으로 묶어 월간 리포트 초안을 생성합니다. 치료노트가 있는 이용자만 대상으로 합니다.</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setSampleOpen({ clientId: "c1", name: "민준 (5세)", period: "2026년 4월", periodKey: "2026-04" })} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#C8B88A] text-neutral-800 text-sm hover:bg-[#FAF6E8]"><Eye className="w-4 h-4 text-[#C8B88A]" /> 샘플 리포트 보기</button>

@@ -29,6 +29,7 @@ export default function TherapyNotesPage() {
   const { centerId, demo } = useOutletContext<Ctx>();
   const [clients, setClients] = useState<any[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");
+  const [clientSearch, setClientSearch] = useState("");
   const [weekKey, setWeekKey] = useState(() => isoWeekKey(new Date()));
   const [uploads, setUploads] = useState<any[]>([]);
   const [report, setReport] = useState<any>(null);

@@ -740,6 +740,8 @@ export async function commitImport(
               price_krw: parseInt(r.price_krw) || 0,
               note: r.note ?? null,
               recurrence_key,
+              // 원본 엑셀의 선생님 이름을 항상 보존 (id 매칭 실패해도 화면에 폴백 표시)
+              meta: therapistName ? { therapist_name: therapistName } : null,
             },
             dupKey: session_date && client_id ? `${session_date}|${client_id}|${start_time ?? ""}` : null,
           };

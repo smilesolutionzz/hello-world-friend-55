@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2 } from "lucide-react";
+import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2, Download, FileSpreadsheet, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import * as XLSX from "xlsx";
 
 type Ctx = { centerId: string; demo?: boolean };
 

@@ -58,7 +58,14 @@ export default function BillingProcessPage() {
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [unpaidOnly, setUnpaidOnly] = useState(false);
+  const [todayOnly, setTodayOnly] = useState(false);
   const [loading, setLoading] = useState(true);
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayClientIds = useMemo(() => {
+    const ids = new Set<string>();
+    sessions.forEach((s) => { if ((s.session_date ?? "").slice(0, 10) === todayStr && s.client_id) ids.add(s.client_id); });
+    return ids;
+  }, [sessions, todayStr]);
   const [modalGroup, setModalGroup] = useState<Group | null>(null);
 
   useEffect(() => {

@@ -85,13 +85,9 @@ export default function B2BCenterApp() {
   });
   const location = useLocation();
   useEffect(() => { setMobileNavOpen(false); }, [location.pathname]);
-  // Auto-collapse on schedule page for full-width calendar like Carepl
+  // Sidebar stays open by default everywhere; only collapses when the user clicks the toggle.
   const isSchedule = location.pathname.includes("/schedule");
-  useEffect(() => {
-    if (isSchedule && localStorage.getItem("b2b_center_nav_collapsed") === null) {
-      setDesktopNavCollapsed(true);
-    }
-  }, [isSchedule]);
+
   function toggleDesktopNav() {
     setDesktopNavCollapsed((v) => {
       const next = !v;

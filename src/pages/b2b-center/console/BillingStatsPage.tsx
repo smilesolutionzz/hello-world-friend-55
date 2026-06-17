@@ -63,6 +63,25 @@ export default function BillingStatsPage() {
     })();
   }, [centerId, demo]);
 
+  // 오늘 회기가 없으면 가장 최근 회기 일자로 자동 이동 (최초 1회)
+  useEffect(() => {
+    if (loading || autoJumped || sessions.length === 0) return;
+    const hasToday = sessions.some((s) => dayKey(s.session_date) === period);
+    if (hasToday) { setAutoJumped(true); return; }
+    const sorted = [...sessions]
+      .map((s) => dayKey(s.session_date))
+      .filter(Boolean)
+      .sort((a, b) => b.localeCompare(a));
+    // 오늘 이전(또는 같은) 가장 가까운 날짜 우선, 없으면 가장 가까운 미래
+    const past = sorted.find((d) => d <= period);
+    const next = past ?? sorted[sorted.length - 1];
+    if (next && next !== period) {
+      setPeriod(next);
+      toast({ title: "오늘 회기가 없어 가장 가까운 일자로 이동했어요", description: next });
+    }
+    setAutoJumped(true);
+  }, [loading, sessions, period, autoJumped]);
+
   const clientName = useMemo(() => new Map(clients.map((c) => [c.id, c.name ?? "—"])), [clients]);
   const therapistName = useMemo(() => new Map(therapists.map((t) => [t.id, t.name ?? "—"])), [therapists]);
   const sessionMap = useMemo(() => new Map(sessions.map((s) => [s.id, s])), [sessions]);

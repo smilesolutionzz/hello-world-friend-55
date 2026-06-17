@@ -4,7 +4,7 @@ import { NavLink, Outlet, useNavigate, useSearchParams, useLocation } from "reac
 import {
   LayoutDashboard, Users, Calendar, BookOpen, CreditCard, Building2,
   UserCog, FileText, Upload, Sparkles, ShieldAlert, Compass, FileSpreadsheet,
-  Store, Menu, X,
+  Store, Menu, X, PanelLeftClose, PanelLeftOpen,
 } from "lucide-react";
 import { listMyCenters, getActiveCenterId, setActiveCenterId, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { useToast } from "@/hooks/use-toast";

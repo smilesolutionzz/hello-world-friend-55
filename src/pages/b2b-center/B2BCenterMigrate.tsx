@@ -72,8 +72,9 @@ export default function B2BCenterMigrate() {
         organization_type: "therapy_center",
         contact_person: form.contact_person,
         phone: form.phone,
-        email: form.email || null,
-        position: null,
+        email: form.email || "no-email@migrate.aihpro.app",
+        service_interest: "center_migration",
+        source: "/b2b-center/migrate",
         message: [
           `[이관 컨시어지 신청]`,
           `현재 시스템: ${form.current_system}`,

@@ -199,6 +199,7 @@ const AboutExpert = lazy(() => import("./pages/AboutExpert"));
 // Lazy: B2B 발달치료센터
 const B2BCenterLanding = lazy(() => import("./pages/b2b-center/B2BCenterLanding"));
 const B2BCenterImport = lazy(() => import("./pages/b2b-center/B2BCenterImport"));
+const B2BCenterMigrate = lazy(() => import("./pages/b2b-center/B2BCenterMigrate"));
 const B2BCenterApp = lazy(() => import("./pages/b2b-center/B2BCenterApp"));
 const CenterStorefrontPage = lazy(() => import("./pages/b2b-center/console/CenterStorefrontPage"));
 const CenterStorefrontPublic = lazy(() => import("./pages/b2b-center/CenterStorefrontPublic"));
@@ -607,6 +608,7 @@ const App = () => {
           {/* B2B 발달치료센터 (Phase 1: Landing + Import + Read-only console) */}
           <Route path="/b2b-center" element={<B2BCenterLanding />} />
           <Route path="/b2b-center/import" element={<B2BCenterImport />} />
+          <Route path="/b2b-center/migrate" element={<B2BCenterMigrate />} />
           <Route path="/b2b-center/invite/:token" element={<B2BCenterInvite />} />
           <Route path="/center-invite" element={<CenterInviteClaim />} />
           <Route path="/center-invite/:token" element={<CenterInviteClaim />} />

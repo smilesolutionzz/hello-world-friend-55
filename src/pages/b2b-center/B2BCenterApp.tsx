@@ -30,16 +30,16 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
   { to: "services/records", label: "일일 서비스 관리 (회기기록)", icon: FileText, group: "재활 서비스" },
   { to: "services/by-therapist", label: "선생님별 이용자 현황", icon: UserCog, group: "재활 서비스" },
   { to: "services/attendance", label: "일별 접수인원 현황", icon: Users, group: "재활 서비스" },
+  // 인텔리전스 / 스토어
+  { to: "intelligence/therapy-notes", label: "치료노트 (주간·AI)", icon: Sparkles, group: "인텔리전스" },
+  { to: "intelligence/parent-reports", label: "부모 월간 리포트", icon: FileText, group: "인텔리전스" },
+  { to: "storefront", label: "스토어 (프로그램·교구)", icon: Store, group: "인텔리전스" },
   // 관리자
   { to: "admin/organization", label: "기관 정보 및 옵션", icon: Building2, group: "관리자" },
   { to: "admin/therapists", label: "선생님 관리", icon: UserCog, group: "관리자" },
   { to: "admin/programs", label: "프로그램 관리", icon: BookOpen, group: "관리자" },
   // 데이터 연동
   { to: "data/voucher-excel", label: "전자바우처 엑셀 등록", icon: FileSpreadsheet, group: "데이터 연동" },
-  // 인텔리전스 / 스토어
-  { to: "intelligence/therapy-notes", label: "치료노트 (주간·AI)", icon: Sparkles, group: "인텔리전스" },
-  { to: "intelligence/parent-reports", label: "부모 월간 리포트", icon: FileText, group: "인텔리전스" },
-  { to: "storefront", label: "스토어 (프로그램·교구)", icon: Store, group: "인텔리전스" },
   // 수납 (준비중) — 맨 하단
   { to: "billing/stats", label: "수납 통계·미수금", icon: CreditCard, group: "수납 (준비중)" },
   { to: "billing/voucher-claims", label: "전자바우처 청구", icon: FileSpreadsheet, group: "수납 (준비중)" },

@@ -875,7 +875,7 @@ function SessionHoverDetail({ s, therapist, clientName, programName }: any) {
       </div>
       <p className="text-neutral-600">
         <span className="text-neutral-400 mr-1">선생님</span>
-        {th?.name ?? "미배정"}{th?.role || th?.title ? ` · ${th.role ?? th.title}` : ""}
+        {th?.name ?? s.meta?.therapist_name ?? "미배정"}{th?.role || th?.title ? ` · ${th.role ?? th.title}` : ""}
       </p>
       <p className="text-neutral-600">
         <span className="text-neutral-400 mr-1">프로그램</span>

@@ -41,6 +41,7 @@ export default function BillingStatsPage() {
   const [tab, setTab] = useState<"today" | "daily" | "client" | "therapist" | "method" | "ar">("today");
   const [loading, setLoading] = useState(true);
   const [autoRegistering, setAutoRegistering] = useState(false);
+  const [autoJumped, setAutoJumped] = useState(false);
 
   useEffect(() => {
     if (demo) { setLoading(false); return; }

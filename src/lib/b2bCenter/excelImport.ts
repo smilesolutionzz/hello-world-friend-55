@@ -291,7 +291,7 @@ function parseCareplDaily(sheetName: string, aoa: any[][]): DetectedSheet[] {
   const idx = (k: string) => header.indexOf(k);
   const iClient = idx("이용자");
   const iBirth = idx("생년월일");
-  const iTherapist = idx("선생님");
+  const iTherapist = findHeaderAlias(header, THERAPIST_ALIASES);
   const iProgram = idx("프로그램");
   const iDate = idx("일자");
   const iStart = idx("시작시간");

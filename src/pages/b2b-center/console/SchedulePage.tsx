@@ -1456,11 +1456,6 @@ function SessionRow({ s, therapist, clientName, programName, onPick }: any) {
   );
 }
 
-// ===== 상세 팝업 =====
-function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, programName }: any) {
-  const th = therapist(s.therapist_id);
-  const meta = STATUS_META[s.status as StatusCode];
-  return (
 // ===== 상세 화면 (Carepl 스타일 full-bleed 사이드 시트) =====
 function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, programName }: any) {
   const th = therapist(s.therapist_id);

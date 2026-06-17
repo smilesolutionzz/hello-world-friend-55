@@ -1583,6 +1583,11 @@ function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, pr
               닫기
             </button>
             <div className="flex-1" />
+            {onEdit && !s.therapist_id && (
+              <button onClick={onEdit} className="px-5 py-2.5 rounded-full bg-amber-50 text-amber-700 text-sm font-medium border border-amber-200 hover:bg-amber-100">
+                선생님 배정하기
+              </button>
+            )}
             {onEdit && (
               <button onClick={onEdit} className="px-5 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-sm font-medium hover:bg-neutral-50">
                 일정 수정

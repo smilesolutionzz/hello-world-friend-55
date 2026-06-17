@@ -1385,19 +1385,28 @@ function SessionChip({ s, therapist, clientName, programName, onPick, compact }:
             className="absolute left-0 top-0 bottom-0"
             style={{ width: 4, background: safeColor }}
           />
-          {/* 시간 */}
-          <p className={`font-semibold tabular-nums truncate text-neutral-900 ${compact ? "text-[10.5px] leading-[1.15]" : "text-[11px] leading-[1.2]"}`}>
-            {s.start_time?.slice(0, 5) ?? ""}{!compact && s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
-          </p>
-          {/* 이용자명 */}
-          <p className={`truncate font-medium text-neutral-800 ${compact ? "text-[11px] leading-[1.2]" : "text-[12.5px] leading-[1.25] mt-0.5"} ${cancelled ? "line-through text-neutral-400" : ""}`}>
-            {clientName(s.client_id)}
-          </p>
-          {/* 프로그램 (compact 아닐 때만) */}
-          {!compact && (
-            <p className="truncate text-[11px] text-neutral-500 leading-[1.2] mt-px">
-              {programName(s.program_id) ?? th?.name ?? "미배정"}
-            </p>
+          {compact ? (
+            <>
+              {/* 좁은 폭: 이름을 최우선으로 노출 (겹침 시에도 누구인지 보이도록) */}
+              <p className={`truncate font-semibold text-[11px] leading-[1.2] text-neutral-900 ${cancelled ? "line-through text-neutral-400" : ""}`}>
+                {clientName(s.client_id)}
+              </p>
+              <p className="truncate font-medium tabular-nums text-[10px] leading-[1.15] text-neutral-500">
+                {s.start_time?.slice(0, 5) ?? ""}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-semibold tabular-nums truncate text-neutral-900 text-[11px] leading-[1.2]">
+                {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+              </p>
+              <p className={`truncate font-medium text-neutral-800 text-[12.5px] leading-[1.25] mt-0.5 ${cancelled ? "line-through text-neutral-400" : ""}`}>
+                {clientName(s.client_id)}
+              </p>
+              <p className="truncate text-[11px] text-neutral-500 leading-[1.2] mt-px">
+                {programName(s.program_id) ?? th?.name ?? "미배정"}
+              </p>
+            </>
           )}
         </button>
       </HoverCardTrigger>

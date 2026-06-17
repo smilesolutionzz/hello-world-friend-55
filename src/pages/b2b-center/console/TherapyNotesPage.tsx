@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2 } from "lucide-react";
+import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2, Download, FileSpreadsheet, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import * as XLSX from "xlsx";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -25,6 +26,61 @@ function fileToBase64(file: File): Promise<{ b64: string; mime: string }> {
   });
 }
 
+function draftToPlainSections(d: any): { label: string; value: string }[] {
+  const J = (v: any) => Array.isArray(v) ? v.filter(Boolean).join("\n• ") : (v ?? "");
+  return [
+    { label: "제목", value: d?.title ?? "" },
+    { label: "보호자께 인사", value: d?.greeting ?? "" },
+    { label: "이번 주 하이라이트", value: Array.isArray(d?.highlights) && d.highlights.length ? "• " + J(d.highlights) : "" },
+    { label: "이번 주 활동 요약", value: d?.activities_summary ?? "" },
+    { label: "관찰된 성장", value: Array.isArray(d?.growth) && d.growth.length ? "• " + J(d.growth) : "" },
+    { label: "가정에서 해볼 활동", value: Array.isArray(d?.home_tips) && d.home_tips.length ? "• " + J(d.home_tips) : "" },
+    { label: "다음 주 집중 방향", value: d?.next_week_focus ?? "" },
+  ];
+}
+
+function downloadPDF(clientName: string, weekKey: string, draft: any) {
+  const sections = draftToPlainSections(draft);
+  const win = window.open("", "_blank", "width=820,height=900");
+  if (!win) { alert("팝업이 차단되었습니다. 팝업을 허용해주세요."); return; }
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>치료노트 ${clientName} ${weekKey}</title>
+    <style>
+      @page { size: A4; margin: 18mm; }
+      body { font-family: -apple-system, "Pretendard Variable", "Apple SD Gothic Neo", sans-serif; color:#1a1a1a; line-height:1.65; }
+      .gold { color:#C8B88A; letter-spacing:.2em; font-size:11px; }
+      h1 { font-size:22px; margin:4px 0 6px; }
+      .meta { color:#666; font-size:12px; margin-bottom:24px; }
+      .sec { margin-bottom:18px; page-break-inside: avoid; }
+      .label { font-size:11px; color:#888; margin-bottom:6px; text-transform:uppercase; letter-spacing:.1em; }
+      .val { white-space:pre-wrap; font-size:14px; }
+      hr { border:none; border-top:1px solid #eee; margin:12px 0; }
+      .foot { margin-top:30px; font-size:10px; color:#aaa; border-top:1px solid #eee; padding-top:8px; }
+    </style></head><body>
+    <div class="gold">WEEKLY THERAPY NOTE</div>
+    <h1>${escapeHTML(draft?.title || "주간 치료노트")}</h1>
+    <div class="meta">${escapeHTML(clientName)} · ${escapeHTML(weekKey)}</div>
+    ${sections.filter(s => s.value).map(s => `<div class="sec"><div class="label">${escapeHTML(s.label)}</div><div class="val">${escapeHTML(s.value)}</div></div>`).join("")}
+    <div class="foot">AIHPRO Center · 발행일 ${new Date().toLocaleDateString("ko-KR")}</div>
+    <script>window.onload=()=>{setTimeout(()=>window.print(),300);}</script>
+    </body></html>`;
+  win.document.write(html);
+  win.document.close();
+}
+
+function escapeHTML(s: string): string {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+}
+
+function downloadXLSX(clientName: string, weekKey: string, draft: any) {
+  const sections = draftToPlainSections(draft);
+  const rows = [["항목", "내용"], ...sections.map(s => [s.label, s.value])];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"] = [{ wch: 18 }, { wch: 80 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "치료노트");
+  XLSX.writeFile(wb, `치료노트_${clientName}_${weekKey}.xlsx`);
+}
+
 export default function TherapyNotesPage() {
   const { centerId, demo } = useOutletContext<Ctx>();
   const [clients, setClients] = useState<any[]>([]);
@@ -38,6 +94,23 @@ export default function TherapyNotesPage() {
   const [generating, setGenerating] = useState(false);
   const [rewriting, setRewriting] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [history, setHistory] = useState<any[]>([]);
+  const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); });
+  const [viewingHistory, setViewingHistory] = useState<any>(null);
+
+  const loadHistory = async () => {
+    if (!selectedClient) { setHistory([]); return; }
+    const { data } = await supabase
+      .from("center_parent_reports")
+      .select("id, week_key, period_start, period_end, title, status, published_at, ai_draft_json")
+      .eq("center_id", centerId)
+      .eq("client_id", selectedClient)
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(200);
+    setHistory(data || []);
+  };
+  useEffect(() => { loadHistory(); /* eslint-disable-next-line */ }, [selectedClient, centerId]);
 
   useEffect(() => {
     if (demo) return;
@@ -170,6 +243,7 @@ export default function TherapyNotesPage() {
     }).eq("id", report.id);
     toast({ title: "발행 완료", description: "보호자가 /parent/center 에서 확인할 수 있어요." });
     loadWeek();
+    loadHistory();
   };
 
   const clientName = useMemo(() => clients.find(c => c.id === selectedClient)?.name ?? "—", [clients, selectedClient]);
@@ -284,6 +358,12 @@ export default function TherapyNotesPage() {
           <EditableField label="다음 주 집중 방향" value={editedDraft.next_week_focus} onChange={(v) => setEditedDraft({ ...editedDraft, next_week_focus: v })} multiline onRewrite={(inst) => rewriteField("next_week_focus", inst)} rewriting={rewriting === "next_week_focus"} />
 
           <div className="flex flex-wrap items-center justify-end gap-2 pt-4 border-t border-neutral-100">
+            <button onClick={() => downloadPDF(clientName, weekKey, editedDraft)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+              <Download className="w-4 h-4" /> PDF 다운로드
+            </button>
+            <button onClick={() => downloadXLSX(clientName, weekKey, editedDraft)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+              <FileSpreadsheet className="w-4 h-4" /> 엑셀 다운로드
+            </button>
             <button onClick={saveDraft} className="px-4 py-2 rounded-full border border-neutral-200 text-sm">초안 저장</button>
             <button onClick={publish} className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-neutral-900 text-white text-sm">
               <Send className="w-4 h-4" /> {report.status === "published" ? "다시 발행" : "보호자에게 발행"}
@@ -298,6 +378,140 @@ export default function TherapyNotesPage() {
           업로드는 있지만 아직 주간 노트가 없어요. 상단에서 <b>주간 치료노트 자동 생성</b>을 눌러주세요.
         </div>
       )}
+
+      {/* 발행 캘린더 */}
+      {selectedClient && (
+        <PublishCalendar
+          clientName={clientName}
+          history={history}
+          month={calMonth}
+          onPrevMonth={() => setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1))}
+          onNextMonth={() => setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1))}
+          onJumpToWeek={(wk) => setWeekKey(wk)}
+          onView={(rep) => setViewingHistory(rep)}
+        />
+      )}
+
+      {viewingHistory && (
+        <HistoryViewer
+          clientName={clientName}
+          report={viewingHistory}
+          onClose={() => setViewingHistory(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+function PublishCalendar({ clientName, history, month, onPrevMonth, onNextMonth, onJumpToWeek, onView }: any) {
+  const year = month.getFullYear();
+  const mon = month.getMonth();
+  const firstDay = new Date(year, mon, 1);
+  const startWeekday = firstDay.getDay();
+  const daysInMonth = new Date(year, mon + 1, 0).getDate();
+  const cells: (Date | null)[] = [];
+  for (let i = 0; i < startWeekday; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, mon, d));
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  // map date string -> report
+  const byDate = new Map<string, any>();
+  history.forEach((r: any) => {
+    const dt = r.published_at ? new Date(r.published_at) : null;
+    if (!dt) return;
+    const key = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+    if (!byDate.has(key)) byDate.set(key, r);
+  });
+
+  return (
+    <div className="bg-white rounded-3xl border border-neutral-200 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <p className="text-xs tracking-widest text-[#C8B88A] mb-1">PUBLISH CALENDAR</p>
+          <h2 className="font-semibold flex items-center gap-2"><CalendarIcon className="w-4 h-4" /> {clientName} · 발행 캘린더</h2>
+          <p className="text-xs text-neutral-500 mt-1">발행된 날짜를 클릭하면 그날 보낸 치료노트를 볼 수 있어요.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={onPrevMonth} className="p-1.5 rounded-full border border-neutral-200 hover:bg-neutral-50"><ChevronLeft className="w-4 h-4" /></button>
+          <span className="text-sm font-medium w-24 text-center">{year}년 {mon + 1}월</span>
+          <button onClick={onNextMonth} className="p-1.5 rounded-full border border-neutral-200 hover:bg-neutral-50"><ChevronRight className="w-4 h-4" /></button>
+        </div>
+      </div>
+      <div className="grid grid-cols-7 gap-1 text-center text-[11px] text-neutral-500 mb-1">
+        {["일","월","화","수","목","금","토"].map(d => <div key={d} className="py-1">{d}</div>)}
+      </div>
+      <div className="grid grid-cols-7 gap-1">
+        {cells.map((c, i) => {
+          if (!c) return <div key={i} className="h-16" />;
+          const key = `${c.getFullYear()}-${String(c.getMonth() + 1).padStart(2, "0")}-${String(c.getDate()).padStart(2, "0")}`;
+          const rep = byDate.get(key);
+          return (
+            <button
+              key={i}
+              onClick={() => rep && onView(rep)}
+              disabled={!rep}
+              className={`h-16 rounded-xl border text-left p-1.5 transition ${rep ? "border-[#C8B88A] bg-[#FAF6E8] hover:bg-[#F0E8C8] cursor-pointer" : "border-neutral-100 bg-white"}`}
+            >
+              <div className={`text-xs ${rep ? "font-semibold text-neutral-900" : "text-neutral-400"}`}>{c.getDate()}</div>
+              {rep && (
+                <div className="text-[10px] text-[#9A8B5C] mt-0.5 truncate">📝 {rep.week_key}</div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      {history.length > 0 && (
+        <div className="mt-5 pt-4 border-t border-neutral-100">
+          <p className="text-xs text-neutral-500 mb-2">최근 발행 ({history.length}건)</p>
+          <div className="space-y-1 max-h-48 overflow-y-auto">
+            {history.slice(0, 12).map((r: any) => (
+              <button
+                key={r.id}
+                onClick={() => onView(r)}
+                className="w-full flex items-center justify-between text-left text-xs px-3 py-2 rounded-lg hover:bg-neutral-50"
+              >
+                <span className="text-neutral-700 truncate">{r.title || "주간 치료노트"} · {r.week_key}</span>
+                <span className="text-neutral-400 ml-2 shrink-0">{r.published_at ? new Date(r.published_at).toLocaleDateString("ko-KR") : "-"}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function HistoryViewer({ clientName, report, onClose }: any) {
+  const d = report.ai_draft_json || {};
+  const sections = draftToPlainSections(d);
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-xs tracking-widest text-[#C8B88A] mb-1">PUBLISHED NOTE</p>
+            <h3 className="text-lg font-semibold">{d.title || "주간 치료노트"}</h3>
+            <p className="text-xs text-neutral-500 mt-1">{clientName} · {report.week_key} · 발행 {report.published_at ? new Date(report.published_at).toLocaleString("ko-KR") : "-"}</p>
+          </div>
+          <button onClick={onClose} className="text-neutral-400 hover:text-neutral-900 text-xl leading-none">×</button>
+        </div>
+        <div className="space-y-4">
+          {sections.filter(s => s.value).map((s, i) => (
+            <div key={i}>
+              <div className="text-[11px] uppercase tracking-wider text-neutral-500 mb-1">{s.label}</div>
+              <div className="text-sm whitespace-pre-wrap text-neutral-800">{s.value}</div>
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-neutral-100">
+          <button onClick={() => downloadPDF(clientName, report.week_key, d)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+            <Download className="w-4 h-4" /> PDF
+          </button>
+          <button onClick={() => downloadXLSX(clientName, report.week_key, d)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+            <FileSpreadsheet className="w-4 h-4" /> 엑셀
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

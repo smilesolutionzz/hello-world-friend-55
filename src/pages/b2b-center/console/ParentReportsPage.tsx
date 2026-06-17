@@ -25,7 +25,7 @@ export default function ParentReportsPage() {
       return;
     }
     const [r, c] = await Promise.all([
-      supabase.from("center_parent_reports").select("*").eq("center_id", centerId).order("period_end", { ascending: false }).limit(100),
+      supabase.from("center_parent_reports").select("*").eq("center_id", centerId).eq("period_type", "monthly").order("period_end", { ascending: false }).limit(100),
       supabase.from("center_clients").select("id, name").eq("center_id", centerId),
     ]);
     setRows(r.data ?? []);
@@ -41,12 +41,80 @@ export default function ParentReportsPage() {
     const period_start = `${period}-01`;
     const period_end = new Date(y, m, 0).toISOString().slice(0, 10);
 
-    const { data: cs } = await supabase.from("center_clients").select("id").eq("center_id", centerId).eq("status", "active");
-    if (!cs?.length) { toast({ title: "활성 이용자가 없어요" }); return; }
-    const inserts = cs.map((c) => ({ center_id: centerId, client_id: c.id, period_start, period_end, status: "draft" }));
+    // 치료노트(주간) 가 있는 이용자만 대상으로 월간 리포트 초안 생성 — 정확도 향상
+    const { data: notes, error: notesErr } = await supabase
+      .from("center_parent_reports")
+      .select("id, client_id, week_key, period_start, period_end, title, ai_summary, ai_draft_json, edited_html, html_content, published_at")
+      .eq("center_id", centerId)
+      .eq("period_type", "weekly")
+      .gte("period_start", period_start)
+      .lte("period_end", period_end)
+      .order("period_start", { ascending: true });
+    if (notesErr) { toast({ title: "치료노트 조회 실패", description: notesErr.message, variant: "destructive" }); return; }
+    if (!notes?.length) {
+      toast({ title: "이번 달 발행된 치료노트가 없어요", description: "치료노트 페이지에서 주간 노트를 먼저 작성/발행해주세요.", variant: "destructive" });
+      return;
+    }
+
+    // 이용자별 그룹핑
+    const byClient = new Map<string, any[]>();
+    for (const n of notes) {
+      if (!byClient.has(n.client_id)) byClient.set(n.client_id, []);
+      byClient.get(n.client_id)!.push(n);
+    }
+
+    // 기존 같은 달 초안/발행 리포트 확인 (중복 방지)
+    const clientIds = Array.from(byClient.keys());
+    const { data: existing } = await supabase
+      .from("center_parent_reports")
+      .select("client_id")
+      .eq("center_id", centerId)
+      .eq("period_type", "monthly")
+      .eq("period_start", period_start)
+      .in("client_id", clientIds);
+    const existingSet = new Set((existing ?? []).map((e: any) => e.client_id));
+
+    const inserts = clientIds
+      .filter((cid) => !existingSet.has(cid))
+      .map((cid) => {
+        const ns = byClient.get(cid)!;
+        return {
+          center_id: centerId,
+          client_id: cid,
+          period_start,
+          period_end,
+          period_type: "monthly",
+          period_yyyymm: period,
+          status: "draft",
+          title: `${y}년 ${m}월 월간 리포트`,
+          source_upload_ids: ns.map((n) => n.id),
+          ai_draft_json: {
+            generated_from: "weekly_therapy_notes",
+            week_count: ns.length,
+            weekly_notes: ns.map((n) => ({
+              id: n.id,
+              week_key: n.week_key,
+              period_start: n.period_start,
+              period_end: n.period_end,
+              title: n.title,
+              summary: n.ai_summary,
+              draft: n.ai_draft_json,
+            })),
+          },
+        };
+      });
+
+    const skipped = clientIds.length - inserts.length;
+    if (!inserts.length) {
+      toast({ title: "이미 모두 생성되어 있어요", description: `${clientIds.length}명 모두 이번 달 리포트가 있습니다.` });
+      return;
+    }
     const { error } = await supabase.from("center_parent_reports").insert(inserts as any);
     if (error) { toast({ title: "실패", description: error.message, variant: "destructive" }); return; }
-    toast({ title: `${cs.length}건 초안 생성 완료`, description: "각 리포트를 열어 검토 후 발행하세요." });
+    toast({
+      title: `${inserts.length}건 초안 생성 완료`,
+      description: `치료노트 ${notes.length}건을 ${inserts.length}명에게 묶었습니다.${skipped ? ` (중복 ${skipped}건 건너뜀)` : ""}`,
+    });
     load();
   };
 

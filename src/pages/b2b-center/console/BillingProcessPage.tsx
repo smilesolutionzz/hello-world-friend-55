@@ -12,7 +12,7 @@ const monthKey = (d?: string | null) => (d ?? "").slice(0, 7);
 
 type Client = { id: string; name: string | null; birth_date: string | null; gender: string | null };
 type Therapist = { id: string; name: string | null };
-type Program = { id: string; name: string | null; default_price: number | null };
+type Program = { id: string; name: string | null; price_krw: number | null };
 type Session = {
   id: string;
   client_id: string | null;

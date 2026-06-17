@@ -330,7 +330,23 @@ export default function BillingStatsPage() {
       ) : (
         <div className="rounded-2xl bg-white border border-neutral-200 overflow-hidden">
           {tab === "today" && (
-            todayClients.length === 0 ? <p className="p-8 text-center text-neutral-400">{period} 예정된 회기가 없습니다.</p> : (
+            todayClients.length === 0 ? (
+              <div className="p-8 text-center space-y-2">
+                <p className="text-neutral-400">{period} 예정된 회기가 없습니다.</p>
+                <p className="text-xs text-neutral-400">전체 등록 회기 {sessions.length}건 · 상단 날짜를 바꿔보세요.</p>
+                {sessions.length > 0 && (
+                  <button
+                    onClick={() => {
+                      const sorted = [...sessions].map((s) => dayKey(s.session_date)).filter(Boolean).sort((a, b) => b.localeCompare(a));
+                      const past = sorted.find((d) => d <= today());
+                      const next = past ?? sorted[sorted.length - 1];
+                      if (next) setPeriod(next);
+                    }}
+                    className="mt-2 px-3 py-1.5 rounded-lg border border-neutral-200 text-xs hover:bg-neutral-50"
+                  >가장 최근 회기일로 이동</button>
+                )}
+              </div>
+            ) : (
               <table className="w-full text-sm">
                 <thead className="bg-neutral-50 text-neutral-500 text-xs">
                   <tr>

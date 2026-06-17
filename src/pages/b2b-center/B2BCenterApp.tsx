@@ -181,7 +181,9 @@ export default function B2BCenterApp() {
           <div className="md:hidden fixed inset-0 z-40 bg-black/40" onClick={() => setMobileNavOpen(false)} />
         )}
         {/* Sidebar */}
-        <aside className={`${mobileNavOpen ? "fixed" : "hidden"} md:flex md:static z-50 inset-y-0 left-0 w-72 md:w-64 bg-white border-r border-neutral-200 flex-col`}>
+        <aside
+          className={`${mobileNavOpen ? "fixed" : "hidden"} ${desktopNavCollapsed ? "md:hidden" : "md:flex"} md:static z-50 inset-y-0 left-0 w-72 md:w-64 bg-white border-r border-neutral-200 flex-col`}
+        >
           <div className="p-4 border-b border-neutral-200 flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
               <p className="text-xs text-neutral-500 mb-1">기관</p>
@@ -204,9 +206,19 @@ export default function B2BCenterApp() {
                 </button>
               )}
             </div>
-            <button onClick={() => setMobileNavOpen(false)} className="md:hidden p-2 -mr-2 rounded-lg hover:bg-neutral-100" aria-label="메뉴 닫기">
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex flex-col gap-1 shrink-0">
+              <button
+                onClick={toggleDesktopNav}
+                className="hidden md:inline-flex p-2 rounded-lg hover:bg-neutral-100 text-neutral-500"
+                aria-label="사이드바 접기"
+                title="사이드바 접기"
+              >
+                <PanelLeftClose className="w-4 h-4" />
+              </button>
+              <button onClick={() => setMobileNavOpen(false)} className="md:hidden p-2 -mr-2 rounded-lg hover:bg-neutral-100" aria-label="메뉴 닫기">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
           <nav className="flex-1 overflow-y-auto p-3 space-y-4">
             {Object.entries(grouped).map(([group, items]) => (
@@ -234,8 +246,21 @@ export default function B2BCenterApp() {
           </div>
         </aside>
 
+        {/* Floating expand button (desktop, when sidebar collapsed) */}
+        {desktopNavCollapsed && (
+          <button
+            onClick={toggleDesktopNav}
+            className="hidden md:inline-flex fixed top-3 left-3 z-40 items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-neutral-200 shadow-sm text-xs text-neutral-700 hover:bg-neutral-50"
+            aria-label="사이드바 열기"
+            title="사이드바 열기"
+          >
+            <PanelLeftOpen className="w-4 h-4" />
+            메뉴
+          </button>
+        )}
+
         <main className="flex-1 min-w-0 overflow-auto">
-          <div className="max-w-5xl mx-auto px-4 md:px-6 pt-4 md:pt-6 space-y-4">
+          <div className={`${isSchedule ? "max-w-none" : "max-w-5xl"} mx-auto px-4 md:px-6 pt-4 md:pt-6 space-y-4`}>
             {!demo && (
               <TrialBanner
                 trialEndsAt={activeCenter.trial_ends_at}

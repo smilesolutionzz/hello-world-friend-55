@@ -123,22 +123,42 @@ export default function B2BCenterImport() {
 
         {/* 1. 기관 */}
         <section className="mb-8 p-6 rounded-2xl border border-neutral-200">
-          <h2 className="font-semibold mb-4">01 · 기관 선택</h2>
+          <h2 className="font-semibold mb-1">01 · 기관 선택</h2>
+          <p className="text-xs text-neutral-500 mb-4 break-keep">
+            이미 등록된 기관은 <span className="font-medium text-neutral-700">콘솔 입장</span>이 가능합니다. 클릭하면 활성 기관으로 설정되고, 우측 버튼으로 바로 콘솔(이용자·일정·치료노트)에 진입할 수 있어요. 새 기관은 아래에서 추가하세요.
+          </p>
           {centers.length > 0 && (
             <div className="space-y-2 mb-4">
-              {centers.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => { setActive(c.id); setActiveCenterId(c.id); }}
-                  className={`w-full text-left p-3 rounded-lg border ${activeId === c.id ? "border-neutral-900 bg-neutral-50" : "border-neutral-200"}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span>{c.name}</span>
-                    {activeId === c.id && <Check className="w-4 h-4" />}
+              {centers.map((c) => {
+                const isActive = activeId === c.id;
+                return (
+                  <div
+                    key={c.id}
+                    className={`flex items-center gap-2 p-3 rounded-lg border ${isActive ? "border-neutral-900 bg-neutral-50" : "border-neutral-200"}`}
+                  >
+                    <button
+                      onClick={() => { setActive(c.id); setActiveCenterId(c.id); }}
+                      className="flex-1 text-left flex items-center gap-2 min-w-0"
+                    >
+                      {isActive && <Check className="w-4 h-4 shrink-0" />}
+                      <span className="truncate">{c.name}</span>
+                      <span className="text-[10px] tracking-widest text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-0.5 shrink-0">
+                        콘솔 입장 가능
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => { setActiveCenterId(c.id); navigate("/b2b-center/app/clients"); }}
+                      className="shrink-0 px-3 py-1.5 rounded-full bg-neutral-900 text-white text-xs font-medium hover:bg-neutral-800 transition"
+                    >
+                      콘솔 입장 →
+                    </button>
                   </div>
-                </button>
-              ))}
+                );
+              })}
             </div>
+          )}
+          {centers.length === 0 && (
+            <p className="text-xs text-amber-600 mb-3">아직 등록된 기관이 없습니다. 아래에서 새 기관을 추가하면 콘솔 입장이 활성화됩니다.</p>
           )}
           <div className="flex gap-2">
             <input

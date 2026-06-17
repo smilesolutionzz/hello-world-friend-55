@@ -40,7 +40,7 @@ export default function TherapyNotesPage() {
 
   useEffect(() => {
     if (demo) return;
-    supabase.from("center_clients").select("id, name").eq("center_id", centerId).eq("status", "active").order("name").then(({ data }) => {
+    supabase.from("center_clients").select("id, name").eq("center_id", centerId).in("status", ["enrolled", "waiting"]).order("name").then(({ data }) => {
       setClients(data || []);
       if (data?.[0]) setSelectedClient(data[0].id);
     });

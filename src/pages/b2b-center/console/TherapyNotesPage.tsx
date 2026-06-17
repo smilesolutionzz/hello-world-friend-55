@@ -94,6 +94,23 @@ export default function TherapyNotesPage() {
   const [generating, setGenerating] = useState(false);
   const [rewriting, setRewriting] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [history, setHistory] = useState<any[]>([]);
+  const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); });
+  const [viewingHistory, setViewingHistory] = useState<any>(null);
+
+  const loadHistory = async () => {
+    if (!selectedClient) { setHistory([]); return; }
+    const { data } = await supabase
+      .from("center_parent_reports")
+      .select("id, week_key, period_start, period_end, title, status, published_at, ai_draft_json")
+      .eq("center_id", centerId)
+      .eq("client_id", selectedClient)
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(200);
+    setHistory(data || []);
+  };
+  useEffect(() => { loadHistory(); /* eslint-disable-next-line */ }, [selectedClient, centerId]);
 
   useEffect(() => {
     if (demo) return;

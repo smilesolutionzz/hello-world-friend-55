@@ -1561,7 +1561,7 @@ function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, pr
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
             <DetailField k="일시" v={`${s.session_date} ${s.start_time?.slice(0, 5) ?? ""}${s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}`} />
             <DetailField k="프로그램" v={programName(s.program_id) ?? "—"} />
-            <DetailField k="선생님" v={th ? `${th.name}${th.role ? ` · ${th.role}` : th.title ? ` · ${th.title}` : ""}` : <span className="text-amber-600 font-medium">미배정</span>} />
+            <DetailField k="선생님" v={th ? `${th.name}${th.role ? ` · ${th.role}` : th.title ? ` · ${th.title}` : ""}` : (s.meta?.therapist_name ? <span><span className="text-neutral-900">{s.meta.therapist_name}</span> <span className="text-amber-600 text-xs">(미등록 선생님)</span></span> : <span className="text-amber-600 font-medium">미배정</span>)} />
             <DetailField k="단가" v={`₩${(s.price_krw ?? 0).toLocaleString()}`} />
             <DetailField k="바우처" v={s.is_voucher ? "전자바우처" : "일반결제"} />
             <DetailField k="본인부담금" v={s.copay_krw != null ? `₩${Number(s.copay_krw).toLocaleString()}` : "—"} />

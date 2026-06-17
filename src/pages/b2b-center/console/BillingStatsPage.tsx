@@ -41,6 +41,7 @@ export default function BillingStatsPage() {
   const [tab, setTab] = useState<"today" | "daily" | "client" | "therapist" | "method" | "ar">("today");
   const [loading, setLoading] = useState(true);
   const [autoRegistering, setAutoRegistering] = useState(false);
+  const [autoJumped, setAutoJumped] = useState(false);
 
   useEffect(() => {
     if (demo) { setLoading(false); return; }
@@ -61,6 +62,25 @@ export default function BillingStatsPage() {
       setLoading(false);
     })();
   }, [centerId, demo]);
+
+  // 오늘 회기가 없으면 가장 최근 회기 일자로 자동 이동 (최초 1회)
+  useEffect(() => {
+    if (loading || autoJumped || sessions.length === 0) return;
+    const hasToday = sessions.some((s) => dayKey(s.session_date) === period);
+    if (hasToday) { setAutoJumped(true); return; }
+    const sorted = [...sessions]
+      .map((s) => dayKey(s.session_date))
+      .filter(Boolean)
+      .sort((a, b) => b.localeCompare(a));
+    // 오늘 이전(또는 같은) 가장 가까운 날짜 우선, 없으면 가장 가까운 미래
+    const past = sorted.find((d) => d <= period);
+    const next = past ?? sorted[sorted.length - 1];
+    if (next && next !== period) {
+      setPeriod(next);
+      toast({ title: "오늘 회기가 없어 가장 가까운 일자로 이동했어요", description: next });
+    }
+    setAutoJumped(true);
+  }, [loading, sessions, period, autoJumped]);
 
   const clientName = useMemo(() => new Map(clients.map((c) => [c.id, c.name ?? "—"])), [clients]);
   const therapistName = useMemo(() => new Map(therapists.map((t) => [t.id, t.name ?? "—"])), [therapists]);
@@ -310,7 +330,23 @@ export default function BillingStatsPage() {
       ) : (
         <div className="rounded-2xl bg-white border border-neutral-200 overflow-hidden">
           {tab === "today" && (
-            todayClients.length === 0 ? <p className="p-8 text-center text-neutral-400">{period} 예정된 회기가 없습니다.</p> : (
+            todayClients.length === 0 ? (
+              <div className="p-8 text-center space-y-2">
+                <p className="text-neutral-400">{period} 예정된 회기가 없습니다.</p>
+                <p className="text-xs text-neutral-400">전체 등록 회기 {sessions.length}건 · 상단 날짜를 바꿔보세요.</p>
+                {sessions.length > 0 && (
+                  <button
+                    onClick={() => {
+                      const sorted = [...sessions].map((s) => dayKey(s.session_date)).filter(Boolean).sort((a, b) => b.localeCompare(a));
+                      const past = sorted.find((d) => d <= today());
+                      const next = past ?? sorted[sorted.length - 1];
+                      if (next) setPeriod(next);
+                    }}
+                    className="mt-2 px-3 py-1.5 rounded-lg border border-neutral-200 text-xs hover:bg-neutral-50"
+                  >가장 최근 회기일로 이동</button>
+                )}
+              </div>
+            ) : (
               <table className="w-full text-sm">
                 <thead className="bg-neutral-50 text-neutral-500 text-xs">
                   <tr>

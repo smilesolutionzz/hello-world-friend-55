@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
     }
 
     const baseOrigin = (origin_url as string) || req.headers.get("origin") || "https://aihpro.app";
-    const shareUrl = `${baseOrigin.replace(/\/$/, "")}/r/${token}`;
+    const shareUrl = `${baseOrigin.replace(/\/$/, "")}/parent-share/${token}`;
 
     let smsResult: unknown = null;
     if (send_sms && TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && TWILIO_FROM_NUMBER) {

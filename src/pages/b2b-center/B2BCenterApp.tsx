@@ -14,37 +14,38 @@ import EmptyCenterState from "@/components/b2b-center/EmptyCenterState";
 import DemoModeBanner from "@/components/b2b-center/DemoModeBanner";
 import TrialBanner from "@/components/b2b-center/TrialBanner";
 import { DEMO_CENTER, isDemoMode } from "@/lib/b2bCenter/demoData";
+import { BETA_MODE } from "@/config/betaMode";
 
-const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
+const NAV: Array<{ to: string; label: string; icon: any; group?: string; betaVisible: boolean }> = [
   // 시작
-  { to: "setup", label: "시작 가이드", icon: Sparkles, group: "시작" },
-  { to: "intelligence/ops-dashboard", label: "대시보드", icon: Sparkles, group: "시작" },
-  { to: "guide", label: "운영 가이드", icon: Compass, group: "시작" },
+  { to: "setup", label: "시작 가이드", icon: Sparkles, group: "시작", betaVisible: true },
+  { to: "intelligence/ops-dashboard", label: "대시보드", icon: Sparkles, group: "시작", betaVisible: false },
+  { to: "guide", label: "운영 가이드", icon: Compass, group: "시작", betaVisible: false },
   // 일정
-  { to: "schedule", label: "일정", icon: Calendar, group: "일정" },
+  { to: "schedule", label: "일정", icon: Calendar, group: "일정", betaVisible: true },
   // 이용자 및 상담/평가
-  { to: "clients", label: "이용자 관리", icon: Users, group: "이용자 및 상담/평가" },
-  { to: "assessments", label: "상담 및 평가 관리", icon: BookOpen, group: "이용자 및 상담/평가" },
+  { to: "clients", label: "이용자 관리", icon: Users, group: "이용자 및 상담/평가", betaVisible: true },
+  { to: "assessments", label: "상담 및 평가 관리", icon: BookOpen, group: "이용자 및 상담/평가", betaVisible: false },
   // 재활 서비스 — 케어플 구조
-  { to: "services/monthly", label: "월 서비스 관리", icon: LayoutDashboard, group: "재활 서비스" },
-  { to: "services/records", label: "일일 서비스 관리 (회기기록)", icon: FileText, group: "재활 서비스" },
-  { to: "services/by-therapist", label: "선생님별 이용자 현황", icon: UserCog, group: "재활 서비스" },
-  { to: "services/attendance", label: "일별 접수인원 현황", icon: Users, group: "재활 서비스" },
+  { to: "services/monthly", label: "월 서비스 관리", icon: LayoutDashboard, group: "재활 서비스", betaVisible: false },
+  { to: "services/records", label: "일일 서비스 관리 (회기기록)", icon: FileText, group: "재활 서비스", betaVisible: true },
+  { to: "services/by-therapist", label: "선생님별 이용자 현황", icon: UserCog, group: "재활 서비스", betaVisible: false },
+  { to: "services/attendance", label: "일별 접수인원 현황", icon: Users, group: "재활 서비스", betaVisible: false },
   // 인텔리전스 / 스토어
-  { to: "intelligence/therapy-notes", label: "치료노트 (주간·AI)", icon: Sparkles, group: "인텔리전스" },
-  { to: "intelligence/parent-reports", label: "부모 월간 리포트", icon: FileText, group: "인텔리전스" },
-  { to: "storefront", label: "스토어 (프로그램·교구)", icon: Store, group: "인텔리전스" },
+  { to: "intelligence/therapy-notes", label: "치료노트 (주간·AI)", icon: Sparkles, group: "인텔리전스", betaVisible: true },
+  { to: "intelligence/parent-reports", label: "부모 월간 리포트", icon: FileText, group: "인텔리전스", betaVisible: true },
+  { to: "storefront", label: "스토어 (프로그램·교구)", icon: Store, group: "인텔리전스", betaVisible: false },
   // 관리자
-  { to: "admin/organization", label: "기관 정보 및 옵션", icon: Building2, group: "관리자" },
-  { to: "admin/therapists", label: "선생님 관리", icon: UserCog, group: "관리자" },
-  { to: "admin/programs", label: "프로그램 관리", icon: BookOpen, group: "관리자" },
+  { to: "admin/organization", label: "기관 정보 및 옵션", icon: Building2, group: "관리자", betaVisible: false },
+  { to: "admin/therapists", label: "선생님 관리", icon: UserCog, group: "관리자", betaVisible: false },
+  { to: "admin/programs", label: "프로그램 관리", icon: BookOpen, group: "관리자", betaVisible: false },
   // 데이터 연동
-  { to: "data/voucher-excel", label: "전자바우처 엑셀 등록", icon: FileSpreadsheet, group: "데이터 연동" },
+  { to: "data/voucher-excel", label: "전자바우처 엑셀 등록", icon: FileSpreadsheet, group: "데이터 연동", betaVisible: false },
   // 수납 — 케어플 스타일
-  { to: "billing/process", label: "수납처리", icon: Wallet, group: "수납" },
-  { to: "billing/stats", label: "수납 통계·미수금", icon: CreditCard, group: "수납" },
-  { to: "billing/voucher-claims", label: "전자바우처 청구", icon: FileSpreadsheet, group: "수납" },
-  { to: "billing/voucher-audit", label: "부정결제 찾기", icon: ShieldAlert, group: "수납" },
+  { to: "billing/process", label: "수납처리", icon: Wallet, group: "수납", betaVisible: false },
+  { to: "billing/stats", label: "수납 통계·미수금", icon: CreditCard, group: "수납", betaVisible: false },
+  { to: "billing/voucher-claims", label: "전자바우처 청구", icon: FileSpreadsheet, group: "수납", betaVisible: false },
+  { to: "billing/voucher-audit", label: "부정결제 찾기", icon: ShieldAlert, group: "수납", betaVisible: false },
 ];
 
 
@@ -149,7 +150,8 @@ export default function B2BCenterApp() {
     return <EmptyCenterState onCreated={(c) => { setCenters([c]); setActive(c.id); }} />;
   }
 
-  const grouped = NAV.reduce((acc, n) => {
+  const visibleNav = BETA_MODE ? NAV.filter((n) => n.betaVisible) : NAV;
+  const grouped = visibleNav.reduce((acc, n) => {
     const g = n.group ?? "기타";
     (acc[g] ||= []).push(n);
     return acc;
@@ -183,7 +185,13 @@ export default function B2BCenterApp() {
         >
           <div className="p-4 border-b border-neutral-200 flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-neutral-500 mb-1">기관</p>
+              {BETA_MODE && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#C8B88A]/15 text-[#8C7A3E] text-[10px] font-semibold tracking-wider mb-2">
+                  BETA
+                  <span className="font-normal text-[#8C7A3E]/80">베타 모드</span>
+                </span>
+              )}
+              <p className="text-xs text-neutral-500 mb-1 mt-1">기관</p>
               <select
                 value={activeId ?? ""}
                 onChange={(e) => { setActive(e.target.value); setActiveCenterId(e.target.value); }}

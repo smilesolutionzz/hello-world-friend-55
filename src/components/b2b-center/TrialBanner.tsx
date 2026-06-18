@@ -41,7 +41,7 @@ export default function TrialBanner({ trialEndsAt, trialStatus }: Props) {
           <p className="text-xs tracking-widest text-[#C8B88A] mb-1">FREE TRIAL · 60일</p>
           <h3 className="font-semibold mb-0.5">남은 체험 기간 <span className="text-[#8C7A3D]">{daysLeft}일</span></h3>
           <p className="text-sm text-neutral-700 break-keep">
-            엑셀 업로드·일정·수납·부모 리포트까지 모두 무제한으로 사용해보세요. 카드 등록 없음.
+            엑셀 업로드 · 일정 · 회기기록 · AI 부모 리포트까지 무제한으로 사용해보세요. 카드 등록 없음.
           </p>
         </div>
       </div>

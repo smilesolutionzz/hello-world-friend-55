@@ -12261,6 +12261,47 @@ export type Database = {
         }
         Relationships: []
       }
+      parent_otp_codes: {
+        Row: {
+          attempts: number
+          code_hash: string
+          consumed_at: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          phone: string
+          share_link_id: string
+        }
+        Insert: {
+          attempts?: number
+          code_hash: string
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          phone: string
+          share_link_id: string
+        }
+        Update: {
+          attempts?: number
+          code_hash?: string
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          phone?: string
+          share_link_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parent_otp_codes_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "center_parent_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       parent_phone_links: {
         Row: {
           children_ids: string[]
@@ -12287,6 +12328,44 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      parent_phone_sessions: {
+        Row: {
+          child_id: string | null
+          created_at: string
+          expires_at: string
+          last_used_at: string
+          phone: string
+          share_link_id: string | null
+          token: string
+        }
+        Insert: {
+          child_id?: string | null
+          created_at?: string
+          expires_at?: string
+          last_used_at?: string
+          phone: string
+          share_link_id?: string | null
+          token: string
+        }
+        Update: {
+          child_id?: string | null
+          created_at?: string
+          expires_at?: string
+          last_used_at?: string
+          phone?: string
+          share_link_id?: string | null
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parent_phone_sessions_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "center_parent_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       partner_content_clicks: {
         Row: {

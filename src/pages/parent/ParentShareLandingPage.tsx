@@ -26,9 +26,6 @@ export default function ParentShareLandingPage() {
   useEffect(() => {
     if (!token) return;
     (async () => {
-      // Check existing session first — maybe already logged in
-      const { data: { user } } = await supabase.auth.getUser();
-
       const { data, error } = await supabase.functions.invoke("parent-share-resolve", { body: { token } });
       if (error || (data as any)?.error) {
         setErrorMsg((data as any)?.error ?? error?.message ?? "링크를 불러올 수 없어요");
@@ -37,17 +34,20 @@ export default function ParentShareLandingPage() {
       }
       setMeta(data as any);
 
-      // If already authenticated and phone matches → skip OTP
-      if (user?.phone) {
-        const userPhone = user.phone.startsWith("+") ? user.phone : "+" + user.phone;
-        if (userPhone.slice(-4) === (data as any).phone_last4) {
-          // verify token directly
-          const { data: vData, error: vErr } = await supabase.functions.invoke("parent-otp-verify", { body: { token } });
-          if (!vErr && !(vData as any)?.error) {
-            setResourceInfo(vData as any);
-            setStage("verified");
-            return;
-          }
+      // Existing parent session for this link → skip OTP
+      const existing = localStorage.getItem(`aihpro_parent_session_${token}`);
+      if (existing) {
+        try {
+          const parsed = JSON.parse(existing);
+          setResourceInfo({
+            resource_type: parsed.resource_type,
+            resource_id: parsed.resource_id,
+            child_id: parsed.child_id,
+          });
+          setStage("verified");
+          return;
+        } catch {
+          /* ignore */
         }
       }
 
@@ -69,7 +69,7 @@ export default function ParentShareLandingPage() {
       if ((data as any)?.error) throw new Error((data as any).error);
       setPhoneE164((data as any).phone);
       setStage("enter_otp");
-      toast({ title: "인증번호를 발송했어요", description: "1분 이내에 문자로 도착합니다." });
+      toast({ title: "인증번호를 발송했어요", description: "문자로 6자리 코드가 도착합니다." });
     } catch (e: any) {
       toast({ title: "인증번호 발송 실패", description: e.message, variant: "destructive" });
     } finally {
@@ -78,25 +78,30 @@ export default function ParentShareLandingPage() {
   };
 
   const verifyOtp = async () => {
-    if (code.length < 4) {
+    if (code.length !== 6) {
       toast({ title: "인증번호 6자리를 입력해주세요", variant: "destructive" });
       return;
     }
     setVerifying(true);
     try {
-      const { data: vData, error: vErr } = await supabase.auth.verifyOtp({
-        phone: phoneE164,
-        token: code,
-        type: "sms",
+      const { data: vData, error: vErr } = await supabase.functions.invoke("parent-otp-verify", {
+        body: { token, code },
       });
       if (vErr) throw vErr;
-      if (!vData.session) throw new Error("세션 생성 실패");
+      if ((vData as any)?.error) throw new Error((vData as any).error);
 
-      const { data: linkData, error: linkErr } = await supabase.functions.invoke("parent-otp-verify", { body: { token } });
-      if (linkErr) throw linkErr;
-      if ((linkData as any)?.error) throw new Error((linkData as any).error);
-
-      setResourceInfo(linkData as any);
+      const payload = vData as any;
+      // Persist parent session for auto-login on revisits
+      localStorage.setItem(
+        `aihpro_parent_session_${token}`,
+        JSON.stringify({
+          parent_session_token: payload.parent_session_token,
+          resource_type: payload.resource_type,
+          resource_id: payload.resource_id,
+          child_id: payload.child_id,
+        }),
+      );
+      setResourceInfo(payload);
       setStage("verified");
     } catch (e: any) {
       toast({ title: "인증 실패", description: e.message, variant: "destructive" });

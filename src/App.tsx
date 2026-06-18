@@ -220,6 +220,7 @@ const CenterProgramsPage = lazy(() => import("./pages/b2b-center/console/Program
 const CenterParentReportsPage = lazy(() => import("./pages/b2b-center/console/ParentReportsPage"));
 const CenterTherapyNotesPage = lazy(() => import("./pages/b2b-center/console/TherapyNotesPage"));
 const ParentCenterPage = lazy(() => import("./pages/parent/ParentCenterPage"));
+const ParentShareLandingPage = lazy(() => import("./pages/parent/ParentShareLandingPage"));
 const CenterOpsDashboardPage = lazy(() => import("./pages/b2b-center/console/OpsDashboardPage"));
 const B2BCenterInvite = lazy(() => import("./pages/b2b-center/B2BCenterInvite"));
 const CenterInviteClaim = lazy(() => import("./pages/CenterInviteClaim"));

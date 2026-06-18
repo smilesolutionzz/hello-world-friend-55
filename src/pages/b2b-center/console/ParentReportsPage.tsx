@@ -163,6 +163,18 @@ export default function ParentReportsPage() {
       </div>
 
       <SampleParentReport open={!!sampleOpen} onClose={() => setSampleOpen(null)} clientId={sampleOpen?.clientId} clientName={sampleOpen?.name} period={sampleOpen?.period} periodKey={sampleOpen?.periodKey} />
+
+      {shareOpen && (
+        <ShareWithParentDialog
+          open={!!shareOpen}
+          onClose={() => setShareOpen(null)}
+          resourceType="parent_report"
+          resourceId={shareOpen.reportId}
+          childId={shareOpen.clientId}
+          centerId={centerId}
+          childName={shareOpen.childName}
+        />
+      )}
     </div>
   );
 }

@@ -296,6 +296,8 @@ const App = () => {
           <Route path="/g/:token" element={<GuardianNotice />} />
           <Route path="/r/:token" element={<GuardianReportView />} />
           <Route path="/parent-share/:token" element={<ParentShareLandingPage />} />
+          <Route path="/parent/reports/:id" element={<ParentResourceViewPage />} />
+          <Route path="/parent/notes/:id" element={<ParentResourceViewPage />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardRouter />} />

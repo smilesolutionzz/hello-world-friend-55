@@ -42,6 +42,7 @@ const Settings = lazy(() => import("./pages/Settings"));
 const BookingManagement = lazy(() => import("./pages/BookingManagement"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const GuardianNotice = lazy(() => import("./pages/GuardianNotice"));
+const GuardianReportView = lazy(() => import("./pages/r/GuardianReportView"));
 
 // Lazy: AI Analysis & Core Features
 const AIAssistant = lazy(() => import("./pages/AIAssistant"));
@@ -291,6 +292,7 @@ const App = () => {
           <Route path="/therapist-subscription" element={<TherapistSubscriptionTeaser />} />
           <Route path="/therapist/my-schedule" element={<TherapistMySchedule />} />
           <Route path="/g/:token" element={<GuardianNotice />} />
+          <Route path="/r/:token" element={<GuardianReportView />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardRouter />} />

@@ -18103,6 +18103,30 @@ export type Database = {
           status: string
         }[]
       }
+      get_parent_report_by_token: {
+        Args: { _token: string }
+        Returns: {
+          ai_draft_json: Json
+          ai_summary: string
+          center_id: string
+          center_name: string
+          client_id: string
+          client_name: string
+          coach_comment: string
+          edited_html: string
+          html_content: string
+          id: string
+          issued_at: string
+          metrics: Json
+          period_end: string
+          period_start: string
+          period_type: string
+          period_yyyymm: string
+          published_at: string
+          status: string
+          title: string
+        }[]
+      }
       get_partner_org_by_slug: {
         Args: { _slug: string }
         Returns: {
@@ -18328,6 +18352,15 @@ export type Database = {
         Returns: boolean
       }
       make_user_admin: { Args: { target_email: string }; Returns: boolean }
+      normalize_kr_phone: { Args: { _p: string }; Returns: string }
+      peek_parent_report_token: {
+        Args: { _token: string }
+        Returns: {
+          client_name: string
+          exists_flag: boolean
+          phone_hint: string
+        }[]
+      }
       process_referral_reward: {
         Args: { p_referee_id: string; p_referral_code: string }
         Returns: boolean

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_PARENT_REPORTS, DEMO_CLIENTS } from "@/lib/b2bCenter/demoData";
-import { FileText, Sparkles, Eye } from "lucide-react";
+import { FileText, Sparkles, Eye, Send } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import SampleParentReport from "@/components/b2b-center/SampleParentReport";
+import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -15,6 +16,7 @@ export default function ParentReportsPage() {
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; });
   const [sampleOpen, setSampleOpen] = useState<{ clientId: string; name: string; period: string; periodKey: string } | null>(null);
+  const [shareOpen, setShareOpen] = useState<{ reportId: string; clientId: string; childName: string } | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -148,7 +150,12 @@ export default function ParentReportsPage() {
                 <td className="p-3 font-medium">{clientName(r.client_id)}</td>
                 <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${r.status === "issued" ? "bg-emerald-50 text-emerald-700" : "bg-neutral-100 text-neutral-600"}`}>{r.status === "issued" ? "발행됨" : "초안"}</span></td>
                 <td className="p-3 text-neutral-500">{r.issued_at ?? "—"}</td>
-                <td className="p-3 text-right"><button onClick={() => setSampleOpen({ clientId: r.client_id, name: clientName(r.client_id), period: (r.period_start?.slice(0, 7).replace("-", "년 ") + "월"), periodKey: r.period_start?.slice(0, 7) ?? "" })} className="inline-flex items-center gap-1 text-xs text-neutral-700 hover:text-neutral-900"><FileText className="w-3.5 h-3.5" /> 열기</button></td>
+                <td className="p-3 text-right">
+                  <div className="inline-flex items-center gap-3">
+                    <button onClick={() => setShareOpen({ reportId: r.id, clientId: r.client_id, childName: clientName(r.client_id) })} className="inline-flex items-center gap-1 text-xs text-[#8a7544] hover:text-[#6b5a36]"><Send className="w-3.5 h-3.5" /> 부모 공유</button>
+                    <button onClick={() => setSampleOpen({ clientId: r.client_id, name: clientName(r.client_id), period: (r.period_start?.slice(0, 7).replace("-", "년 ") + "월"), periodKey: r.period_start?.slice(0, 7) ?? "" })} className="inline-flex items-center gap-1 text-xs text-neutral-700 hover:text-neutral-900"><FileText className="w-3.5 h-3.5" /> 열기</button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -156,6 +163,18 @@ export default function ParentReportsPage() {
       </div>
 
       <SampleParentReport open={!!sampleOpen} onClose={() => setSampleOpen(null)} clientId={sampleOpen?.clientId} clientName={sampleOpen?.name} period={sampleOpen?.period} periodKey={sampleOpen?.periodKey} />
+
+      {shareOpen && (
+        <ShareWithParentDialog
+          open={!!shareOpen}
+          onClose={() => setShareOpen(null)}
+          resourceType="parent_report"
+          resourceId={shareOpen.reportId}
+          childId={shareOpen.clientId}
+          centerId={centerId}
+          childName={shareOpen.childName}
+        />
+      )}
     </div>
   );
 }

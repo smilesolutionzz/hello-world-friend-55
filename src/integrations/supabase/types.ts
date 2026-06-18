@@ -2980,6 +2980,72 @@ export type Database = {
           },
         ]
       }
+      center_parent_share_links: {
+        Row: {
+          access_count: number
+          center_id: string | null
+          child_id: string | null
+          created_at: string
+          created_by: string
+          expires_at: string
+          failed_attempts: number
+          first_verified_at: string | null
+          id: string
+          last_accessed_at: string | null
+          locked_until: string | null
+          parent_phone_e164: string
+          parent_phone_last4: string
+          resource_id: string
+          resource_type: string
+          revoked_at: string | null
+          sms_sent_at: string | null
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          access_count?: number
+          center_id?: string | null
+          child_id?: string | null
+          created_at?: string
+          created_by: string
+          expires_at?: string
+          failed_attempts?: number
+          first_verified_at?: string | null
+          id?: string
+          last_accessed_at?: string | null
+          locked_until?: string | null
+          parent_phone_e164: string
+          parent_phone_last4: string
+          resource_id: string
+          resource_type: string
+          revoked_at?: string | null
+          sms_sent_at?: string | null
+          token: string
+          updated_at?: string
+        }
+        Update: {
+          access_count?: number
+          center_id?: string | null
+          child_id?: string | null
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          failed_attempts?: number
+          first_verified_at?: string | null
+          id?: string
+          last_accessed_at?: string | null
+          locked_until?: string | null
+          parent_phone_e164?: string
+          parent_phone_last4?: string
+          resource_id?: string
+          resource_type?: string
+          revoked_at?: string | null
+          sms_sent_at?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       center_payments: {
         Row: {
           amount_krw: number
@@ -12195,6 +12261,33 @@ export type Database = {
         }
         Relationships: []
       }
+      parent_phone_links: {
+        Row: {
+          children_ids: string[]
+          created_at: string
+          last_verified_at: string | null
+          parent_user_id: string | null
+          phone_e164: string
+          updated_at: string
+        }
+        Insert: {
+          children_ids?: string[]
+          created_at?: string
+          last_verified_at?: string | null
+          parent_user_id?: string | null
+          phone_e164: string
+          updated_at?: string
+        }
+        Update: {
+          children_ids?: string[]
+          created_at?: string
+          last_verified_at?: string | null
+          parent_user_id?: string | null
+          phone_e164?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       partner_content_clicks: {
         Row: {
           content_id: string | null
@@ -18400,6 +18493,10 @@ export type Database = {
       }
       track_partner_referral_click: {
         Args: { _referrer_url?: string; _slug: string; _user_agent?: string }
+        Returns: undefined
+      }
+      upsert_parent_phone_link: {
+        Args: { _child_id: string; _phone: string; _user_id: string }
         Returns: undefined
       }
       user_can_access_community: { Args: never; Returns: boolean }

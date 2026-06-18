@@ -220,6 +220,7 @@ const CenterProgramsPage = lazy(() => import("./pages/b2b-center/console/Program
 const CenterParentReportsPage = lazy(() => import("./pages/b2b-center/console/ParentReportsPage"));
 const CenterTherapyNotesPage = lazy(() => import("./pages/b2b-center/console/TherapyNotesPage"));
 const ParentCenterPage = lazy(() => import("./pages/parent/ParentCenterPage"));
+const ParentShareLandingPage = lazy(() => import("./pages/parent/ParentShareLandingPage"));
 const CenterOpsDashboardPage = lazy(() => import("./pages/b2b-center/console/OpsDashboardPage"));
 const B2BCenterInvite = lazy(() => import("./pages/b2b-center/B2BCenterInvite"));
 const CenterInviteClaim = lazy(() => import("./pages/CenterInviteClaim"));
@@ -293,6 +294,7 @@ const App = () => {
           <Route path="/therapist/my-schedule" element={<TherapistMySchedule />} />
           <Route path="/g/:token" element={<GuardianNotice />} />
           <Route path="/r/:token" element={<GuardianReportView />} />
+          <Route path="/parent-share/:token" element={<ParentShareLandingPage />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardRouter />} />

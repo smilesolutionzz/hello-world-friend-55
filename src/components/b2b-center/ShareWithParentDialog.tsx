@@ -49,7 +49,13 @@ export default function ShareWithParentDialog({
       if ((data as any)?.error) throw new Error((data as any).error);
       setResult({ url: (data as any).share_url, smsSent: !!(data as any).sms_sent });
       if (sendSms && !(data as any).sms_sent) {
-        toast({ title: "링크는 생성됐지만 SMS 발송 실패", description: "Twilio 발신번호 설정을 확인해주세요.", variant: "destructive" });
+        const sr = (data as any).sms_result || {};
+        const detail = sr.code
+          ? `Twilio ${sr.code}: ${sr.message || ""}${sr.more_info ? ` (${sr.more_info})` : ""}`
+          : sr.missing
+            ? `시크릿 누락: ${(sr.missing as string[]).join(", ")}`
+            : "Twilio 발신번호 설정을 확인해주세요.";
+        toast({ title: "링크는 생성됐지만 SMS 발송 실패", description: detail, variant: "destructive" });
       }
     } catch (e: any) {
       toast({ title: "링크 생성 실패", description: e.message, variant: "destructive" });

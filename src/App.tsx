@@ -294,6 +294,7 @@ const App = () => {
           <Route path="/therapist/my-schedule" element={<TherapistMySchedule />} />
           <Route path="/g/:token" element={<GuardianNotice />} />
           <Route path="/r/:token" element={<GuardianReportView />} />
+          <Route path="/parent-share/:token" element={<ParentShareLandingPage />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardRouter />} />

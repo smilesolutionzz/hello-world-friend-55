@@ -124,8 +124,18 @@ Deno.serve(async (req) => {
     const baseOrigin = (origin_url as string) || req.headers.get("origin") || "https://aihpro.app";
     const shareUrl = `${baseOrigin.replace(/\/$/, "")}/parent-share/${token}`;
 
-    let smsResult: unknown = null;
-    if (send_sms && TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && TWILIO_FROM_NUMBER) {
+    let smsResult: any = null;
+    const missingSecrets: string[] = [];
+    if (send_sms) {
+      if (!TWILIO_ACCOUNT_SID) missingSecrets.push("TWILIO_ACCOUNT_SID");
+      if (!TWILIO_AUTH_TOKEN) missingSecrets.push("TWILIO_AUTH_TOKEN");
+      if (!TWILIO_FROM_NUMBER) missingSecrets.push("TWILIO_FROM_NUMBER");
+      if (missingSecrets.length > 0) {
+        console.warn("[twilio] missing secrets", missingSecrets);
+        smsResult = { missing: missingSecrets };
+      }
+    }
+    if (send_sms && missingSecrets.length === 0) {
       const message = `[AIHPRO] 자녀 리포트가 도착했습니다.\n${shareUrl}\n전화번호 인증 후 열람하실 수 있어요.`;
       const twResp = await fetch(
         `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
@@ -137,7 +147,7 @@ Deno.serve(async (req) => {
           },
           body: new URLSearchParams({
             To: phoneE164,
-            From: TWILIO_FROM_NUMBER,
+            From: TWILIO_FROM_NUMBER!,
             Body: message,
           }),
         },
@@ -148,6 +158,15 @@ Deno.serve(async (req) => {
           .from("center_parent_share_links")
           .update({ sms_sent_at: new Date().toISOString() })
           .eq("id", inserted.id);
+      } else {
+        console.error("[twilio] send failed", {
+          status: twResp.status,
+          to: phoneE164,
+          from: TWILIO_FROM_NUMBER,
+          code: smsResult?.code,
+          message: smsResult?.message,
+          more_info: smsResult?.more_info,
+        });
       }
     }
 

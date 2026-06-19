@@ -154,8 +154,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    const baseOrigin = (origin_url as string) || req.headers.get("origin") || "https://aihpro.app";
-    const shareUrl = `${baseOrigin.replace(/\/$/, "")}/parent-share/${token}`;
+    // Always use the production domain for parent share links so guardians never hit
+    // the Lovable preview login wall. The path /r/:token routes to GuardianReportView
+    // (which renders GuardianReportGate) without requiring a Lovable account.
+    const PUBLIC_BASE_URL = "https://aihpro.app";
+    const shareUrl = `${PUBLIC_BASE_URL}/r/${token}`;
 
     let smsResult: any = null;
     const missingSecrets: string[] = [];

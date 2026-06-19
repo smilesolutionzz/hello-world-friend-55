@@ -57,7 +57,7 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "client_not_found" }), { status: 404, headers: { ...cors, "Content-Type": "application/json" } });
     }
 
-    // 2) Sessions in month
+    // 2) Scheduled sessions in month
     const { data: sessions } = await admin
       .from("center_sessions")
       .select("id, session_date, start_time, end_time, status, note, therapist_id, program_id")
@@ -67,7 +67,21 @@ serve(async (req) => {
       .lte("session_date", end)
       .order("session_date", { ascending: true });
 
-    const therapistIds = Array.from(new Set((sessions || []).map((s) => s.therapist_id).filter(Boolean)));
+    // 2b) Parsed session logs (the real source of truth for what happened)
+    const { data: uploads } = await admin
+      .from("center_session_uploads")
+      .select("id, session_date, therapist_id, ai_extracted, ocr_text, status")
+      .eq("center_id", centerId)
+      .eq("client_id", clientId)
+      .gte("session_date", start)
+      .lte("session_date", end)
+      .in("status", ["parsed", "used", "done"])
+      .order("session_date", { ascending: true });
+
+    const therapistIds = Array.from(new Set([
+      ...((sessions || []).map((s) => s.therapist_id).filter(Boolean)),
+      ...((uploads || []).map((u: any) => u.therapist_id).filter(Boolean)),
+    ]));
     const programIds = Array.from(new Set((sessions || []).map((s) => s.program_id).filter(Boolean)));
     const [{ data: ths }, { data: progs }] = await Promise.all([
       therapistIds.length ? admin.from("center_therapists").select("id, name, specialty").in("id", therapistIds) : Promise.resolve({ data: [] as any[] }),
@@ -87,14 +101,34 @@ serve(async (req) => {
       .lte("period_end", end)
       .order("period_start", { ascending: true });
 
-    // 4) Build context strings
-    const completed = (sessions || []).filter((s) => s.status === "completed");
-    const totalSessions = (sessions || []).length;
-    const attendancePct = totalSessions ? Math.round((completed.length / totalSessions) * 100) : 0;
+    // 4) Build context strings — uploads (parsed logs) are the primary session source
+    const completedScheduled = (sessions || []).filter((s) => s.status === "completed");
+    const uploadCount = (uploads || []).length;
+    const participatedCount = Math.max(uploadCount, completedScheduled.length);
+    const scheduledTotal = (sessions || []).length;
+    const attendancePct = scheduledTotal
+      ? Math.min(100, Math.round((Math.max(uploadCount, completedScheduled.length) / scheduledTotal) * 100))
+      : (uploadCount > 0 ? 100 : 0);
 
-    const therapistNames = Array.from(
-      new Set((sessions || []).map((s) => thMap.get(s.therapist_id)?.name).filter(Boolean))
-    );
+    const therapistNamesSet = new Set<string>();
+    for (const s of sessions || []) {
+      const n = thMap.get(s.therapist_id)?.name;
+      if (n) therapistNamesSet.add(n);
+    }
+    for (const u of uploads || []) {
+      const n = thMap.get((u as any).therapist_id)?.name;
+      if (n) therapistNamesSet.add(n);
+    }
+    // OCR fallback for therapist name (e.g. "운동발달재활 이수석:")
+    for (const u of uploads || []) {
+      const txt = (u as any).ocr_text || "";
+      const m1 = txt.match(/(?:담당|치료사)[\s:]*([가-힣]{2,4})\s*(?:치료사|선생님)?/);
+      if (m1?.[1]) therapistNamesSet.add(m1[1]);
+      const m2 = txt.match(/재활\s+([가-힣]{2,4})\s*[:：]/);
+      if (m2?.[1]) therapistNamesSet.add(m2[1]);
+    }
+    const therapistNames = Array.from(therapistNamesSet);
+
     const areaList = Array.from(
       new Set((sessions || []).map((s) => pgMap.get(s.program_id)?.category || pgMap.get(s.program_id)?.name).filter(Boolean))
     );
@@ -103,7 +137,21 @@ serve(async (req) => {
       const th = thMap.get(s.therapist_id);
       const pg = pgMap.get(s.program_id);
       return `  ${i + 1}. ${s.session_date} ${s.start_time?.slice(0, 5) ?? ""} · ${pg?.name ?? "프로그램"}${pg?.category ? `(${pg.category})` : ""} · 담당 ${th?.name ?? "-"} · 상태 ${s.status}${s.note ? ` · 메모: ${s.note}` : ""}`;
-    }).join("\n") || "  (이번 달 등록된 회기 없음)";
+    }).join("\n") || "  (스케줄에 등록된 회기 없음 — 아래 [파싱된 회기 일지]를 회기 근거로 사용)";
+
+    const uploadBlocks = (uploads || []).map((u: any, i: number) => {
+      const ex = u.ai_extracted ?? {};
+      const th = thMap.get(u.therapist_id)?.name;
+      const parts = [
+        `[회기 일지 ${i + 1} · ${u.session_date}]${th ? ` 담당 ${th}` : ""}`,
+        Array.isArray(ex.activities) && ex.activities.length ? `  활동: ${ex.activities.join(" / ")}` : null,
+        Array.isArray(ex.goals) && ex.goals.length ? `  목표: ${ex.goals.join(" / ")}` : null,
+        Array.isArray(ex.emotions) && ex.emotions.length ? `  정서/반응: ${ex.emotions.join(" / ")}` : null,
+        ex.progress_notes ? `  소견: ${ex.progress_notes}` : null,
+        Array.isArray(ex.next_steps) && ex.next_steps.length ? `  다음 단계: ${ex.next_steps.join(" / ")}` : null,
+      ].filter(Boolean);
+      return parts.join("\n");
+    }).join("\n\n") || "(이번 달 파싱된 회기 일지 없음)";
 
     const weeklyBlocks = (weekly || []).map((w, i) => {
       const d: any = w.ai_draft_json ?? {};
@@ -120,16 +168,28 @@ serve(async (req) => {
 
     const ageStr = client.birth_date ? `${Math.max(0, y - new Date(client.birth_date).getFullYear())}세` : "";
 
-    const prompt = `당신은 발달치료센터의 담당 치료사이며, 아래 **실제 데이터**만을 근거로 보호자에게 보낼 ${y}년 ${m}월 월간 리포트를 작성합니다. 데이터에 없는 활동/에피소드/수치를 만들어내지 마세요.
+    const hasAnyData = uploadCount > 0 || (weekly?.length ?? 0) > 0 || scheduledTotal > 0;
+
+    const prompt = `당신은 발달치료센터의 담당 치료사이며, 아래 **실제 데이터**만을 근거로 보호자에게 보낼 ${y}년 ${m}월 월간 리포트를 작성합니다.
+
+[엄격 규칙]
+- 데이터에 없는 활동·에피소드·수치·치료사 이름을 절대 만들어내지 마세요.
+- "가정에서 휴식했다", "별도 수업이 없었다"같은 추측성 문장을 데이터가 있는데도 쓰지 마세요.
+- [파싱된 회기 일지]에 활동이 있으면 그것을 회기로 인정하고 활동·소견을 그대로 반영하세요. 회기 일지의 키워드(예: "양손 활용 반복 동작 훈련")가 summary/highlights/note 중 최소 한 곳에 그대로 등장해야 합니다.
+- 데이터가 비어 있는 섹션은 짧게 "이번 달 해당 없음"으로 표기하세요.
+- domains 점수는 회기 일지·주간 노트에서 관찰된 변화 수준을 토대로 0~100 사이 정수로 반드시 양수값(보통 40~85)을 부여하세요. prev<curr 일 때 emerald, 보합/감소면 amber. delta는 "+N"/"-N" 정수.
 
 [아동] ${client.name}${ageStr ? ` (${ageStr})` : ""}${client.gender ? ` · ${client.gender}` : ""}
 [기간] ${start} ~ ${end}
-[참여 회기] 총 ${totalSessions}회 / 완료 ${completed.length}회 / 출석률 ${attendancePct}%
-[치료 영역] ${areaList.join(", ") || "(등록 영역 없음)"}
+[참여 회기] 파싱된 회기 ${uploadCount}회 · 스케줄 ${scheduledTotal}회 · 완료 ${completedScheduled.length}회 · 출석률 ${attendancePct}%
+[치료 영역] ${areaList.join(", ") || "(스케줄 영역 없음 — 회기 일지의 활동 키워드로 영역을 추론)"}
 [담당 치료사] ${therapistNames.join(", ") || "(미지정)"}
 
-[이번 달 회기 상세]
+[이번 달 스케줄 회기]
 ${sessionLines}
+
+[파싱된 회기 일지 — 회기당 활동/목표/소견 원본]
+${uploadBlocks}
 
 [이번 달 주간 치료노트]
 ${weeklyBlocks}
@@ -138,35 +198,32 @@ ${weeklyBlocks}
 
 {
   "stats": {
-    "participated": "${completed.length}회",
+    "participated": "${participatedCount}회",
     "attendance": "${attendancePct}%",
-    "areas": "위 [치료 영역]을 자연스럽게 표기 (없으면 '관찰 기록 기반')",
-    "therapist": "위 [담당 치료사] 이름 (없으면 '담당 치료사')"
+    "areas": "위 [치료 영역] 또는 회기 일지에서 추론한 영역",
+    "therapist": "${therapistNames[0] ?? "담당 치료사"}"
   },
-  "summary": "이번 달 한 눈에. 회기 수·주요 활동·가장 두드러진 변화를 3-5문장으로. 위 데이터에 등장한 활동/표현만 사용.",
+  "summary": "이번 달 한 눈에 — 회기 일지에 기록된 실제 활동/목표/변화를 3-5문장으로. 회기 일지 키워드를 그대로 인용.",
   "domains": [
-    { "domain": "영역명(예: 표현언어/사회성/정서조절 등 위 데이터에서 실제 관찰된 것)", "prev": 0-100 정수, "curr": 0-100 정수, "delta": "+N 또는 -N", "color": "emerald 또는 amber", "note": "주간 노트에서 관찰된 구체적 변화 1문장" }
-    // 3-5개. 데이터에 근거 없는 영역은 넣지 말 것.
+    { "domain": "영역명(회기 일지에서 실제 관찰된 것)", "prev": 정수, "curr": 정수(>prev이면 성장), "delta": "+N", "color": "emerald 또는 amber", "note": "회기 일지에서 관찰된 구체적 변화 1문장" }
   ],
   "highlights": [
-    { "date": "주차 또는 날짜 (예: 1주차, 2026-06-10)", "title": "에피소드 한 줄 제목", "body": "주간 노트에 실제 기록된 장면을 2-3문장으로" }
-    // 2-4개. 주간 노트에 근거가 있어야 함.
+    { "date": "회기 일지 날짜 또는 주차", "title": "에피소드 한 줄 제목", "body": "회기 일지/주간 노트에 실제 기록된 장면을 2-3문장" }
   ],
-  "note": "담당 치료사 종합 소견 4-6문장. 이 아이만의 변화·강점·다음 달 관심 영역.",
-  "noteTherapist": { "name": "${therapistNames[0] ?? "담당 치료사"} 치료사", "meta": "담당 치료사" },
+  "note": "담당 치료사 종합 소견 4-6문장. 실제 활동·강점·다음 달 관심 영역.",
+  "noteTherapist": { "name": "${therapistNames[0] ?? "담당 치료사"}${therapistNames[0] ? " 치료사" : ""}", "meta": "담당 치료사" },
   "practice": [
-    { "title": "가정 연습 제목", "desc": "구체적 실행 방법 1-2문장", "time": "예: 5분/회, 매일 10분" }
-    // 2-4개. 이 아이의 영역에 맞춤.
+    { "title": "가정 연습 제목 (회기 활동과 연계)", "desc": "구체적 실행 방법 1-2문장", "time": "예: 5분/회, 매일 10분" }
   ],
   "goals": [
-    { "label": "주요 목표", "value": "다음 달 핵심 목표" },
+    { "label": "주요 목표", "value": "다음 달 핵심 목표(회기 일지의 next_steps 기반)" },
     { "label": "회기 횟수", "value": "권장 회기" },
     { "label": "재평가 일정", "value": "예: 다음 달 말" }
   ],
   "goalsFooter": "다음 달 첫 회기 안내 또는 보호자 면담 안내 1문장",
   "schema": "monthly_v1"
 }
-
+${hasAnyData ? "" : "\n주의: 위 데이터가 모두 비어 있으므로 summary/highlights/note는 '이번 달 등록된 활동 기록이 없습니다'로만 채우고 domains는 빈 배열로 두세요.\n"}
 JSON만 출력. 다른 텍스트·코드펜스 금지.`;
 
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -194,7 +251,8 @@ JSON만 출력. 다른 텍스트·코드펜스 금지.`;
     try { draft = JSON.parse(aiJson.choices?.[0]?.message?.content ?? "{}"); } catch { draft = {}; }
     draft.schema = "monthly_v1";
     draft.generated_from = {
-      sessions: (sessions || []).length,
+      scheduled_sessions: (sessions || []).length,
+      parsed_uploads: (uploads || []).length,
       weekly_notes: (weekly || []).length,
       therapists: therapistNames,
       areas: areaList,

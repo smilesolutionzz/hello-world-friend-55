@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2, Download, FileSpreadsheet, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2, Download, FileSpreadsheet, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import * as XLSX from "xlsx";
+import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -97,6 +98,7 @@ export default function TherapyNotesPage() {
   const [history, setHistory] = useState<any[]>([]);
   const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); });
   const [viewingHistory, setViewingHistory] = useState<any>(null);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const loadHistory = async () => {
     if (!selectedClient) { setHistory([]); return; }
@@ -114,7 +116,7 @@ export default function TherapyNotesPage() {
 
   useEffect(() => {
     if (demo) return;
-    supabase.from("center_clients").select("id, name").eq("center_id", centerId).in("status", ["enrolled", "waiting"]).order("name").then(({ data }) => {
+    supabase.from("center_clients").select("id, name, guardian_phone").eq("center_id", centerId).in("status", ["enrolled", "waiting"]).order("name").then(({ data }) => {
       setClients(data || []);
       if (data?.[0]) setSelectedClient(data[0].id);
     });
@@ -365,11 +367,30 @@ export default function TherapyNotesPage() {
               <FileSpreadsheet className="w-4 h-4" /> 엑셀 다운로드
             </button>
             <button onClick={saveDraft} className="px-4 py-2 rounded-full border border-neutral-200 text-sm">초안 저장</button>
-            <button onClick={publish} className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-neutral-900 text-white text-sm">
-              <Send className="w-4 h-4" /> {report.status === "published" ? "다시 발행" : "보호자에게 발행"}
+            <button onClick={publish} className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-neutral-200 text-sm">
+              <Send className="w-4 h-4" /> {report.status === "published" ? "다시 발행" : "발행"}
+            </button>
+            <button
+              onClick={() => setShareOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-neutral-900 text-white text-sm"
+            >
+              <Share2 className="w-4 h-4 text-[#C8B88A]" /> 부모 공유
             </button>
           </div>
         </div>
+      )}
+
+      {report && (
+        <ShareWithParentDialog
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+          resourceType="therapy_note"
+          resourceId={report.id}
+          childId={selectedClient}
+          centerId={centerId}
+          defaultPhone={clients.find((c) => c.id === selectedClient)?.guardian_phone ?? ""}
+          childName={clientName}
+        />
       )}
 
       {!report && uploads.length > 0 && (

@@ -99,6 +99,39 @@ Deno.serve(async (req) => {
 
     const token = generateToken();
 
+    // Auto-publish underlying resource so the parent viewer can render it.
+    // Both therapy notes (weekly) and parent reports (monthly) live in center_parent_reports.
+    // Only flip drafts → published; already-published rows keep their original published_at.
+    {
+      const { data: existing, error: selErr } = await admin
+        .from("center_parent_reports")
+        .select("id, status, published_at")
+        .eq("id", resource_id)
+        .maybeSingle();
+      if (selErr || !existing) {
+        return new Response(JSON.stringify({ error: selErr?.message ?? "resource_not_found" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (existing.status !== "published") {
+        const { error: updErr } = await admin
+          .from("center_parent_reports")
+          .update({
+            status: "published",
+            published_at: existing.published_at ?? new Date().toISOString(),
+          })
+          .eq("id", resource_id);
+        if (updErr) {
+          console.error("[publish] update failed", updErr);
+          return new Response(JSON.stringify({ error: `publish_failed: ${updErr.message}` }), {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      }
+    }
+
     const { data: inserted, error: insErr } = await admin
       .from("center_parent_share_links")
       .insert({

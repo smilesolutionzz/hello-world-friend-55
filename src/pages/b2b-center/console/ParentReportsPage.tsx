@@ -173,6 +173,7 @@ export default function ParentReportsPage() {
           childId={shareOpen.clientId}
           centerId={centerId}
           childName={shareOpen.childName}
+          defaultPhone={clients.find((c) => c.id === shareOpen.clientId)?.guardian_phone ?? ""}
         />
       )}
     </div>

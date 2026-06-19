@@ -98,6 +98,7 @@ export default function TherapyNotesPage() {
   const [history, setHistory] = useState<any[]>([]);
   const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); });
   const [viewingHistory, setViewingHistory] = useState<any>(null);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const loadHistory = async () => {
     if (!selectedClient) { setHistory([]); return; }

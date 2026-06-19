@@ -28,7 +28,7 @@ export default function ParentReportsPage() {
     }
     const [r, c] = await Promise.all([
       supabase.from("center_parent_reports").select("*").eq("center_id", centerId).eq("period_type", "monthly").order("period_end", { ascending: false }).limit(100),
-      supabase.from("center_clients").select("id, name").eq("center_id", centerId),
+      supabase.from("center_clients").select("id, name, guardian_phone").eq("center_id", centerId),
     ]);
     setRows(r.data ?? []);
     setClients(c.data ?? []);

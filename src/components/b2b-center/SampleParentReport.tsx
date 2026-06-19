@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { X, Download, Printer, Sparkles, TrendingUp, Heart, Target, MessageCircle, Calendar, Award, BookOpen, ChevronRight, Share2, Settings2, Check, Copy, Mail, MessageSquare, Pencil } from "lucide-react";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   open: boolean;

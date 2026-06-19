@@ -148,8 +148,8 @@ export default function ParentReportsPage() {
               <tr key={r.id} className="border-t border-neutral-100">
                 <td className="p-3">{r.period_start} ~ {r.period_end}</td>
                 <td className="p-3 font-medium">{clientName(r.client_id)}</td>
-                <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${r.status === "issued" ? "bg-emerald-50 text-emerald-700" : "bg-neutral-100 text-neutral-600"}`}>{r.status === "issued" ? "발행됨" : "초안"}</span></td>
-                <td className="p-3 text-neutral-500">{r.issued_at ?? "—"}</td>
+                <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${r.status === "published" ? "bg-emerald-50 text-emerald-700" : "bg-neutral-100 text-neutral-600"}`}>{r.status === "published" ? "발행됨" : "초안"}</span></td>
+                <td className="p-3 text-neutral-500">{r.published_at ? new Date(r.published_at).toLocaleDateString("ko-KR") : "—"}</td>
                 <td className="p-3 text-right">
                   <div className="inline-flex items-center gap-3">
                     <button onClick={() => setShareOpen({ reportId: r.id, clientId: r.client_id, childName: clientName(r.client_id) })} className="inline-flex items-center gap-1 text-xs text-[#8a7544] hover:text-[#6b5a36]"><Send className="w-3.5 h-3.5" /> 부모 공유</button>

@@ -251,7 +251,8 @@ JSON만 출력. 다른 텍스트·코드펜스 금지.`;
     try { draft = JSON.parse(aiJson.choices?.[0]?.message?.content ?? "{}"); } catch { draft = {}; }
     draft.schema = "monthly_v1";
     draft.generated_from = {
-      sessions: (sessions || []).length,
+      scheduled_sessions: (sessions || []).length,
+      parsed_uploads: (uploads || []).length,
       weekly_notes: (weekly || []).length,
       therapists: therapistNames,
       areas: areaList,

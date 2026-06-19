@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { X, Download, Printer, Sparkles, TrendingUp, Heart, Target, MessageCircle, Calendar, Award, BookOpen, ChevronRight, Share2, Settings2, Check, Copy, Mail, MessageSquare, Pencil } from "lucide-react";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   open: boolean;
@@ -96,19 +97,39 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
   const [showSettings, setShowSettings] = useState(false);
   const [showShare, setShowShare] = useState(false);
 
-  // Load saved state when key changes
+  // Load saved state when key changes. Priority: DB ai_draft_json (monthly_v1) > localStorage > default.
   useEffect(() => {
     if (!open) return;
-    try {
-      const raw = localStorage.getItem(storageKey(clientId, pk));
-      if (raw) {
-        setData({ ...buildDefault(clientName, sessions, pk), ...JSON.parse(raw) });
-      } else {
-        setData(buildDefault(clientName, sessions, pk));
+    let cancelled = false;
+    (async () => {
+      // 1) Try DB monthly report for this client + period
+      const periodStart = /^\d{4}-\d{2}$/.test(pk) ? `${pk}-01` : null;
+      if (periodStart && clientId && clientId !== "demo" && clientId !== "c1") {
+        const { data } = await supabase
+          .from("center_parent_reports")
+          .select("ai_draft_json")
+          .eq("client_id", clientId)
+          .eq("period_type", "monthly")
+          .eq("period_start", periodStart)
+          .maybeSingle();
+        const draft: any = data?.ai_draft_json;
+        if (!cancelled && draft && draft.schema === "monthly_v1") {
+          setData({ ...buildDefault(clientName, sessions, pk), ...draft });
+          return;
+        }
       }
-    } catch {
-      setData(buildDefault(clientName, sessions, pk));
-    }
+      // 2) Local edits
+      try {
+        const raw = localStorage.getItem(storageKey(clientId, pk));
+        if (!cancelled) {
+          if (raw) setData({ ...buildDefault(clientName, sessions, pk), ...JSON.parse(raw) });
+          else setData(buildDefault(clientName, sessions, pk));
+        }
+      } catch {
+        if (!cancelled) setData(buildDefault(clientName, sessions, pk));
+      }
+    })();
+    return () => { cancelled = true; };
     // eslint-disable-next-line
   }, [open, clientId, pk]);
 

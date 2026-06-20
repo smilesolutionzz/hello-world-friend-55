@@ -24,6 +24,17 @@ interface DomainRow { domain: string; prev: number; curr: number; delta: string;
 interface HighlightRow { date: string; title: string; body: string }
 interface PracticeRow { title: string; desc: string; time: string }
 
+function safeText(value: any): string {
+  if (value == null) return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (Array.isArray(value)) return value.map(safeText).filter(Boolean).join(" · ");
+  if (typeof value === "object") {
+    return value.title || value.label || value.name || value.text || value.body || value.desc || value.value || value.summary || "";
+  }
+  return "";
+}
+
 function defaultStats(): StatBlock { return { participated: "12회", attendance: "100%", areas: "언어·놀이", therapist: "담당 치료사" }; }
 function defaultDomains(): DomainRow[] {
   return [
@@ -44,13 +55,13 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
   const metrics = report.metrics || {};
 
   const stats: StatBlock = {
-    participated: metrics.participated || draft.stats?.participated || defaultStats().participated,
-    attendance: metrics.attendance || draft.stats?.attendance || defaultStats().attendance,
-    areas: metrics.areas || draft.stats?.areas || defaultStats().areas,
-    therapist: metrics.therapist || draft.stats?.therapist || defaultStats().therapist,
+    participated: safeText(metrics.participated) || safeText(draft.stats?.participated) || defaultStats().participated,
+    attendance: safeText(metrics.attendance) || safeText(draft.stats?.attendance) || defaultStats().attendance,
+    areas: safeText(metrics.areas) || safeText(draft.stats?.areas) || defaultStats().areas,
+    therapist: safeText(metrics.therapist) || safeText(draft.stats?.therapist) || defaultStats().therapist,
   };
 
-  const summary: string = draft.summary || report.ai_summary || `이번 달 ${report.client_name} 어린이의 발달 흐름을 정리한 리포트입니다.`;
+  const summary: string = safeText(draft.summary) || safeText(report.ai_summary) || `이번 달 ${report.client_name} 어린이의 발달 흐름을 정리한 리포트입니다.`;
   const domains: DomainRow[] = Array.isArray(draft.domains) && draft.domains.length ? draft.domains : defaultDomains();
   const highlights: HighlightRow[] = Array.isArray(draft.highlights) ? draft.highlights : [];
   const note: string = draft.note || report.coach_comment || "";
@@ -101,8 +112,8 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline justify-between gap-2">
-                    <div className="font-semibold text-neutral-900 text-[15px] break-keep">{row.domain}</div>
-                    <div className={`text-sm font-semibold ${row.color === "emerald" ? "text-emerald-600" : "text-amber-600"}`}>{row.delta}</div>
+                    <div className="font-semibold text-neutral-900 text-[15px] break-keep">{safeText(row.domain)}</div>
+                    <div className={`text-sm font-semibold ${row.color === "emerald" ? "text-emerald-600" : "text-amber-600"}`}>{safeText(row.delta)}</div>
                   </div>
                   <div className="mt-2 h-2 bg-neutral-100 rounded-full overflow-hidden relative">
                     <div className="absolute inset-y-0 left-0 bg-neutral-300 rounded-full" style={{ width: `${row.prev}%` }} />
@@ -110,7 +121,7 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
                   </div>
                 </div>
               </div>
-              <div className="mt-3 text-[12px] text-neutral-500 leading-relaxed break-keep">{row.note}</div>
+              <div className="mt-3 text-[12px] text-neutral-500 leading-relaxed break-keep">{safeText(row.note)}</div>
             </div>
           ))}
         </div>
@@ -124,10 +135,10 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
             {highlights.map((m, i) => (
               <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5">
                 <div className="flex items-center gap-2 text-[10px] text-[#C8B88A] uppercase tracking-wider mb-2">
-                  <Calendar className="w-3 h-3" />{m.date}
+                  <Calendar className="w-3 h-3" />{safeText(m.date)}
                 </div>
-                <div className="font-semibold text-neutral-900 leading-snug mb-2 break-keep">{m.title}</div>
-                <p className="text-[13px] text-neutral-600 leading-relaxed break-keep">{m.body}</p>
+                <div className="font-semibold text-neutral-900 leading-snug mb-2 break-keep">{safeText(m.title) || safeText(m)}</div>
+                <p className="text-[13px] text-neutral-600 leading-relaxed break-keep">{safeText(m.body)}</p>
               </div>
             ))}
           </div>
@@ -142,8 +153,8 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
             <div className="mt-5 flex items-center gap-3 pt-5 border-t border-[#C8B88A]/30">
               <div className="w-10 h-10 rounded-full bg-[#FFB4A2] flex items-center justify-center text-white font-semibold">{noteTherapist.name?.charAt(0) || "치"}</div>
               <div>
-                <div className="font-semibold text-neutral-900 text-sm">{noteTherapist.name}</div>
-                <div className="text-xs text-neutral-500">{noteTherapist.meta}</div>
+                <div className="font-semibold text-neutral-900 text-sm">{safeText(noteTherapist.name)}</div>
+                <div className="text-xs text-neutral-500">{safeText(noteTherapist.meta)}</div>
               </div>
             </div>
           </div>
@@ -159,10 +170,10 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
                 <div className="w-7 h-7 rounded-full bg-neutral-900 text-white text-xs font-semibold flex items-center justify-center shrink-0">{i + 1}</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline justify-between gap-2 mb-1">
-                    <div className="font-semibold text-neutral-900 text-[14px] break-keep">{p.title}</div>
-                    <div className="text-[10px] text-[#C8B88A] uppercase tracking-wider shrink-0">{p.time}</div>
+                    <div className="font-semibold text-neutral-900 text-[14px] break-keep">{safeText(p.title) || safeText(p)}</div>
+                    <div className="text-[10px] text-[#C8B88A] uppercase tracking-wider shrink-0">{safeText(p.time)}</div>
                   </div>
-                  <p className="text-[13px] text-neutral-600 leading-relaxed break-keep">{p.desc}</p>
+                  <p className="text-[13px] text-neutral-600 leading-relaxed break-keep">{safeText(p.desc)}</p>
                 </div>
               </div>
             ))}
@@ -180,14 +191,14 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
             <div className="space-y-4">
               {goals.map((g, i) => (
                 <div key={i}>
-                  <div className="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{g.label}</div>
-                  <div className="text-base font-semibold break-keep">{g.value}</div>
+                  <div className="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{safeText(g.label) || `목표 ${i + 1}`}</div>
+                  <div className="text-base font-semibold break-keep">{safeText(g.value) || safeText(g)}</div>
                 </div>
               ))}
             </div>
             {goalsFooter && (
               <div className="mt-5 pt-5 border-t border-white/10 flex items-center justify-between text-sm gap-3">
-                <span className="text-neutral-300 flex-1 text-[13px] break-keep">{goalsFooter}</span>
+                <span className="text-neutral-300 flex-1 text-[13px] break-keep">{safeText(goalsFooter)}</span>
                 <ChevronRight className="w-4 h-4 text-[#C8B88A] shrink-0" />
               </div>
             )}

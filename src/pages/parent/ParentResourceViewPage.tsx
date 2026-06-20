@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ShieldCheck, Calendar, Download, TrendingUp, Heart, Target, BookOpen, Award, MessageCircle } from "lucide-react";
+import MobileParentReport from "@/components/guardian-report/MobileParentReport";
 
 type WeeklyDraft = {
   title?: string;
@@ -118,8 +119,10 @@ export default function ParentResourceViewPage() {
 
   const draft: any = data?.report?.ai_draft_json ?? {};
   const isMonthly =
+    data?.resource_type === "parent_report" ||
     data?.report?.period_type === "monthly" ||
-    data?.resource_type === "parent_report" && (draft?.schema === "monthly_v1" || Array.isArray(draft?.domains));
+    draft?.schema === "monthly_v1" ||
+    Array.isArray(draft?.domains);
 
   const wSections = useMemo(() => (!isMonthly ? weeklySections(draft) : []), [draft, isMonthly]);
 
@@ -147,6 +150,32 @@ export default function ParentResourceViewPage() {
 
   const r = data.report;
   const m: MonthlyDraft = draft;
+
+  if (isMonthly) {
+    return (
+      <div className="min-h-screen bg-neutral-50 pb-8">
+        <div className="max-w-2xl mx-auto px-5 pt-6">
+          <div className="flex items-center gap-2 mb-3 text-xs text-neutral-500">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#C8B88A]" />
+            본인 인증된 보호자 전용 화면
+          </div>
+        </div>
+        <MobileParentReport
+          report={{
+            ...r,
+            client_name: data.child_name || "이용자",
+            center_name: data.center_name || m.center_name || null,
+            period_yyyymm: r.period_start?.slice(0, 7) ?? null,
+            ai_summary: null,
+            edited_html: null,
+            html_content: null,
+            metrics: {},
+            coach_comment: null,
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-neutral-50 py-8 px-4">

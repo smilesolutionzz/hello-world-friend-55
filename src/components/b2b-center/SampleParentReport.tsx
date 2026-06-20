@@ -93,6 +93,8 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
   const sessions = useMemo(() => DEMO_SESSIONS.filter((s) => s.client_id === clientId), [clientId]);
 
   const [data, setData] = useState<ReportData>(() => buildDefault(clientName, sessions, pk));
+  const [centerName, setCenterName] = useState<string>("");
+
   const [editMode, setEditMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showShare, setShowShare] = useState(false);

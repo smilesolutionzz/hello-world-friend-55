@@ -370,7 +370,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
           <footer className="pt-8 border-t border-neutral-200 text-[11px] text-neutral-500 leading-relaxed">
             <p className="mb-2"><strong className="text-neutral-700">고지사항.</strong> 본 리포트는 발달 코칭 및 의사결정 지원 목적의 관찰 기록이며, 의학적 진단이나 치료 처방이 아닙니다.</p>
             <div className="flex items-center justify-between mt-4">
-              <span>햇살 발달치료센터 · AIHPRO B2B Center로 발행</span>
+              <span>{centerName || "발달치료센터"} · AIHPRO B2B Center로 발행</span>
               <span>{new Date().toLocaleDateString("ko-KR")}</span>
             </div>
           </footer>

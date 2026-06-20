@@ -273,10 +273,12 @@ export default function ClientsPage() {
                   <td key={c.key} className="p-3 border-t border-neutral-100">{renderCell(c.key, r)}</td>
                 ))}
                 <td className="p-3 border-t border-neutral-100 text-right whitespace-nowrap">
-                  <button onClick={() => setInviteFor({ id: r.id, name: r.name })}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs bg-[#FAF6E8] text-neutral-800 hover:bg-[#F0E8C8] border border-[#C8B88A]/30">
-                    <Send className="w-3 h-3" /> 초대
-                  </button>
+                  {!BETA_MODE && (
+                    <button onClick={() => setInviteFor({ id: r.id, name: r.name })}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs bg-[#FAF6E8] text-neutral-800 hover:bg-[#F0E8C8] border border-[#C8B88A]/30">
+                      <Send className="w-3 h-3" /> 초대
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

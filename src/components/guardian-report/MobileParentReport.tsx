@@ -55,10 +55,10 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
   const metrics = report.metrics || {};
 
   const stats: StatBlock = {
-    participated: metrics.participated || draft.stats?.participated || defaultStats().participated,
-    attendance: metrics.attendance || draft.stats?.attendance || defaultStats().attendance,
-    areas: metrics.areas || draft.stats?.areas || defaultStats().areas,
-    therapist: metrics.therapist || draft.stats?.therapist || defaultStats().therapist,
+    participated: safeText(metrics.participated) || safeText(draft.stats?.participated) || defaultStats().participated,
+    attendance: safeText(metrics.attendance) || safeText(draft.stats?.attendance) || defaultStats().attendance,
+    areas: safeText(metrics.areas) || safeText(draft.stats?.areas) || defaultStats().areas,
+    therapist: safeText(metrics.therapist) || safeText(draft.stats?.therapist) || defaultStats().therapist,
   };
 
   const summary: string = safeText(draft.summary) || safeText(report.ai_summary) || `이번 달 ${report.client_name} 어린이의 발달 흐름을 정리한 리포트입니다.`;
@@ -153,8 +153,8 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
             <div className="mt-5 flex items-center gap-3 pt-5 border-t border-[#C8B88A]/30">
               <div className="w-10 h-10 rounded-full bg-[#FFB4A2] flex items-center justify-center text-white font-semibold">{noteTherapist.name?.charAt(0) || "치"}</div>
               <div>
-                <div className="font-semibold text-neutral-900 text-sm">{noteTherapist.name}</div>
-                <div className="text-xs text-neutral-500">{noteTherapist.meta}</div>
+                <div className="font-semibold text-neutral-900 text-sm">{safeText(noteTherapist.name)}</div>
+                <div className="text-xs text-neutral-500">{safeText(noteTherapist.meta)}</div>
               </div>
             </div>
           </div>
@@ -198,7 +198,7 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
             </div>
             {goalsFooter && (
               <div className="mt-5 pt-5 border-t border-white/10 flex items-center justify-between text-sm gap-3">
-                <span className="text-neutral-300 flex-1 text-[13px] break-keep">{goalsFooter}</span>
+                <span className="text-neutral-300 flex-1 text-[13px] break-keep">{safeText(goalsFooter)}</span>
                 <ChevronRight className="w-4 h-4 text-[#C8B88A] shrink-0" />
               </div>
             )}

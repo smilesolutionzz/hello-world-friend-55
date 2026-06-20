@@ -60,8 +60,19 @@ export default function ParentResourceViewPage() {
         const { data: res, error: err } = await supabase.functions.invoke("parent-resource-fetch", {
           body: { parent_session_token: sess.token, resource_id: id },
         });
-        if (err) throw err;
-        if ((res as any)?.error) throw new Error((res as any).error);
+        const code = (res as any)?.error;
+        if (code) {
+          const map: Record<string, string> = {
+            invalid_session: "보호자 인증 세션이 만료되었어요. 받으신 링크를 다시 열어 인증해주세요.",
+            session_expired: "보호자 인증 세션이 만료되었어요. 받으신 링크를 다시 열어 인증해주세요.",
+            forbidden: "이 리포트에 접근할 권한이 없어요.",
+            expired: "공유 링크가 만료되었어요. 치료사에게 새 링크를 요청해주세요.",
+            not_published: "아직 발행되지 않은 리포트예요. 잠시 후 다시 시도해주세요.",
+            session_lookup_failed: "리포트를 불러오는 중 일시적인 오류가 발생했어요. 잠시 후 다시 시도해주세요.",
+          };
+          throw new Error(map[code] ?? `리포트를 불러올 수 없어요 (${code})`);
+        }
+        if (err) throw new Error("리포트를 불러오는 중 네트워크 오류가 발생했어요. 잠시 후 다시 시도해주세요.");
         setData(res);
       } catch (e: any) {
         setError(e?.message ?? "리포트를 불러올 수 없어요");

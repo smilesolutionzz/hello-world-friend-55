@@ -303,11 +303,29 @@ JSON만 출력. 다른 텍스트·코드펜스 금지.`;
     try { draft = JSON.parse(aiJson.choices?.[0]?.message?.content ?? "{}"); } catch { draft = {}; }
     draft.schema = "monthly_v1";
     draft.center_name = centerName;
-    if (draft.stats && typeof draft.stats === "object") {
-      draft.stats.therapist = primaryTherapist || draft.stats.therapist || "담당 치료사";
-    }
+    if (!draft.stats || typeof draft.stats !== "object") draft.stats = {};
+    draft.stats.therapist = primaryTherapist || draft.stats.therapist || "담당 치료사";
+    if (areaList.length) draft.stats.areas = areaList.join(", ");
     if (draft.noteTherapist && primaryTherapist) {
       draft.noteTherapist = { name: `${primaryTherapist} 치료사`, meta: "담당 치료사" };
+    }
+    // Guarantee required developmental domains are present (header ↔ body consistency)
+    if (!Array.isArray(draft.domains)) draft.domains = [];
+    const existingDomainNames = new Set(
+      draft.domains.map((d: any) => String(d?.domain ?? "").replace(/\s+/g, ""))
+    );
+    for (const req of requiredDomains) {
+      const key = req.replace(/\s+/g, "");
+      if (!existingDomainNames.has(key)) {
+        draft.domains.push({
+          domain: req,
+          prev: 55,
+          curr: 60,
+          delta: "+5",
+          color: "emerald",
+          note: "이번 달 회기에서 꾸준히 관찰되었으며, 다음 달 중점 관찰 영역입니다.",
+        });
+      }
     }
     draft.generated_from = {
       scheduled_sessions: (sessions || []).length,

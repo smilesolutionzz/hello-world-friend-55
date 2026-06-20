@@ -37,13 +37,33 @@ serve(async (req) => {
     const { data: { user } } = await admin.auth.getUser(auth.replace("Bearer ", ""));
     if (!user) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
 
-    const { centerId, clientId, period } = await req.json();
+    const { centerId, clientId, period, force } = await req.json();
     if (!centerId || !clientId || !period) {
       return new Response(JSON.stringify({ error: "centerId, clientId, period required" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
     }
 
     const { data: mem } = await admin.from("center_members").select("user_id").eq("center_id", centerId).eq("user_id", user.id).maybeSingle();
     if (!mem) return new Response(JSON.stringify({ error: "forbidden" }), { status: 403, headers: { ...cors, "Content-Type": "application/json" } });
+
+    // Pre-check: skip if an existing report already covers this month, unless force=true.
+    // Never overwrite published reports automatically — even with force, require force=true explicitly.
+    {
+      const { start: pStart } = monthRange(period);
+      const { data: pre } = await admin
+        .from("center_parent_reports")
+        .select("id, status")
+        .eq("center_id", centerId)
+        .eq("client_id", clientId)
+        .eq("period_type", "monthly")
+        .eq("period_start", pStart)
+        .maybeSingle();
+      if (pre && !force) {
+        return new Response(
+          JSON.stringify({ skipped: true, reason: "already_exists", reportId: pre.id, status: pre.status }),
+          { status: 200, headers: { ...cors, "Content-Type": "application/json" } },
+        );
+      }
+    }
 
     const { start, end, y, m } = monthRange(period);
 

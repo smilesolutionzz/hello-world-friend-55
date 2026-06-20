@@ -2,10 +2,20 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_PARENT_REPORTS, DEMO_CLIENTS } from "@/lib/b2bCenter/demoData";
-import { FileText, Sparkles, Eye, Send } from "lucide-react";
+import { FileText, Sparkles, Eye, Send, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import SampleParentReport from "@/components/b2b-center/SampleParentReport";
 import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -17,6 +27,8 @@ export default function ParentReportsPage() {
   const [period, setPeriod] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; });
   const [sampleOpen, setSampleOpen] = useState<{ clientId: string; name: string; period: string; periodKey: string } | null>(null);
   const [shareOpen, setShareOpen] = useState<{ reportId: string; clientId: string; childName: string } | null>(null);
+  const [regenTarget, setRegenTarget] = useState<{ clientId: string; childName: string; status: string } | null>(null);
+  const [regenLoading, setRegenLoading] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -58,11 +70,32 @@ export default function ParentReportsPage() {
       return;
     }
 
-    toast({ title: `${clientIds.length}명에 대해 월간 리포트 AI 생성을 시작합니다…` });
+    // 이미 이 달에 월간 리포트가 존재하는 이용자는 제외 (AI 재호출 비용 방지)
+    const { data: existing } = await supabase
+      .from("center_parent_reports")
+      .select("client_id, status")
+      .eq("center_id", centerId)
+      .eq("period_type", "monthly")
+      .eq("period_start", period_start);
+    const existingIds = new Set((existing ?? []).map((e: any) => e.client_id));
+    const toGenerate = clientIds.filter((id) => !existingIds.has(id));
+    const skipped = clientIds.length - toGenerate.length;
 
-    // 아이별로 실제 데이터를 주입해 개별 생성 (동시 3개 제한)
+    if (!toGenerate.length) {
+      toast({
+        title: "새로 생성할 리포트가 없어요",
+        description: `이번 달 대상 ${clientIds.length}명 모두 이미 리포트가 있어요. 다시 만들려면 각 행의 ‘재생성’ 버튼을 이용해주세요.`,
+      });
+      return;
+    }
+
+    toast({
+      title: `${toGenerate.length}명에 대해 월간 리포트 생성 시작…`,
+      description: skipped ? `이미 리포트가 있는 ${skipped}명은 건너뜁니다.` : undefined,
+    });
+
     let ok = 0, fail = 0;
-    const queue = [...clientIds];
+    const queue = [...toGenerate];
     const worker = async () => {
       while (queue.length) {
         const cid = queue.shift()!;
@@ -82,9 +115,27 @@ export default function ParentReportsPage() {
 
     toast({
       title: `월간 리포트 생성 완료`,
-      description: `성공 ${ok}건${fail ? ` · 실패 ${fail}건` : ""} — 각 아이의 실제 회기·치료노트 기반으로 작성되었습니다.`,
+      description: `성공 ${ok}건${fail ? ` · 실패 ${fail}건` : ""}${skipped ? ` · 건너뜀 ${skipped}건` : ""}`,
     });
     load();
+  };
+
+  const regenerateOne = async () => {
+    if (!regenTarget) return;
+    setRegenLoading(true);
+    try {
+      const { error } = await supabase.functions.invoke("generate-monthly-parent-report", {
+        body: { centerId, clientId: regenTarget.clientId, period, force: true },
+      });
+      if (error) throw error;
+      toast({ title: `${regenTarget.childName} 리포트가 재생성되었어요` });
+      setRegenTarget(null);
+      load();
+    } catch (e: any) {
+      toast({ title: "재생성 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setRegenLoading(false);
+    }
   };
 
   const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? "—";
@@ -94,12 +145,12 @@ export default function ParentReportsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-semibold">부모 월간 리포트</h1>
-          <p className="text-sm text-neutral-500 mt-1">발행된 주간 치료노트를 자동으로 묶어 월간 리포트 초안을 생성합니다. 치료노트가 있는 이용자만 대상으로 합니다.</p>
+          <p className="text-sm text-neutral-500 mt-1">발행된 주간 치료노트를 자동으로 묶어 월간 리포트 초안을 생성합니다. 이미 리포트가 있는 이용자는 건너뛰며, 다시 만들려면 행의 ‘재생성’을 사용하세요.</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setSampleOpen({ clientId: "c1", name: "민준 (5세)", period: "2026년 4월", periodKey: "2026-04" })} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#C8B88A] text-neutral-800 text-sm hover:bg-[#FAF6E8]"><Eye className="w-4 h-4 text-[#C8B88A]" /> 샘플 리포트 보기</button>
           <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-sm" />
-          <button onClick={generateBatch} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-sm"><Sparkles className="w-4 h-4 text-[#C8B88A]" /> 치료노트 기반 월간 초안 생성</button>
+          <button onClick={generateBatch} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-sm"><Sparkles className="w-4 h-4 text-[#C8B88A]" /> 누락된 이용자만 생성</button>
         </div>
       </div>
 
@@ -119,6 +170,7 @@ export default function ParentReportsPage() {
                 <td className="p-3 text-neutral-500">{r.published_at ? new Date(r.published_at).toLocaleDateString("ko-KR") : "—"}</td>
                 <td className="p-3 text-right">
                   <div className="inline-flex items-center gap-3">
+                    <button onClick={() => setRegenTarget({ clientId: r.client_id, childName: clientName(r.client_id), status: r.status })} className="inline-flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-800"><RefreshCw className="w-3.5 h-3.5" /> 재생성</button>
                     <button onClick={() => setShareOpen({ reportId: r.id, clientId: r.client_id, childName: clientName(r.client_id) })} className="inline-flex items-center gap-1 text-xs text-[#8a7544] hover:text-[#6b5a36]"><Send className="w-3.5 h-3.5" /> 부모 공유</button>
                     <button onClick={() => setSampleOpen({ clientId: r.client_id, name: clientName(r.client_id), period: (r.period_start?.slice(0, 7).replace("-", "년 ") + "월"), periodKey: r.period_start?.slice(0, 7) ?? "" })} className="inline-flex items-center gap-1 text-xs text-neutral-700 hover:text-neutral-900"><FileText className="w-3.5 h-3.5" /> 열기</button>
                   </div>
@@ -143,6 +195,28 @@ export default function ParentReportsPage() {
           defaultPhone={clients.find((c) => c.id === shareOpen.clientId)?.guardian_phone ?? ""}
         />
       )}
+
+      <AlertDialog open={!!regenTarget} onOpenChange={(o) => !o && !regenLoading && setRegenTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{regenTarget?.childName} 리포트를 다시 생성할까요?</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <span className="block">기존 리포트를 덮어씁니다. 계속하시겠어요?</span>
+              {regenTarget?.status === "published" && (
+                <span className="block text-rose-600 font-medium">
+                  ⚠ 이미 학부모에게 공유된 리포트입니다. 다시 생성하면 학부모가 보는 내용도 바뀝니다.
+                </span>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={regenLoading}>취소</AlertDialogCancel>
+            <AlertDialogAction onClick={(e) => { e.preventDefault(); regenerateOne(); }} disabled={regenLoading}>
+              {regenLoading ? "재생성 중…" : "재생성"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

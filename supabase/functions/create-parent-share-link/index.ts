@@ -155,10 +155,10 @@ Deno.serve(async (req) => {
     }
 
     // Always use the production domain for parent share links so guardians never hit
-    // the Lovable preview login wall. The path /r/:token routes to GuardianReportView
-    // (which renders GuardianReportGate) without requiring a Lovable account.
+    // the Lovable preview login wall. Route directly to the self-managed Twilio OTP
+    // flow; Supabase Phone Auth is intentionally disabled for this project.
     const PUBLIC_BASE_URL = "https://aihpro.app";
-    const shareUrl = `${PUBLIC_BASE_URL}/r/${token}`;
+    const shareUrl = `${PUBLIC_BASE_URL}/parent-share/${token}`;
 
     let smsResult: any = null;
     const missingSecrets: string[] = [];

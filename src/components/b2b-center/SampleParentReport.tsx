@@ -93,6 +93,8 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
   const sessions = useMemo(() => DEMO_SESSIONS.filter((s) => s.client_id === clientId), [clientId]);
 
   const [data, setData] = useState<ReportData>(() => buildDefault(clientName, sessions, pk));
+  const [centerName, setCenterName] = useState<string>("");
+
   const [editMode, setEditMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showShare, setShowShare] = useState(false);
@@ -107,17 +109,29 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
       if (periodStart && clientId && clientId !== "demo" && clientId !== "c1") {
         const { data } = await supabase
           .from("center_parent_reports")
-          .select("ai_draft_json")
+          .select("ai_draft_json, center_id")
           .eq("client_id", clientId)
           .eq("period_type", "monthly")
           .eq("period_start", periodStart)
           .maybeSingle();
         const draft: any = data?.ai_draft_json;
+        // Resolve real center name (draft.center_name preferred; fallback to org lookup)
+        let resolvedCenterName = draft?.center_name as string | undefined;
+        if (!resolvedCenterName && data?.center_id) {
+          const { data: org } = await supabase
+            .from("center_organizations")
+            .select("name")
+            .eq("id", data.center_id)
+            .maybeSingle();
+          resolvedCenterName = org?.name ?? "";
+        }
+        if (!cancelled && resolvedCenterName) setCenterName(resolvedCenterName);
         if (!cancelled && draft && draft.schema === "monthly_v1") {
           setData({ ...buildDefault(clientName, sessions, pk), ...draft });
           return;
         }
       }
+
       // 2) Local edits
       try {
         const raw = localStorage.getItem(storageKey(clientId, pk));
@@ -206,7 +220,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
                 <span className="w-8 h-px bg-[#C8B88A]" /> Monthly Parent Report
               </div>
               <h1 className="text-4xl sm:text-5xl font-serif text-neutral-900 leading-tight mb-3">{clientName} 보호자께</h1>
-              <p className="text-lg text-neutral-600">{period} · 햇살 발달치료센터</p>
+              <p className="text-lg text-neutral-600">{period}{centerName ? ` · ${centerName}` : ""}</p>
               <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
                   { label: "참여 회기", key: "participated" as const },
@@ -356,7 +370,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
           <footer className="pt-8 border-t border-neutral-200 text-[11px] text-neutral-500 leading-relaxed">
             <p className="mb-2"><strong className="text-neutral-700">고지사항.</strong> 본 리포트는 발달 코칭 및 의사결정 지원 목적의 관찰 기록이며, 의학적 진단이나 치료 처방이 아닙니다.</p>
             <div className="flex items-center justify-between mt-4">
-              <span>햇살 발달치료센터 · AIHPRO B2B Center로 발행</span>
+              <span>{centerName || "발달치료센터"} · AIHPRO B2B Center로 발행</span>
               <span>{new Date().toLocaleDateString("ko-KR")}</span>
             </div>
           </footer>

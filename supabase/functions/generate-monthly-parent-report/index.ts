@@ -205,19 +205,36 @@ serve(async (req) => {
 
     const hasAnyData = uploadCount > 0 || (weekly?.length ?? 0) > 0 || scheduledTotal > 0;
 
+    // Map raw program category/name to a parent-friendly developmental domain
+    // so the header "치료 영역" and the body "영역별 발달 흐름" stay aligned.
+    const mapAreaToDomain = (a: string): string => {
+      const t = a.replace(/\s+/g, "");
+      if (/(특수체육|운동|신체|감통|감각통합|체육|놀이체육)/.test(t)) return "운동·신체 발달";
+      if (/(인지|학습|집중|주의|수학|읽기|쓰기학습)/.test(t)) return "인지·학습";
+      if (/(언어|말|발화|조음|쓰기|읽기언어)/.test(t)) return "언어·의사소통";
+      if (/(사회|상호작용|또래|놀이치료|정서사회)/.test(t)) return "사회성·상호작용";
+      if (/(정서|행동|조절|감정)/.test(t)) return "정서·행동 조절";
+      if (/(미술|음악|예술)/.test(t)) return "표현·창의";
+      return a;
+    };
+    const requiredDomains = Array.from(new Set(areaList.map((a) => mapAreaToDomain(String(a)))));
+
     const prompt = `당신은 발달치료센터의 담당 치료사이며, 아래 **실제 데이터**만을 근거로 보호자에게 보낼 ${y}년 ${m}월 월간 리포트를 작성합니다.
 
 [엄격 규칙]
 - 데이터에 없는 활동·에피소드·수치·치료사 이름을 절대 만들어내지 마세요.
 - "가정에서 휴식했다", "별도 수업이 없었다"같은 추측성 문장을 데이터가 있는데도 쓰지 마세요.
-- [파싱된 회기 일지]에 활동이 있으면 그것을 회기로 인정하고 활동·소견을 그대로 반영하세요. 회기 일지의 키워드(예: "양손 활용 반복 동작 훈련")가 summary/highlights/note 중 최소 한 곳에 그대로 등장해야 합니다.
+- [파싱된 회기 일지]에 활동이 있으면 그것을 회기로 인정하고 활동·소견을 그대로 반영하세요. 회기 일지의 키워드가 summary/highlights/note 중 최소 한 곳에 그대로 등장해야 합니다.
 - 데이터가 비어 있는 섹션은 짧게 "이번 달 해당 없음"으로 표기하세요.
+- **domains(영역별 발달 흐름)은 반드시 아래 [필수 발달 영역] 목록을 모두 포함**해야 합니다(추가 영역은 가능하나 누락 금지). 헤더의 치료 영역과 본문의 영역별 발달 흐름이 일치해야 합니다.
 - domains 점수는 회기 일지·주간 노트에서 관찰된 변화 수준을 토대로 0~100 사이 정수로 반드시 양수값(보통 40~85)을 부여하세요. prev<curr 일 때 emerald, 보합/감소면 amber. delta는 "+N"/"-N" 정수.
+- stats.areas 는 반드시 아래 [치료 영역] 문자열 그대로(쉼표 구분) 사용하세요. 임의로 바꾸지 마세요.
 
 [아동] ${client.name}${ageStr ? ` (${ageStr})` : ""}${client.gender ? ` · ${client.gender}` : ""}
 [기간] ${start} ~ ${end}
 [참여 회기] 파싱된 회기 ${uploadCount}회 · 스케줄 ${scheduledTotal}회 · 완료 ${completedScheduled.length}회 · 출석률 ${attendancePct}%
 [치료 영역] ${areaList.join(", ") || "(스케줄 영역 없음 — 회기 일지의 활동 키워드로 영역을 추론)"}
+[필수 발달 영역 — domains 배열에 반드시 모두 포함] ${requiredDomains.join(", ") || "(없음 — 회기 일지에서 관찰된 영역으로 자유 구성)"}
 [담당 치료사] ${therapistNames.join(", ") || "(미지정)"}
 
 [이번 달 스케줄 회기]

@@ -10,7 +10,7 @@
  *   E2E_PARENT_RESOURCE_ID    — center_parent_reports.id
  *   E2E_BASE_URL              — default http://localhost:8080
  */
-import { test, expect, devices } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 const BASE_URL = process.env.E2E_BASE_URL || "http://localhost:8080";
 const SESSION_TOKEN = process.env.E2E_PARENT_SESSION_TOKEN!;
@@ -18,8 +18,6 @@ const SHARE_TOKEN = process.env.E2E_PARENT_SHARE_TOKEN!;
 const RESOURCE_ID = process.env.E2E_PARENT_RESOURCE_ID!;
 
 test.describe("Parent monthly report — no [object Object]", () => {
-  test.use({ ...devices["iPhone 13"] });
-
   test.beforeEach(() => {
     if (!SESSION_TOKEN || !SHARE_TOKEN || !RESOURCE_ID) {
       throw new Error("Missing E2E_PARENT_SESSION_TOKEN / E2E_PARENT_SHARE_TOKEN / E2E_PARENT_RESOURCE_ID");

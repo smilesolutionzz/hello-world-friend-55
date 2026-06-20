@@ -119,24 +119,50 @@ serve(async (req) => {
       ? Math.min(100, Math.round((Math.max(uploadCount, completedScheduled.length) / scheduledTotal) * 100))
       : (uploadCount > 0 ? 100 : 0);
 
-    const therapistNamesSet = new Set<string>();
+    // Therapist priority:
+    //  ① most-assigned therapist in this month's center_sessions
+    //  ② most-frequent therapist_id across center_session_uploads
+    //  ③ name extracted from OCR text
+    const countByName = new Map<string, number>();
+    const bump = (name: string | undefined | null, w = 1) => {
+      if (!name) return;
+      countByName.set(name, (countByName.get(name) || 0) + w);
+    };
+    const sessionTherapistCounts = new Map<string, number>();
     for (const s of sessions || []) {
       const n = thMap.get(s.therapist_id)?.name;
-      if (n) therapistNamesSet.add(n);
+      if (n) sessionTherapistCounts.set(n, (sessionTherapistCounts.get(n) || 0) + 1);
     }
-    for (const u of uploads || []) {
-      const n = thMap.get((u as any).therapist_id)?.name;
-      if (n) therapistNamesSet.add(n);
+    let primaryTherapist: string | null = null;
+    if (sessionTherapistCounts.size) {
+      primaryTherapist = [...sessionTherapistCounts.entries()].sort((a, b) => b[1] - a[1])[0][0];
     }
-    // OCR fallback for therapist name (e.g. "운동발달재활 이수석:")
-    for (const u of uploads || []) {
-      const txt = (u as any).ocr_text || "";
-      const m1 = txt.match(/(?:담당|치료사)[\s:]*([가-힣]{2,4})\s*(?:치료사|선생님)?/);
-      if (m1?.[1]) therapistNamesSet.add(m1[1]);
-      const m2 = txt.match(/재활\s+([가-힣]{2,4})\s*[:：]/);
-      if (m2?.[1]) therapistNamesSet.add(m2[1]);
+    if (!primaryTherapist) {
+      const uploadTherapistCounts = new Map<string, number>();
+      for (const u of uploads || []) {
+        const n = thMap.get((u as any).therapist_id)?.name;
+        if (n) uploadTherapistCounts.set(n, (uploadTherapistCounts.get(n) || 0) + 1);
+      }
+      if (uploadTherapistCounts.size) {
+        primaryTherapist = [...uploadTherapistCounts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+      }
     }
-    const therapistNames = Array.from(therapistNamesSet);
+    if (!primaryTherapist) {
+      const ocrCounts = new Map<string, number>();
+      for (const u of uploads || []) {
+        const txt = (u as any).ocr_text || "";
+        const m1 = txt.match(/(?:담당|치료사)[\s:]*([가-힣]{2,4})\s*(?:치료사|선생님)?/);
+        if (m1?.[1]) ocrCounts.set(m1[1], (ocrCounts.get(m1[1]) || 0) + 1);
+        const m2 = txt.match(/재활\s+([가-힣]{2,4})\s*[:：]/);
+        if (m2?.[1]) ocrCounts.set(m2[1], (ocrCounts.get(m2[1]) || 0) + 1);
+      }
+      if (ocrCounts.size) {
+        primaryTherapist = [...ocrCounts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+      }
+    }
+
+    const therapistNames = primaryTherapist ? [primaryTherapist] : [];
+
 
     const areaList = Array.from(
       new Set((sessions || []).map((s) => pgMap.get(s.program_id)?.category || pgMap.get(s.program_id)?.name).filter(Boolean))

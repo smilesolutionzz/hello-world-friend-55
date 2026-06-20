@@ -220,7 +220,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
                 <span className="w-8 h-px bg-[#C8B88A]" /> Monthly Parent Report
               </div>
               <h1 className="text-4xl sm:text-5xl font-serif text-neutral-900 leading-tight mb-3">{clientName} 보호자께</h1>
-              <p className="text-lg text-neutral-600">{period} · 햇살 발달치료센터</p>
+              <p className="text-lg text-neutral-600">{period}{centerName ? ` · ${centerName}` : ""}</p>
               <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
                   { label: "참여 회기", key: "participated" as const },

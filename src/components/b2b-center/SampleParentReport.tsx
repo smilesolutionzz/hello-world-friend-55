@@ -109,17 +109,29 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
       if (periodStart && clientId && clientId !== "demo" && clientId !== "c1") {
         const { data } = await supabase
           .from("center_parent_reports")
-          .select("ai_draft_json")
+          .select("ai_draft_json, center_id")
           .eq("client_id", clientId)
           .eq("period_type", "monthly")
           .eq("period_start", periodStart)
           .maybeSingle();
         const draft: any = data?.ai_draft_json;
+        // Resolve real center name (draft.center_name preferred; fallback to org lookup)
+        let resolvedCenterName = draft?.center_name as string | undefined;
+        if (!resolvedCenterName && data?.center_id) {
+          const { data: org } = await supabase
+            .from("center_organizations")
+            .select("name")
+            .eq("id", data.center_id)
+            .maybeSingle();
+          resolvedCenterName = org?.name ?? "";
+        }
+        if (!cancelled && resolvedCenterName) setCenterName(resolvedCenterName);
         if (!cancelled && draft && draft.schema === "monthly_v1") {
           setData({ ...buildDefault(clientName, sessions, pk), ...draft });
           return;
         }
       }
+
       // 2) Local edits
       try {
         const raw = localStorage.getItem(storageKey(clientId, pk));

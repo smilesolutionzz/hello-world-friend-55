@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 import { Check, ChevronRight, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
+import { BETA_MODE } from "@/config/betaMode";
 
 interface Props { centerId: string; demo?: boolean }
 
-const STEPS: Array<{ key: string; label: string; href: string; description: string }> = [
+const ALL_STEPS: Array<{ key: string; label: string; href: string; description: string; betaHidden?: boolean }> = [
   { key: "first_client_added", label: "첫 이용자 등록", href: "../clients", description: "엑셀 일괄 또는 수동 등록" },
-  { key: "first_invite_sent", label: "첫 초대 발송", href: "../clients", description: "이용자에게 AIHPRO 무료권 보내기" },
-  { key: "first_parent_signup", label: "보호자 가입 확인", href: "../intelligence/parent-reports", description: "초대 수락 시 자동 체크" },
-  { key: "first_intelligence_data", label: "첫 검사 결과 수신", href: "../intelligence/parent-reports", description: "보호자가 첫 자가검사 완료" },
+  { key: "first_invite_sent", label: "첫 초대 발송", href: "../clients", description: "이용자에게 AIHPRO 무료권 보내기", betaHidden: true },
+  { key: "first_parent_signup", label: "보호자 가입 확인", href: "../intelligence/parent-reports", description: "초대 수락 시 자동 체크", betaHidden: true },
+  { key: "first_intelligence_data", label: "첫 검사 결과 수신", href: "../intelligence/parent-reports", description: "보호자가 첫 자가검사 완료", betaHidden: true },
   { key: "alerts_configured", label: "위기 알림 확인", href: "../intelligence/ops-dashboard", description: "고위험 점수 발생 시 푸시" },
 ];
+
+const STEPS = BETA_MODE ? ALL_STEPS.filter((s) => !s.betaHidden) : ALL_STEPS;
 
 export default function OnboardingChecklist({ centerId, demo }: Props) {
   const [done, setDone] = useState<Set<string>>(new Set());

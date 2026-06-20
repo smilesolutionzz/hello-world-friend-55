@@ -236,16 +236,17 @@ export default function TherapyNotesPage() {
 
   const publish = async () => {
     if (!report) return;
-    if (!confirm("보호자에게 발행하시겠어요?\n발행 후 보호자가 AIHPRO 웹에서 즉시 볼 수 있어요.")) return;
+    if (!confirm("치료노트를 발행하시겠어요?\n발행 후 '부모 공유' 버튼으로 카톡 공유 링크를 보내주세요.")) return;
     await supabase.from("center_parent_reports").update({
       ai_draft_json: editedDraft,
       title: editedDraft?.title ?? null,
       status: "published",
       published_at: new Date().toISOString(),
     }).eq("id", report.id);
-    toast({ title: "발행 완료", description: "보호자가 /parent/center 에서 확인할 수 있어요." });
+    toast({ title: "발행 완료", description: "이제 '부모 공유' 버튼으로 카톡 공유 링크를 만들 수 있어요." });
     loadWeek();
     loadHistory();
+    setShareOpen(true);
   };
 
   const clientName = useMemo(() => clients.find(c => c.id === selectedClient)?.name ?? "—", [clients, selectedClient]);

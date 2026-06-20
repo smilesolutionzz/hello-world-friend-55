@@ -24,13 +24,23 @@ interface DomainRow { domain: string; prev: number; curr: number; delta: string;
 interface HighlightRow { date: string; title: string; body: string }
 interface PracticeRow { title: string; desc: string; time: string }
 
-function safeText(value: any): string {
-  if (value == null) return "";
-  if (typeof value === "string") return value;
+function cleanObjectText(text: string): string {
+  return text.replace(/\[object Object\]/g, "").replace(/\s{2,}/g, " ").trim();
+}
+
+function safeText(value: any, depth = 0): string {
+  if (value == null || depth > 5) return "";
+  if (typeof value === "string") return cleanObjectText(value);
   if (typeof value === "number" || typeof value === "boolean") return String(value);
-  if (Array.isArray(value)) return value.map(safeText).filter(Boolean).join(" · ");
+  if (Array.isArray(value)) return cleanObjectText(value.map((item) => safeText(item, depth + 1)).filter(Boolean).join(" · "));
   if (typeof value === "object") {
-    return value.title || value.label || value.name || value.text || value.body || value.desc || value.value || value.summary || "";
+    const preferred = ["title", "label", "name", "text", "body", "desc", "description", "value", "summary", "note", "content"];
+    for (const key of preferred) {
+      const resolved = safeText(value[key], depth + 1);
+      if (resolved) return resolved;
+    }
+    const values = Object.values(value).map((item) => safeText(item, depth + 1)).filter(Boolean);
+    return cleanObjectText(values.join(" · "));
   }
   return "";
 }
@@ -64,11 +74,11 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
   const summary: string = safeText(draft.summary) || safeText(report.ai_summary) || `이번 달 ${report.client_name} 어린이의 발달 흐름을 정리한 리포트입니다.`;
   const domains: DomainRow[] = Array.isArray(draft.domains) && draft.domains.length ? draft.domains : defaultDomains();
   const highlights: HighlightRow[] = Array.isArray(draft.highlights) ? draft.highlights : [];
-  const note: string = draft.note || report.coach_comment || "";
+  const note: string = safeText(draft.note) || safeText(report.coach_comment) || "";
   const noteTherapist = draft.noteTherapist || { name: stats.therapist, meta: "담당 치료사" };
   const practice: PracticeRow[] = Array.isArray(draft.practice) ? draft.practice : [];
   const goals: { label: string; value: string }[] = Array.isArray(draft.goals) ? draft.goals : [];
-  const goalsFooter: string = draft.goalsFooter || "";
+  const goalsFooter: string = safeText(draft.goalsFooter);
 
   return (
     <div className="max-w-2xl mx-auto px-5 py-8 space-y-10">
@@ -151,7 +161,7 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
           <div className="bg-gradient-to-br from-[#FAF6E8] to-white rounded-3xl p-6 border border-[#C8B88A]/40">
             <p className="text-[14px] text-neutral-800 leading-[1.8] italic whitespace-pre-wrap break-keep">{note}</p>
             <div className="mt-5 flex items-center gap-3 pt-5 border-t border-[#C8B88A]/30">
-              <div className="w-10 h-10 rounded-full bg-[#FFB4A2] flex items-center justify-center text-white font-semibold">{noteTherapist.name?.charAt(0) || "치"}</div>
+              <div className="w-10 h-10 rounded-full bg-[#FFB4A2] flex items-center justify-center text-white font-semibold">{safeText(noteTherapist.name).charAt(0) || "치"}</div>
               <div>
                 <div className="font-semibold text-neutral-900 text-sm">{safeText(noteTherapist.name)}</div>
                 <div className="text-xs text-neutral-500">{safeText(noteTherapist.meta)}</div>

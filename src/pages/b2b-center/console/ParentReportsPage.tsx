@@ -134,7 +134,7 @@ export default function ParentReportsPage() {
       {shareOpen && (
         <ShareWithParentDialog
           open={!!shareOpen}
-          onClose={() => setShareOpen(null)}
+          onClose={() => { setShareOpen(null); load(); }}
           resourceType="parent_report"
           resourceId={shareOpen.reportId}
           childId={shareOpen.clientId}

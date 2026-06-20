@@ -57,6 +57,15 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "client_not_found" }), { status: 404, headers: { ...cors, "Content-Type": "application/json" } });
     }
 
+    // 1b) Center org (real name)
+    const { data: org } = await admin
+      .from("center_organizations")
+      .select("id, name")
+      .eq("id", centerId)
+      .maybeSingle();
+    const centerName = org?.name || "발달치료센터";
+
+
     // 2) Scheduled sessions in month
     const { data: sessions } = await admin
       .from("center_sessions")

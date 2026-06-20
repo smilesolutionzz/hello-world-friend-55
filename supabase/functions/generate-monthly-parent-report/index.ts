@@ -285,13 +285,23 @@ JSON만 출력. 다른 텍스트·코드펜스 금지.`;
     let draft: any = {};
     try { draft = JSON.parse(aiJson.choices?.[0]?.message?.content ?? "{}"); } catch { draft = {}; }
     draft.schema = "monthly_v1";
+    draft.center_name = centerName;
+    if (draft.stats && typeof draft.stats === "object") {
+      draft.stats.therapist = primaryTherapist || draft.stats.therapist || "담당 치료사";
+    }
+    if (draft.noteTherapist && primaryTherapist) {
+      draft.noteTherapist = { name: `${primaryTherapist} 치료사`, meta: "담당 치료사" };
+    }
     draft.generated_from = {
       scheduled_sessions: (sessions || []).length,
       parsed_uploads: (uploads || []).length,
       weekly_notes: (weekly || []).length,
       therapists: therapistNames,
+      primary_therapist: primaryTherapist,
+      center_name: centerName,
       areas: areaList,
     };
+
 
     const sourceIds = (weekly || []).map((w: any) => w.id);
 

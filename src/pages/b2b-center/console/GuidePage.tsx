@@ -1,11 +1,12 @@
 import { useOutletContext } from "react-router-dom";
 import {
-  Upload, CalendarClock, Send, LineChart, ShieldAlert, MessageSquare,
+  Upload, CalendarClock, FileText, Send, ShieldAlert, MessageSquare,
 } from "lucide-react";
+import { BETA_MODE } from "@/config/betaMode";
 
 type Ctx = { centerId: string; demo?: boolean };
 
-const STEPS = [
+const ALL_STEPS = [
   {
     icon: Upload,
     num: "01",
@@ -13,6 +14,7 @@ const STEPS = [
     body: "케어플 월서비스관리 엑셀 또는 자체 양식으로 한 번에 업로드합니다. 이용자·선생님·프로그램·세션이 자동 매핑됩니다.",
     href: "/b2b-center/import",
     cta: "엑셀 업로드 열기",
+    beta: true,
   },
   {
     icon: CalendarClock,
@@ -21,40 +23,47 @@ const STEPS = [
     body: "주간·월간·선생님별 일정과 프로그램·바우처 단가를 점검합니다. 이후 모든 통계의 기준이 됩니다.",
     href: "../schedule",
     cta: "일정으로 이동",
+    beta: true,
+  },
+  {
+    icon: FileText,
+    num: "03",
+    title: "회기 기록 · 치료노트 작성",
+    body: "회기마다 일지 사진을 올리거나 직접 입력하면 AI가 주간 치료노트 초안을 만들어드립니다.",
+    href: "../therapy-notes",
+    cta: "치료노트 열기",
+    beta: true,
   },
   {
     icon: Send,
-    num: "03",
-    title: "보호자에게 AIHPRO 초대",
-    body: "이용자 카드에서 \"AIHPRO 초대 보내기\"를 누르면 무료 자가검사·Mind Track·기본 리포트가 보호자에게 부여됩니다. 카카오·SMS·QR 모두 가능.",
-    href: "../clients",
-    cta: "이용자 목록 열기",
+    num: "04",
+    title: "보호자 공유 링크 보내기",
+    body: "치료노트·월간 리포트를 발행한 뒤 \"부모 공유\" 버튼을 누르면 SMS 인증 기반 공유 링크가 생성됩니다. 링크를 카톡으로 보내주세요.",
+    href: "../therapy-notes",
+    cta: "치료노트로 이동",
+    beta: true,
   },
   {
-    icon: LineChart,
-    num: "04",
-    title: "인텔리전스에서 결과 확인",
-    body: "보호자가 검사를 완료하면 자동으로 부모 리포트 화면에 표시됩니다. 응답 원문이 아닌 점수 단계·진행률·요약 인사이트만 노출됩니다.",
-    href: "../intelligence/parent-reports",
-    cta: "부모 리포트 열기",
+    icon: MessageSquare,
+    num: "05",
+    title: "월간 리포트 발행",
+    body: "치료노트가 누적되면 월 말에 보호자용 월간 리포트 초안이 자동으로 생성됩니다. 검토 후 카톡 공유 링크로 전달하세요.",
+    href: "../parent-reports",
+    cta: "월간 리포트 열기",
+    beta: true,
   },
   {
     icon: ShieldAlert,
-    num: "05",
+    num: "06",
     title: "위기 알림 대응",
     body: "고위험 점수(상위 단계) 발생 시 운영 KPI 대시보드에 알림이 뜹니다. 전문가 연결·상담 예약을 24시간 내에 안내해주세요.",
     href: "../intelligence/ops-dashboard",
     cta: "운영 KPI 보기",
-  },
-  {
-    icon: MessageSquare,
-    num: "06",
-    title: "부모 면담에 활용",
-    body: "검사 결과 + 출석 + 회기 노트를 한 화면에서 보며 상담합니다. 보호자 신뢰도가 비약적으로 높아집니다.",
-    href: "../intelligence/parent-reports",
-    cta: "리포트 보기",
+    beta: false,
   },
 ];
+
+const STEPS = BETA_MODE ? ALL_STEPS.filter((s) => s.beta) : ALL_STEPS;
 
 export default function GuidePage() {
   useOutletContext<Ctx>();
@@ -65,8 +74,7 @@ export default function GuidePage() {
         <p className="text-[10px] tracking-widest text-[#C8B88A] mb-2">GUIDE</p>
         <h1 className="text-3xl font-semibold mb-2 break-keep">센터 운영 가이드</h1>
         <p className="text-neutral-600 break-keep">
-          엑셀 한 번으로 콘솔이 채워지고, 보호자 초대 한 번으로 인텔리전스가 시작됩니다.
-          여섯 단계만 따라하면 됩니다.
+          엑셀로 콘솔을 채우고, 회기 기록 → 치료노트 → 월간 리포트 → 카톡 공유 링크 순서로 보호자와 연결됩니다.
         </p>
       </div>
 
@@ -93,12 +101,11 @@ export default function GuidePage() {
 
       <div className="mt-10 rounded-3xl bg-[#FAF6E8] border border-[#C8B88A]/30 p-6">
         <p className="text-[10px] tracking-widest text-[#C8B88A] mb-2">CORE PHILOSOPHY</p>
-        <h3 className="text-lg font-semibold mb-2">왜 보호자를 초대해야 할까요?</h3>
+        <h3 className="text-lg font-semibold mb-2">보호자와 어떻게 연결되나요?</h3>
         <p className="text-sm text-neutral-700 break-keep">
-          센터에서 보호자에게 무료로 AIHPRO를 열어주면, 자가검사·Mind Track 데이터가
-          센터 콘솔로 흘러들어옵니다. 회기 중 관찰만으로는 보이지 않던 가정 내 변화·정서 흐름이
-          드러나고, 부모 면담의 깊이가 달라집니다. 데이터는 응답 원문이 아닌 점수 단계·요약만
-          공유되어 보호자 신뢰를 해치지 않습니다.
+          베타 기간에는 보호자가 별도 가입할 필요가 없습니다. 치료노트·월간 리포트를 발행한 뒤
+          "부모 공유" 버튼으로 SMS 인증 기반 공유 링크를 만들어 카톡으로 보내주시면, 보호자는
+          본인 휴대폰 인증만으로 리포트를 열람합니다. 90일 후 자동 만료됩니다.
         </p>
       </div>
     </div>

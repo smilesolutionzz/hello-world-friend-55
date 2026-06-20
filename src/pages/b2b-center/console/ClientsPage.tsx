@@ -6,6 +6,7 @@ import ClientRegisterDialog from "@/components/b2b-center/ClientRegisterDialog";
 import InviteParentDialog from "@/components/b2b-center/InviteParentDialog";
 import ImportWizard from "@/components/b2b-center/ImportWizard";
 import { DEMO_CLIENTS } from "@/lib/b2bCenter/demoData";
+import { BETA_MODE } from "@/config/betaMode";
 
 type Ctx = { centerId: string; demo?: boolean };
 

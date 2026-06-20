@@ -23,14 +23,25 @@ Deno.serve(async (req) => {
 
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
-    const { data: session } = await admin
+    const { data: session, error: sessionErr } = await admin
       .from("parent_phone_sessions")
-      .select("id, share_link_id, phone, child_id")
+      .select("share_link_id, phone, child_id, expires_at")
       .eq("token", parent_session_token)
       .maybeSingle();
 
+    if (sessionErr) {
+      console.error("[parent-resource-fetch] session lookup failed", sessionErr);
+      return new Response(JSON.stringify({ error: "session_lookup_failed", detail: sessionErr.message }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     if (!session) {
       return new Response(JSON.stringify({ error: "invalid_session" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (session.expires_at && new Date(session.expires_at).getTime() < Date.now()) {
+      return new Response(JSON.stringify({ error: "session_expired" }), {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

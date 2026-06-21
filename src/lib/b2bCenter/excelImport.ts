@@ -630,6 +630,7 @@ export async function commitImport(
             if (v != null && String(v).trim() !== "") meta[k] = typeof v === "string" ? v.trim() : v;
           }
           if (r.note != null && String(r.note).trim() !== "") meta.note = String(r.note).trim();
+          if (sp.contact_raw) meta.contact_raw = sp.contact_raw;
           return {
             center_id: centerId,
             name: r.name,

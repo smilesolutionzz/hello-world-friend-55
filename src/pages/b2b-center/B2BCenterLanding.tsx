@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Check, ArrowRight, Users, Calendar, CreditCard, PlayCircle, LogIn, LayoutDashboard } from "lucide-react";
+import { Check, ArrowRight, Users, Calendar, CreditCard, LogIn, LayoutDashboard } from "lucide-react";
 import { B2B_CENTER_MONTHLY, B2B_CENTER_COMPETITOR_PRICE } from "@/constants/tokenCosts";
 import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
 import { supabase } from "@/integrations/supabase/client";
@@ -98,9 +98,6 @@ export default function B2BCenterLanding() {
         <div className="flex flex-wrap gap-3 justify-center">
           <Link to="/b2b-center/import" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition">
             60일 무료로 시작 <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link to="/b2b-center/app?demo=1" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-neutral-200 text-sm font-medium hover:bg-neutral-50 transition">
-            <PlayCircle className="w-4 h-4" /> 데모로 둘러보기
           </Link>
         </div>
 

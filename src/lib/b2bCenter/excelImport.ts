@@ -734,9 +734,15 @@ export async function commitImport(
       }
       if (newTherapistNames.size) {
         const tRows = Array.from(newTherapistNames).map((name) => ({ center_id: centerId, name }));
-        const { data, error } = await supabase.from("center_therapists").insert(tRows).select("id,name");
+        const { data, error } = await supabase
+          .from("center_therapists")
+          .upsert(tRows, { onConflict: "center_id,name", ignoreDuplicates: false })
+          .select("id,name");
         if (error) throw error;
         data?.forEach((t: any) => { therapistNameToId[t.name] = t.id; });
+        // upsert returns only the affected rows; refresh map from DB to capture pre-existing names
+        const { data: allT } = await supabase.from("center_therapists").select("id,name").eq("center_id", centerId);
+        (allT ?? []).forEach((t: any) => { therapistNameToId[t.name] = t.id; });
         summary.therapists_auto = data?.length ?? 0;
       }
       if (newProgramNames.size) {

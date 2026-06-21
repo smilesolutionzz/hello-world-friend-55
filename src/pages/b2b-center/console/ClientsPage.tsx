@@ -79,7 +79,7 @@ function renderCell(key: ColKey, r: Client) {
     case "disability_info": return <span className="text-neutral-600">{v(r.disability_info)}</span>;
     case "disability_grade": return <span className="text-neutral-600">{v(r.meta?.disability_grade)}</span>;
     case "disability_secondary": return <span className="text-neutral-600">{v(r.meta?.disability_secondary)}</span>;
-    case "phone": return <span className="text-neutral-600 whitespace-nowrap">{v(r.guardian_phone ?? r.phone)}</span>;
+    case "phone": return <span className="text-neutral-600 whitespace-pre-line text-xs leading-snug">{v(r.meta?.contact_raw ?? [r.guardian_phone, r.phone].filter(Boolean).join(" / "))}</span>;
     case "email": return <span className="text-neutral-600">{v(r.meta?.email)}</span>;
     case "address": return <span className="text-neutral-600">{v(r.address)}</span>;
     case "school": return <span className="text-neutral-600">{v(r.meta?.school)}</span>;

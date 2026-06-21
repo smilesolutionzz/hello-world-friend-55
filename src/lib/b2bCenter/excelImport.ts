@@ -588,15 +588,35 @@ export async function commitImport(
     // 1) Clients (신규만 insert)
     const clientsSheet = parsed.sheets.find((s) => s.entity === "clients");
     if (clientsSheet) {
-      const splitPhone = (raw: any): { phone: string | null; guardian_phone: string | null } => {
-        if (raw == null) return { phone: null, guardian_phone: null };
+      // "(모) 010-1234-5678\n(부) 010-...\n(본인) 010-..." 형태를 모두 보존한다.
+      const splitPhone = (raw: any): { phone: string | null; guardian_phone: string | null; contact_raw: string | null } => {
+        if (raw == null) return { phone: null, guardian_phone: null, contact_raw: null };
         const s = String(raw).trim();
-        if (!s) return { phone: null, guardian_phone: null };
-        const num = (s.match(/(\d{2,3}-?\d{3,4}-?\d{4})/)?.[1] ?? s).replace(/[^\d-]/g, "");
-        const isGuardian = /\(?\s*(모|부|보호자|가족|조모|조부|언니|누나|형|오빠|이모|고모)\s*\)?/.test(s);
-        const isSelf = /\(?\s*(본인|자녀|아이|당사자)\s*\)?/.test(s);
-        if (isGuardian && !isSelf) return { phone: null, guardian_phone: num };
-        return { phone: num, guardian_phone: null };
+        if (!s) return { phone: null, guardian_phone: null, contact_raw: null };
+        const selfPhones: string[] = [];
+        const guardianPhones: string[] = [];
+        // 줄바꿈/세미콜론/슬래시/콤마로 라인 분리
+        const lines = s.split(/[\n;,/]+/).map((x) => x.trim()).filter(Boolean);
+        const targets = lines.length > 0 ? lines : [s];
+        for (const line of targets) {
+          const matches = line.match(/\d{2,3}-?\d{3,4}-?\d{4}/g) ?? [];
+          if (!matches.length) continue;
+          const isSelf = /\(?\s*(본인|자녀|아이|당사자)\s*\)?/.test(line);
+          const isGuardian = /\(?\s*(모|부|보호자|가족|조모|조부|언니|누나|형|오빠|이모|고모|할머니|할아버지)\s*\)?/.test(line);
+          for (const m of matches) {
+            const num = m;
+            if (isSelf && !isGuardian) selfPhones.push(num);
+            else if (isGuardian) guardianPhones.push(num);
+            else selfPhones.push(num); // 라벨 없으면 본인으로 간주
+          }
+        }
+        // 중복 제거
+        const uniq = (arr: string[]) => Array.from(new Set(arr));
+        const phone = uniq(selfPhones).join(", ") || null;
+        const guardian = uniq(guardianPhones).join(", ") || null;
+        // 라벨까지 보존한 원본(공백/줄바꿈 정리)
+        const contactRaw = s.replace(/\s+/g, " ").trim();
+        return { phone, guardian_phone: guardian, contact_raw: contactRaw };
       };
       const META_KEYS = ["age_months", "email", "school", "disability_grade", "disability_secondary", "referral_source", "referral_note", "last_modified_at"];
       const rows = clientsSheet.rows
@@ -610,6 +630,7 @@ export async function commitImport(
             if (v != null && String(v).trim() !== "") meta[k] = typeof v === "string" ? v.trim() : v;
           }
           if (r.note != null && String(r.note).trim() !== "") meta.note = String(r.note).trim();
+          if (sp.contact_raw) meta.contact_raw = sp.contact_raw;
           return {
             center_id: centerId,
             name: r.name,

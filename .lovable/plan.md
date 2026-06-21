@@ -1,23 +1,77 @@
-## 문제
+## 목표
 
-SMS 발송 실패 토스트가 떴는데, 실제 Twilio 에러 코드/메시지가 어디에도 안 보여서 원인을 특정할 수 없습니다. (Edge Function 로그에 Twilio 응답을 안 남기고 있고, 프론트도 일반 메시지만 표시)
+`/b2b-center` 운영자(이수석)가 베타 5곳의 진행 상황을 한 화면에서 보고, 매주 부모 활성률을 판단할 수 있게 하는 **베타 트래커** 페이지를 신설합니다. 이번 작업은 운영/관측 화면만 만들고, 베타 자체 로직(MethodA 공유, 리포트 발행)은 손대지 않습니다.
 
-가능성: ① Korea Geo Permission 미반영 / ② From 번호 형식 / ③ Trial 계정 → 미인증 수신번호 차단 (Trial은 수신번호도 verify 필요) / ④ SID·Token 오타.
+## 만들 것
 
-## 변경
+### 1. 새 페이지 `/b2b-center/admin/beta-tracker`
+운영자(`primary admin`)만 접근. 좌측 사이드바에 "베타 트래커" 메뉴 추가.
 
-**1. `supabase/functions/create-parent-share-link/index.ts`**
-- Twilio 호출 후 `!twResp.ok` 일 때 `console.error("[twilio] send failed", { status, code, message, more_info })` 로 상세 로그 출력
-- 비밀키 일부 누락 시에도 `console.warn` 로 어떤 secret이 missing인지 표시 (값은 안 찍음)
+**상단 KPI 카드 4개** (이번 주, 월~일 기준 자동 계산)
+- 부모 활성률 ⭐ = (리포트 링크를 1회 이상 연 부모 수) ÷ (이번 주 발행된 리포트의 수신 부모 수)
+- 이번 주 발행 수 = `center_parent_reports` + 공유된 `therapy_notes` 합계
+- 이번 주 사진 업로드 수 = `center_session_uploads` 카운트
+- 부모 재방문률 = 같은 부모(phone hash)가 2주 연속 열어본 비율
 
-**2. `src/components/b2b-center/ShareWithParentDialog.tsx`**
-- 응답의 `sms_result.message` / `sms_result.code` 를 토스트 description에 노출 (ex: "Twilio 21608: The number +82... is unverified...")
-- 그러면 사용자가 보자마자 원인을 알 수 있음
+### 2. 베타 센터 5곳 트래커 테이블
+관리자가 어떤 센터를 "베타 5곳"으로 표시할지 토글(`center_organizations.is_beta_partner`). 표시된 센터만 표에 노출.
 
-## 다음 단계
+| 컬럼 | 의미 |
+|---|---|
+| 센터명 | `center_organizations.name` |
+| 코호트 주차 | 베타 시작일(`beta_started_at`)부터 경과 주 |
+| 온보딩 상태 | 5단계 setup 위저드 진행률 |
+| 첫 사진 업로드 | 날짜 / "아직 없음" |
+| 첫 리포트 발행 | 날짜 / "아직 없음" |
+| 첫 부모 열람 | 날짜 / "아직 없음" |
+| 이번 주 부모 활성률 | % + 색상(50%↑녹, 30↑황, 그 외 적) |
+| 비고 | inline 메모 |
 
-배포 후 다시 "공유하기" 시도 → 토스트에 뜨는 실제 Twilio 에러 코드를 알려주시면 즉시 해결책 제시:
-- `21608` → Trial 계정, 수신번호 verify 필요
-- `21408` → Geo Permission 미설정
-- `21211` → 번호 형식 오류
-- `20003` → 인증 실패 (SID/Token)
+행 클릭 → 해당 센터의 주차별 미니 차트(부모 활성률 8주 트렌드).
+
+### 3. 주간 회고 메모
+페이지 하단에 "1주차/2주차…" 텍스트 영역 1개. `beta_retros` 테이블에 저장. 매주 금요일 회고를 남기는 용도.
+
+### 4. 사이드바 가시성
+`primary admin`(`kijung_kku@naver.com`)일 때만 메뉴 노출. 일반 센터 사용자는 안 보임.
+
+## 데이터 (마이그레이션 1개)
+
+```sql
+ALTER TABLE public.center_organizations
+  ADD COLUMN IF NOT EXISTS is_beta_partner boolean NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS beta_started_at date,
+  ADD COLUMN IF NOT EXISTS beta_notes text;
+
+CREATE TABLE public.beta_retros (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  week_start date NOT NULL UNIQUE,
+  body text NOT NULL DEFAULT '',
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+GRANT SELECT, INSERT, UPDATE ON public.beta_retros TO authenticated;
+GRANT ALL ON public.beta_retros TO service_role;
+ALTER TABLE public.beta_retros ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "primary admin only" ON public.beta_retros
+  FOR ALL TO authenticated
+  USING (public.has_role(auth.uid(), 'admin'))
+  WITH CHECK (public.has_role(auth.uid(), 'admin'));
+```
+
+지표는 모두 기존 테이블(`center_parent_reports`, `center_parent_share_links`, `center_session_uploads`, `center_sessions`)에서 클라이언트 집계. 별도 ETL 없음.
+
+## 파일 (예상)
+- `supabase/migrations/<ts>_beta_tracker.sql` (마이그레이션 툴)
+- `src/pages/b2b-center/admin/BetaTrackerPage.tsx` (신규)
+- `src/components/b2b-center/admin/BetaKpiCards.tsx`
+- `src/components/b2b-center/admin/BetaCohortTable.tsx`
+- `src/components/b2b-center/admin/BetaRetroEditor.tsx`
+- `src/hooks/useBetaMetrics.ts` — 주차/지표 집계
+- 라우터(`src/App.tsx` 또는 b2b-center 라우터): `/b2b-center/admin/beta-tracker`
+- 사이드바: `src/components/b2b-center/AppSidebar.tsx`에 admin-only 항목 추가
+
+## 범위 밖 (이번엔 안 함)
+- 자동 알림/이메일
+- 부모 인터뷰 수집 폼
+- PMF 결정 자동 판정(50%×8주) — 화면에 숫자만 보여주고 판단은 사람이
+- 비-운영자 권한 확장

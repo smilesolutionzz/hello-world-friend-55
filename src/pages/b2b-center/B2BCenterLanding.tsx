@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Check, ArrowRight, Users, Calendar, CreditCard, PlayCircle, LogIn, LayoutDashboard } from "lucide-react";
+import { Check, ArrowRight, Users, Calendar, CreditCard, LogIn, LayoutDashboard } from "lucide-react";
 import { B2B_CENTER_MONTHLY, B2B_CENTER_COMPETITOR_PRICE } from "@/constants/tokenCosts";
 import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
 import { supabase } from "@/integrations/supabase/client";

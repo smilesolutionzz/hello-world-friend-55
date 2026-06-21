@@ -721,6 +721,50 @@ export async function commitImport(
     // 4) Sessions — 중복 처리
     const sSheet = parsed.sheets.find((s) => s.entity === "sessions");
     if (sSheet) {
+      // 4a) 세션 행에서 발견된 신규 선생님/프로그램을 자동 등록
+      //     별도의 선생님/프로그램 시트 없이 일정 시트만 올린 경우에도
+      //     therapist_id 매칭이 되도록 보장한다 — 그렇지 않으면 모두 "미배정"으로 들어감.
+      const newTherapistNames = new Set<string>();
+      const newProgramNames = new Set<string>();
+      for (const r of sSheet.rows) {
+        const tname = r.therapist_name ? String(r.therapist_name).trim() : "";
+        if (tname && !therapistNameToId[tname]) newTherapistNames.add(tname);
+        const pname = r.program_name ? String(r.program_name).trim() : "";
+        if (pname && !programNameToId[pname]) newProgramNames.add(pname);
+      }
+      if (newTherapistNames.size) {
+        const tRows = Array.from(newTherapistNames).map((name) => ({ center_id: centerId, name }));
+        const { data, error } = await supabase.from("center_therapists").insert(tRows).select("id,name");
+        if (error) throw error;
+        data?.forEach((t: any) => { therapistNameToId[t.name] = t.id; });
+        summary.therapists_auto = data?.length ?? 0;
+      }
+      if (newProgramNames.size) {
+        const pRows = Array.from(newProgramNames).map((name) => ({ center_id: centerId, name, category: "기타", duration_min: 45, price_krw: 0, is_voucher: false }));
+        const { data, error } = await supabase.from("center_programs").insert(pRows).select("id,name");
+        if (error) throw error;
+        data?.forEach((p: any) => { programNameToId[p.name] = p.id; });
+        summary.programs_auto = data?.length ?? 0;
+      }
+
+      // 4b) 과거에 미배정으로 저장된 세션도 meta.therapist_name 으로 백필
+      try {
+        const { data: orphanSessions } = await supabase
+          .from("center_sessions")
+          .select("id, meta")
+          .eq("center_id", centerId)
+          .is("therapist_id", null);
+        const fills: Array<{ id: string; therapist_id: string }> = [];
+        (orphanSessions ?? []).forEach((s: any) => {
+          const nm = s?.meta?.therapist_name ? String(s.meta.therapist_name).trim() : "";
+          const tid = nm ? therapistNameToId[nm] : undefined;
+          if (tid) fills.push({ id: s.id, therapist_id: tid });
+        });
+        for (const f of fills) await supabase.from("center_sessions").update({ therapist_id: f.therapist_id }).eq("id", f.id);
+        if (fills.length) summary.sessions_therapist_backfilled = fills.length;
+      } catch (_e) { /* best-effort */ }
+
+
       // 기존 세션 인덱스 (date + client_id + start_time)
       const { data: existingSessions } = await supabase
         .from("center_sessions")

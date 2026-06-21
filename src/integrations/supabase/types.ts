@@ -2242,6 +2242,45 @@ export type Database = {
         }
         Relationships: []
       }
+      center_activity_notifications: {
+        Row: {
+          actor_user_id: string | null
+          body: string | null
+          center_id: string
+          created_at: string
+          id: string
+          link: string | null
+          meta: Json | null
+          read_by: string[]
+          title: string
+          type: string
+        }
+        Insert: {
+          actor_user_id?: string | null
+          body?: string | null
+          center_id: string
+          created_at?: string
+          id?: string
+          link?: string | null
+          meta?: Json | null
+          read_by?: string[]
+          title: string
+          type: string
+        }
+        Update: {
+          actor_user_id?: string | null
+          body?: string | null
+          center_id?: string
+          created_at?: string
+          id?: string
+          link?: string | null
+          meta?: Json | null
+          read_by?: string[]
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       center_assessments: {
         Row: {
           assessment_date: string
@@ -18563,6 +18602,10 @@ export type Database = {
         Returns: boolean
       }
       make_user_admin: { Args: { target_email: string }; Returns: boolean }
+      mark_center_notifications_read: {
+        Args: { _ids: string[] }
+        Returns: undefined
+      }
       normalize_kr_phone: { Args: { _p: string }; Returns: string }
       peek_parent_report_token: {
         Args: { _token: string }

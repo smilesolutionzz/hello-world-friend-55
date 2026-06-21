@@ -230,6 +230,7 @@ const CenterVoucherExcelImportPage = lazy(() => import("./pages/b2b-center/conso
 const CenterVoucherClaimsPage = lazy(() => import("./pages/b2b-center/console/VoucherClaimsPage"));
 const CenterOnboardingWizardPage = lazy(() => import("./pages/b2b-center/console/OnboardingWizardPage"));
 const CenterSessionRecordsPage = lazy(() => import("./pages/b2b-center/console/SessionRecordsPage"));
+const CenterBetaTrackerPage = lazy(() => import("./pages/b2b-center/admin/BetaTrackerPage"));
 
 // Lazy: SEO Package Landing Pages
 const StressPackage = lazy(() => import("./pages/StressPackage"));

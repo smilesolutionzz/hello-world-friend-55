@@ -57,6 +57,7 @@ export default function B2BCenterApp() {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const demo = isDemoMode() || searchParams.get("demo") === "1";
+  const { isAdmin } = useAdminCheck();
 
   const [centers, setCenters] = useState<CenterOrg[]>([]);
   const [adding, setAdding] = useState(false);

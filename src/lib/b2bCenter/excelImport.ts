@@ -747,6 +747,24 @@ export async function commitImport(
         summary.programs_auto = data?.length ?? 0;
       }
 
+      // 4b) 과거에 미배정으로 저장된 세션도 meta.therapist_name 으로 백필
+      try {
+        const { data: orphanSessions } = await supabase
+          .from("center_sessions")
+          .select("id, meta")
+          .eq("center_id", centerId)
+          .is("therapist_id", null);
+        const fills: Array<{ id: string; therapist_id: string }> = [];
+        (orphanSessions ?? []).forEach((s: any) => {
+          const nm = s?.meta?.therapist_name ? String(s.meta.therapist_name).trim() : "";
+          const tid = nm ? therapistNameToId[nm] : undefined;
+          if (tid) fills.push({ id: s.id, therapist_id: tid });
+        });
+        for (const f of fills) await supabase.from("center_sessions").update({ therapist_id: f.therapist_id }).eq("id", f.id);
+        if (fills.length) summary.sessions_therapist_backfilled = fills.length;
+      } catch (_e) { /* best-effort */ }
+
+
       // 기존 세션 인덱스 (date + client_id + start_time)
       const { data: existingSessions } = await supabase
         .from("center_sessions")

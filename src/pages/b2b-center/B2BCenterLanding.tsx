@@ -99,9 +99,6 @@ export default function B2BCenterLanding() {
           <Link to="/b2b-center/import" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition">
             60일 무료로 시작 <ArrowRight className="w-4 h-4" />
           </Link>
-          <Link to="/b2b-center/app?demo=1" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-neutral-200 text-sm font-medium hover:bg-neutral-50 transition">
-            <PlayCircle className="w-4 h-4" /> 데모로 둘러보기
-          </Link>
         </div>
 
 

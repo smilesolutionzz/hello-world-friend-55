@@ -152,7 +152,10 @@ export default function B2BCenterApp() {
     return <EmptyCenterState onCreated={(c) => { setCenters([c]); setActive(c.id); }} />;
   }
 
-  const visibleNav = BETA_MODE ? NAV.filter((n) => n.betaVisible) : NAV;
+  const baseNav = BETA_MODE ? NAV.filter((n) => n.betaVisible) : NAV;
+  const visibleNav = isAdmin
+    ? [...baseNav, { to: "admin/beta-tracker", label: "베타 트래커", icon: Star, group: "AIHPRO 운영", betaVisible: true }]
+    : baseNav;
   const grouped = visibleNav.reduce((acc, n) => {
     const g = n.group ?? "기타";
     (acc[g] ||= []).push(n);

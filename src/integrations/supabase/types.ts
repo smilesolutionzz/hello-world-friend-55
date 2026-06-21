@@ -1796,6 +1796,30 @@ export type Database = {
         }
         Relationships: []
       }
+      beta_retros: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          updated_at: string
+          week_start: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          week_start: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
       book_idea_analyses: {
         Row: {
           additional_recommendations: string | null
@@ -2785,10 +2809,13 @@ export type Database = {
       center_organizations: {
         Row: {
           address: string | null
+          beta_notes: string | null
+          beta_started_at: string | null
           business_no: string | null
           contract_expires_at: string | null
           created_at: string
           id: string
+          is_beta_partner: boolean
           name: string
           owner_id: string
           phone: string | null
@@ -2801,10 +2828,13 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          beta_notes?: string | null
+          beta_started_at?: string | null
           business_no?: string | null
           contract_expires_at?: string | null
           created_at?: string
           id?: string
+          is_beta_partner?: boolean
           name: string
           owner_id: string
           phone?: string | null
@@ -2817,10 +2847,13 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          beta_notes?: string | null
+          beta_started_at?: string | null
           business_no?: string | null
           contract_expires_at?: string | null
           created_at?: string
           id?: string
+          is_beta_partner?: boolean
           name?: string
           owner_id?: string
           phone?: string | null
@@ -17852,10 +17885,13 @@ export type Database = {
         Args: { _token: string }
         Returns: {
           address: string | null
+          beta_notes: string | null
+          beta_started_at: string | null
           business_no: string | null
           contract_expires_at: string | null
           created_at: string
           id: string
+          is_beta_partner: boolean
           name: string
           owner_id: string
           phone: string | null
@@ -18080,10 +18116,13 @@ export type Database = {
         Args: { _name: string }
         Returns: {
           address: string | null
+          beta_notes: string | null
+          beta_started_at: string | null
           business_no: string | null
           contract_expires_at: string | null
           created_at: string
           id: string
+          is_beta_partner: boolean
           name: string
           owner_id: string
           phone: string | null

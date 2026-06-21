@@ -8,13 +8,14 @@ import {
 } from "lucide-react";
 import { listMyCenters, getActiveCenterId, setActiveCenterId, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { useToast } from "@/hooks/use-toast";
-import { Plus } from "lucide-react";
+import { Plus, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import EmptyCenterState from "@/components/b2b-center/EmptyCenterState";
 import DemoModeBanner from "@/components/b2b-center/DemoModeBanner";
 import TrialBanner from "@/components/b2b-center/TrialBanner";
 import { DEMO_CENTER, isDemoMode } from "@/lib/b2bCenter/demoData";
 import { BETA_MODE } from "@/config/betaMode";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 
 const NAV: Array<{ to: string; label: string; icon: any; group?: string; betaVisible: boolean }> = [
   // 시작
@@ -56,6 +57,7 @@ export default function B2BCenterApp() {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const demo = isDemoMode() || searchParams.get("demo") === "1";
+  const { isAdmin } = useAdminCheck();
 
   const [centers, setCenters] = useState<CenterOrg[]>([]);
   const [adding, setAdding] = useState(false);
@@ -150,7 +152,10 @@ export default function B2BCenterApp() {
     return <EmptyCenterState onCreated={(c) => { setCenters([c]); setActive(c.id); }} />;
   }
 
-  const visibleNav = BETA_MODE ? NAV.filter((n) => n.betaVisible) : NAV;
+  const baseNav = BETA_MODE ? NAV.filter((n) => n.betaVisible) : NAV;
+  const visibleNav = isAdmin
+    ? [...baseNav, { to: "admin/beta-tracker", label: "베타 트래커", icon: Star, group: "AIHPRO 운영", betaVisible: true }]
+    : baseNav;
   const grouped = visibleNav.reduce((acc, n) => {
     const g = n.group ?? "기타";
     (acc[g] ||= []).push(n);

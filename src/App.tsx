@@ -230,6 +230,7 @@ const CenterVoucherExcelImportPage = lazy(() => import("./pages/b2b-center/conso
 const CenterVoucherClaimsPage = lazy(() => import("./pages/b2b-center/console/VoucherClaimsPage"));
 const CenterOnboardingWizardPage = lazy(() => import("./pages/b2b-center/console/OnboardingWizardPage"));
 const CenterSessionRecordsPage = lazy(() => import("./pages/b2b-center/console/SessionRecordsPage"));
+const CenterBetaTrackerPage = lazy(() => import("./pages/b2b-center/admin/BetaTrackerPage"));
 
 // Lazy: SEO Package Landing Pages
 const StressPackage = lazy(() => import("./pages/StressPackage"));
@@ -643,6 +644,7 @@ const App = () => {
             <Route path="billing/voucher-claims" element={<CenterVoucherClaimsPage />} />
             <Route path="setup" element={<CenterOnboardingWizardPage />} />
             <Route path="storefront" element={<CenterStorefrontPage />} />
+            <Route path="admin/beta-tracker" element={<CenterBetaTrackerPage />} />
           </Route>
           <Route path="/center/:slug" element={<CenterStorefrontPublic />} />
           <Route path="/parent/center" element={<ParentCenterPage />} />

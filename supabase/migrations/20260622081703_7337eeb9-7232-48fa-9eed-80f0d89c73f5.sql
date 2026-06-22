@@ -1,0 +1,1 @@
+ALTER TABLE public.center_organizations ADD COLUMN IF NOT EXISTS branding jsonb NOT NULL DEFAULT '{}'::jsonb;

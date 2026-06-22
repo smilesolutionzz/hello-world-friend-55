@@ -162,13 +162,13 @@ export default function B2BCenterLanding() {
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs tracking-widest text-[#C8B88A] mb-4">FREE TRIAL · 60 DAYS</p>
           <h2 className="text-4xl md:text-5xl font-semibold mb-6 break-keep">
-            카드 없이, 두 달.<br/>충분히 써보고 결정하세요.
+            카드 없이 두 달.<br/>서류지옥에서 해방되세요.
           </h2>
           <p className="text-neutral-400 mb-10 break-keep">
-            업로드 5분, 분석 1분. 60일 동안 전 기능 무제한.
+            케어플 데이터 업로드 5분, AI 매핑 1분. 60일 동안 일지·감사·수납 자동화 무제한.
           </p>
           <Link to="/b2b-center/import" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-neutral-900 font-medium hover:bg-neutral-100 transition">
-            엑셀 한 파일로 시작 <ArrowRight className="w-4 h-4" />
+            케어플에서 1클릭 이전 <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>

@@ -2342,6 +2342,47 @@ export type Database = {
           },
         ]
       }
+      center_audit_state: {
+        Row: {
+          audit_item_id: string
+          center_id: string
+          created_at: string
+          id: string
+          note: string | null
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          audit_item_id: string
+          center_id: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          audit_item_id?: string
+          center_id?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_audit_state_audit_item_id_fkey"
+            columns: ["audit_item_id"]
+            isOneToOne: false
+            referencedRelation: "voucher_audit_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       center_b2c_grants: {
         Row: {
           center_id: string
@@ -17068,42 +17109,60 @@ export type Database = {
       }
       voucher_audit_items: {
         Row: {
+          can_generate_doc: boolean | null
           category: string
           check_frequency: string | null
           created_at: string | null
           description: string | null
+          generate_prompt: string | null
           id: string
           is_critical: boolean | null
+          item_code: string | null
           item_name: string
           legal_basis: string | null
           penalty_info: string | null
           preparation_days: number | null
+          sort_order: number | null
+          source_citation: string | null
+          source_type: string | null
           voucher_type_id: string | null
         }
         Insert: {
+          can_generate_doc?: boolean | null
           category: string
           check_frequency?: string | null
           created_at?: string | null
           description?: string | null
+          generate_prompt?: string | null
           id?: string
           is_critical?: boolean | null
+          item_code?: string | null
           item_name: string
           legal_basis?: string | null
           penalty_info?: string | null
           preparation_days?: number | null
+          sort_order?: number | null
+          source_citation?: string | null
+          source_type?: string | null
           voucher_type_id?: string | null
         }
         Update: {
+          can_generate_doc?: boolean | null
           category?: string
           check_frequency?: string | null
           created_at?: string | null
           description?: string | null
+          generate_prompt?: string | null
           id?: string
           is_critical?: boolean | null
+          item_code?: string | null
           item_name?: string
           legal_basis?: string | null
           penalty_info?: string | null
           preparation_days?: number | null
+          sort_order?: number | null
+          source_citation?: string | null
+          source_type?: string | null
           voucher_type_id?: string | null
         }
         Relationships: [

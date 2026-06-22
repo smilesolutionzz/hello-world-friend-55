@@ -1,51 +1,44 @@
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Check, ArrowRight, FileText, ShieldCheck, CreditCard, Upload, LogIn, LayoutDashboard } from "lucide-react";
+import { Check, ArrowRight, Users, Calendar, CreditCard, LogIn, LayoutDashboard } from "lucide-react";
 import { B2B_CENTER_MONTHLY, B2B_CENTER_COMPETITOR_PRICE } from "@/constants/tokenCosts";
 import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
 import { supabase } from "@/integrations/supabase/client";
 
 const KRW = (n: number) => `₩${n.toLocaleString("ko-KR")}`;
 
-// 틔움 김선길 대표 피드백 반영: "원장이 돈 내는 이유 = 행정 고통 해방"
-// 부모리포트는 보조, 원장 행정 자동화 4종을 wedge로.
+// 이수석 피드백: "2-3개로 추리는게 핵심" — 운영 핵심 3가지만
 const coreFeatures = [
   {
-    icon: FileText,
+    icon: Users,
     num: "01",
-    title: "바우처 일지 자동 작성",
-    desc: "한 줄 메모 또는 사진 한 장 → AI가 회기 일지 장문으로 자동 작성. 출력해서 철하면 끝. 6개월치 몰아쓰기도 일자별 백필.",
+    title: "이용자 관리",
+    desc: "엑셀 한 번에 이관. 가족·바우처·계약 만료까지 한 화면. C사 다운로드 파일 그대로 인식.",
   },
   {
-    icon: ShieldCheck,
+    icon: Calendar,
     num: "02",
-    title: "지도점검 대응 키트",
-    desc: "연 1회 감사, 더 이상 야근 금지. 누락 서류 자동 진단 + 행정서류 양식 자동 생성. D-30 준비 가이드까지.",
+    title: "일정 관리",
+    desc: "주간 캘린더 + 치료사별 색상. 회기 상태·노쇼·대체 일정 자동 정리. 모바일에서도 그대로.",
   },
   {
     icon: CreditCard,
     num: "03",
-    title: "수납·미수금 자동화",
-    desc: "매달 본인부담금 안내 문자 자동 발송, 입금 대조, 미수금 독촉까지. 원장이 직접 챙길 일 없게.",
-  },
-  {
-    icon: Upload,
-    num: "04",
-    title: "케어플에서 1클릭 이전",
-    desc: "기존 케어플 데이터 그대로 이관. 이용자·치료사·회기·바우처 — AI가 컬럼 자동 매핑, 초기 셋팅 0분.",
+    title: "수납 관리",
+    desc: "전자바우처 자동 대조로 누락·중복결제 발견. 월별 매출·미수금 한 줄 요약.",
   },
 ];
 
 const compare = [
+  ["주간 일정표 가독성", "꽉 찬 색 블록 · 이름 잘림", "흰 카드 + 좌측 컬러 바, 한눈에"],
   ["월 이용료", `${KRW(B2B_CENTER_COMPETITOR_PRICE)}/월`, `${KRW(B2B_CENTER_MONTHLY)}/월`],
   ["무료 체험", "—", "60일 (카드 등록 없음)"],
-  ["케어플에서 이관", "수동 입력", "AI 매핑 · 1클릭"],
-  ["바우처 일지 작성", "원장·치료사 직접", "한 줄 메모 → AI 장문 자동"],
-  ["지도점검 대응", "수기 준비", "체크리스트 + 누락 서류 자동 생성"],
-  ["수납 안내·미수금", "수기 문자·전화", "자동 발송 + 입금 대조"],
+  ["엑셀 일괄 이관", "수동 입력", "포맷 자동 감지 · 1클릭"],
   ["전자바우처 대조", "수동", "자동"],
-  ["부모 월간 리포트", "별도 작성", "AI 자동 생성 (보조)"],
+  ["부모 월간 리포트", "별도 작성", "AI 자동 생성"],
+  ["전문가 매칭", "—", "AIHPRO 전문가 네트워크 연결"],
+  ["보호자 앱", "—", "B2C 앱 무료 제공"],
 ];
 
 export default function B2BCenterLanding() {
@@ -66,8 +59,8 @@ export default function B2BCenterLanding() {
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       <Helmet>
-        <title>발달치료센터 행정 자동화 ERP · 60일 무료 — AIHPRO Center</title>
-        <meta name="description" content="바우처 일지·지도점검·수납을 AI가 대신. 케어플에서 1클릭 이전, 60일 무료, 월 ₩39,000. 원장님이 서류지옥에서 해방되는 센터 ERP." />
+        <title>발달치료센터 ERP · 60일 무료 — AIHPRO</title>
+        <meta name="description" content="이용자·일정·수납. 기존 ERP 엑셀 그대로 이관, 60일 무료 체험. 카드 등록 없음." />
       </Helmet>
 
       {/* Top bar with console entry */}
@@ -95,12 +88,12 @@ export default function B2BCenterLanding() {
           60일 무료 · 카드 등록 없음 · 베타 모집 중
         </div>
         <h1 className="text-5xl md:text-6xl font-semibold tracking-tight leading-[1.05] mb-6 break-keep">
-          바우처 일지·지도점검·수납.<br/>
-          <span className="text-[#C8B88A]">AI가 다 합니다.</span>
+          이용자·일정·수납.<br/>
+          <span className="text-[#C8B88A]">한 화면, 60일 무료.</span>
         </h1>
         <p className="text-lg text-neutral-600 max-w-2xl mx-auto break-keep mb-10">
-          한 줄 메모만 쓰면 AI가 일지를 풀어 쓰고, 지도점검 서류를 자동 정리하고,
-          매달 수납 문자를 대신 보냅니다. 케어플 데이터는 1클릭으로 이전, 60일 무료 후에도 월 {KRW(B2B_CENTER_MONTHLY)}.
+          기존 ERP 엑셀 파일 하나 올리면 이용자·치료사·회기·수납이 그대로 옮겨와요.
+          두 달 동안 모든 기능 무제한 — 그 다음에도 월 {KRW(B2B_CENTER_MONTHLY)}.
         </p>
         <div className="flex flex-wrap gap-3 justify-center">
           <Link to="/b2b-center/import" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition">
@@ -114,20 +107,20 @@ export default function B2BCenterLanding() {
         </div>
       </section>
 
-      {/* 핵심 4기능 — 원장 행정 자동화 */}
+      {/* 핵심 3기능 */}
       <section className="px-6 py-20 bg-neutral-50">
         <div className="max-w-6xl mx-auto">
-          <p className="text-xs tracking-widest text-neutral-500 mb-3">01 · 원장이 매일 하던 일, AI가 대신</p>
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4 break-keep">서류지옥에서 해방되는 네 가지.</h2>
+          <p className="text-xs tracking-widest text-neutral-500 mb-3">01 · 운영 핵심</p>
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4 break-keep">센터 운영의 본질, 세 가지만.</h2>
           <p className="text-neutral-600 mb-12 break-keep max-w-xl">
-            현장 원장님들의 실제 페인을 그대로 자동화했습니다. 일지·감사·수납·이관 — 이 넷이 잡히면, 센터 운영의 80%가 끝납니다.
+            나머지 기능은 이 세 가지가 잡힌 다음에 따라옵니다. 처음 한 달, 이 셋부터 익혀보세요.
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {coreFeatures.map((f) => (
               <div key={f.title} className="bg-white rounded-2xl p-8 border border-neutral-100">
                 <p className="text-xs tracking-widest text-[#C8B88A] mb-4">{f.num}</p>
                 <f.icon className="w-7 h-7 text-neutral-900 mb-5" strokeWidth={1.5} />
-                <h3 className="text-lg font-semibold mb-2 break-keep">{f.title}</h3>
+                <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
                 <p className="text-sm text-neutral-600 break-keep leading-relaxed">{f.desc}</p>
               </div>
             ))}
@@ -137,12 +130,12 @@ export default function B2BCenterLanding() {
 
       {/* Comparison */}
       <section id="pricing" className="px-6 py-20 max-w-5xl mx-auto">
-        <p className="text-xs tracking-widest text-neutral-500 mb-3">02 · vs 케어플</p>
-        <h2 className="text-3xl md:text-4xl font-semibold mb-10 break-keep">같은 일을, 원장님 손 떼고.</h2>
+        <p className="text-xs tracking-widest text-neutral-500 mb-3">02 · vs C사</p>
+        <h2 className="text-3xl md:text-4xl font-semibold mb-10 break-keep">같은 일을, 더 저렴하게.</h2>
         <div className="rounded-2xl border border-neutral-200 overflow-hidden">
           <div className="grid grid-cols-3 bg-neutral-100 text-sm font-medium">
             <div className="p-4">항목</div>
-            <div className="p-4 text-neutral-500">케어플</div>
+            <div className="p-4 text-neutral-500">C사</div>
             <div className="p-4 text-neutral-900">AIHPRO 센터</div>
           </div>
           {compare.map((row, i) => (
@@ -162,13 +155,13 @@ export default function B2BCenterLanding() {
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs tracking-widest text-[#C8B88A] mb-4">FREE TRIAL · 60 DAYS</p>
           <h2 className="text-4xl md:text-5xl font-semibold mb-6 break-keep">
-            카드 없이 두 달.<br/>서류지옥에서 해방되세요.
+            카드 없이, 두 달.<br/>충분히 써보고 결정하세요.
           </h2>
           <p className="text-neutral-400 mb-10 break-keep">
-            케어플 데이터 업로드 5분, AI 매핑 1분. 60일 동안 일지·감사·수납 자동화 무제한.
+            업로드 5분, 분석 1분. 60일 동안 전 기능 무제한.
           </p>
           <Link to="/b2b-center/import" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-neutral-900 font-medium hover:bg-neutral-100 transition">
-            케어플에서 1클릭 이전 <ArrowRight className="w-4 h-4" />
+            엑셀 한 파일로 시작 <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>

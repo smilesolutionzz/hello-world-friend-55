@@ -50,8 +50,6 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string; betaVis
   { to: "billing/stats", label: "수납 통계·미수금", icon: CreditCard, group: "수납", betaVisible: false },
   { to: "billing/voucher-claims", label: "전자바우처 청구", icon: FileSpreadsheet, group: "수납", betaVisible: false },
   { to: "billing/voucher-audit", label: "부정결제 찾기", icon: ShieldAlert, group: "수납", betaVisible: false },
-  // 지도점검
-  { to: "audit", label: "지도점검 대응", icon: ShieldAlert, group: "지도점검", betaVisible: true },
 ];
 
 

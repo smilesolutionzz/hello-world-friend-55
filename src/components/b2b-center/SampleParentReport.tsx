@@ -94,6 +94,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
   const [data, setData] = useState<ReportData>(() => buildDefault(clientName, sessions, pk));
   const [centerName, setCenterName] = useState<string>("");
+  const [branding, setBranding] = useState<any>(null);
 
   const [editMode, setEditMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);

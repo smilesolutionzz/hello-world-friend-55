@@ -39,6 +39,55 @@ export default function WhitelabelReportPreviewPage() {
 
   const headerGradient = useMemo(() => `linear-gradient(135deg, ${c1}, ${c2})`, [c1, c2]);
 
+  // 기관에 저장된 브랜딩이 있으면 자동으로 불러옴
+  useEffect(() => {
+    if (demo || !centerId) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("center_organizations")
+        .select("name, phone, address, branding")
+        .eq("id", centerId)
+        .maybeSingle();
+      if (cancelled || !data) return;
+      const b: any = data.branding ?? {};
+      if (data.name) setCenterName(data.name);
+      if (data.phone) setPhone(data.phone);
+      if (data.address) setAddress(data.address);
+      if (b.tagline) setTagline(b.tagline);
+      if (b.therapist) setTherapist(b.therapist);
+      if (b.logoText) setLogoText(b.logoText);
+      if (b.c1) setC1(b.c1);
+      if (b.c2) setC2(b.c2);
+      if (b.logoBg) setLogoBg(b.logoBg);
+      if (b.logoFg) setLogoFg(b.logoFg);
+    })();
+    return () => { cancelled = true; };
+  }, [centerId, demo]);
+
+  const saveBranding = async () => {
+    if (demo) { toast({ title: "데모 모드에서는 저장되지 않아요" }); return; }
+    if (!centerId) { toast({ title: "기관 선택이 필요합니다", variant: "destructive" }); return; }
+    setBusy(true);
+    try {
+      const { error } = await supabase
+        .from("center_organizations")
+        .update({
+          name: centerName,
+          phone,
+          address,
+          branding: { tagline, therapist, logoText, c1, c2, logoBg, logoFg },
+        })
+        .eq("id", centerId);
+      if (error) throw error;
+      toast({ title: "브랜딩이 저장됐어요", description: "부모 월간 리포트가 이 명의·색상으로 발행됩니다." });
+    } catch (e: any) {
+      toast({ title: "저장 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const downloadPDF = async () => {
     if (!previewRef.current) return;
     setBusy(true);

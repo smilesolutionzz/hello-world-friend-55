@@ -1,77 +1,102 @@
-## 목표
+# 파트너용 IR 덱 v2 재제작 계획
 
-`/b2b-center` 운영자(이수석)가 베타 5곳의 진행 상황을 한 화면에서 보고, 매주 부모 활성률을 판단할 수 있게 하는 **베타 트래커** 페이지를 신설합니다. 이번 작업은 운영/관측 화면만 만들고, 베타 자체 로직(MethodA 공유, 리포트 발행)은 손대지 않습니다.
+기존 `AIHPRO_Center_IR_Deck.pdf`는 투자자 톤 + 가설 숫자(ARR, 파일럿 N개, NPS 등)가 포함되어 있어 **공동 파트너용**으로 부적합. 전면 재작성한다.
 
-## 만들 것
+---
 
-### 1. 새 페이지 `/b2b-center/admin/beta-tracker`
-운영자(`primary admin`)만 접근. 좌측 사이드바에 "베타 트래커" 메뉴 추가.
+## 1. 원칙 (Non-negotiable)
 
-**상단 KPI 카드 4개** (이번 주, 월~일 기준 자동 계산)
-- 부모 활성률 ⭐ = (리포트 링크를 1회 이상 연 부모 수) ÷ (이번 주 발행된 리포트의 수신 부모 수)
-- 이번 주 발행 수 = `center_parent_reports` + 공유된 `therapy_notes` 합계
-- 이번 주 사진 업로드 수 = `center_session_uploads` 카운트
-- 부모 재방문률 = 같은 부모(phone hash)가 2주 연속 열어본 비율
+- **가짜 데이터 0건.** 운영 KPI(파일럿 센터 수, MAU, 전환율, ARR, NPS, 절감률 %)는 전부 삭제.
+- 숫자가 들어가는 자리는 셋 중 하나만 허용:
+  1. 코드베이스/메모리에서 검증 가능한 **제품 사실** (예: 5단계 온보딩 위저드, 본인부담금 기본 10%, 60일 무료 트라이얼, ₩39,000/월)
+  2. **외부 공공 출처 인용** (보건복지부 발달재활바우처, 통계청 등) + 출처 표기
+  3. **목표/가설임을 명시** ("Target", "가설", "조건부 KPI")
+- 가격: **₩39,000/월** (케어플 대비 압도적 저가)를 **유일한 자체 BM 숫자**로 단일화.
+- 톤: 투자 유치 X → **공동 합의·역할 분담·우선순위 정렬** 중심.
 
-### 2. 베타 센터 5곳 트래커 테이블
-관리자가 어떤 센터를 "베타 5곳"으로 표시할지 토글(`center_organizations.is_beta_partner`). 표시된 센터만 표에 노출.
+## 2. 덱 구조 (총 13장)
 
-| 컬럼 | 의미 |
-|---|---|
-| 센터명 | `center_organizations.name` |
-| 코호트 주차 | 베타 시작일(`beta_started_at`)부터 경과 주 |
-| 온보딩 상태 | 5단계 setup 위저드 진행률 |
-| 첫 사진 업로드 | 날짜 / "아직 없음" |
-| 첫 리포트 발행 | 날짜 / "아직 없음" |
-| 첫 부모 열람 | 날짜 / "아직 없음" |
-| 이번 주 부모 활성률 | % + 색상(50%↑녹, 30↑황, 그 외 적) |
-| 비고 | inline 메모 |
-
-행 클릭 → 해당 센터의 주차별 미니 차트(부모 활성률 8주 트렌드).
-
-### 3. 주간 회고 메모
-페이지 하단에 "1주차/2주차…" 텍스트 영역 1개. `beta_retros` 테이블에 저장. 매주 금요일 회고를 남기는 용도.
-
-### 4. 사이드바 가시성
-`primary admin`(`kijung_kku@naver.com`)일 때만 메뉴 노출. 일반 센터 사용자는 안 보임.
-
-## 데이터 (마이그레이션 1개)
-
-```sql
-ALTER TABLE public.center_organizations
-  ADD COLUMN IF NOT EXISTS is_beta_partner boolean NOT NULL DEFAULT false,
-  ADD COLUMN IF NOT EXISTS beta_started_at date,
-  ADD COLUMN IF NOT EXISTS beta_notes text;
-
-CREATE TABLE public.beta_retros (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  week_start date NOT NULL UNIQUE,
-  body text NOT NULL DEFAULT '',
-  updated_at timestamptz NOT NULL DEFAULT now()
-);
-GRANT SELECT, INSERT, UPDATE ON public.beta_retros TO authenticated;
-GRANT ALL ON public.beta_retros TO service_role;
-ALTER TABLE public.beta_retros ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "primary admin only" ON public.beta_retros
-  FOR ALL TO authenticated
-  USING (public.has_role(auth.uid(), 'admin'))
-  WITH CHECK (public.has_role(auth.uid(), 'admin'));
+```text
+01. Cover               파트너 합의용 자료 v2 / 날짜 / 대상
+02. 왜 지금              발달재활 시장 구조적 공백 (공공 출처만)
+03. 우리가 보는 그림      B2B 락인 → B2C 유입 → 광고·스토어 → B2G 풀스택
+04. 경쟁 지형            케어플센터 vs AIHPRO Center (가격·락인 포인트만)
+05. 제품 현황 (사실)      WAVE 1 모듈, RLS, 60일 무료, ₩39,000/월
+06. 부모 락인 장치        AI 부모리포트 — 키즈노트형 학부모 일일 접점
+07. 단계별 진입 조건      Phase 1~4 + KPI 트리거 (날짜·금액 없음)
+08. Phase 1: B2B 센터    무엇을 / 어떤 KPI 충족 시 다음 단계
+09. Phase 2: B2C 유입    부모 리포트 → 자가 코칭/상담
+10. Phase 3: 광고·스토어  파트너 프로그램·도서·교구 스토어프론트
+11. Phase 4: B2G 바우처   전자바우처 자동 청구 → 지자체 진입
+12. 파트너 역할 분담      현 시점 합의 필요한 분장표
+13. 다음 합의 항목        Open question 3~5개 (가격, GTM 채널, 지분/수익배분)
 ```
 
-지표는 모두 기존 테이블(`center_parent_reports`, `center_parent_share_links`, `center_session_uploads`, `center_sessions`)에서 클라이언트 집계. 별도 ETL 없음.
+## 3. 슬라이드별 핵심 내용
 
-## 파일 (예상)
-- `supabase/migrations/<ts>_beta_tracker.sql` (마이그레이션 툴)
-- `src/pages/b2b-center/admin/BetaTrackerPage.tsx` (신규)
-- `src/components/b2b-center/admin/BetaKpiCards.tsx`
-- `src/components/b2b-center/admin/BetaCohortTable.tsx`
-- `src/components/b2b-center/admin/BetaRetroEditor.tsx`
-- `src/hooks/useBetaMetrics.ts` — 주차/지표 집계
-- 라우터(`src/App.tsx` 또는 b2b-center 라우터): `/b2b-center/admin/beta-tracker`
-- 사이드바: `src/components/b2b-center/AppSidebar.tsx`에 admin-only 항목 추가
+### 04. 경쟁 지형 (케어플 대비)
+표 대신 좌/우 카드 비교 (메모리 룰: Markdown 표 금지).
 
-## 범위 밖 (이번엔 안 함)
-- 자동 알림/이메일
-- 부모 인터뷰 수집 폼
-- PMF 결정 자동 판정(50%×8주) — 화면에 숫자만 보여주고 판단은 사람이
-- 비-운영자 권한 확장
+- **가격**: 케어플 (공시 가격 미확정 → "고가형"으로만 표기) ↔ AIHPRO **₩39,000/월 정액**
+- **데이터 락인**: 케어플 = 운영 효율 / AIHPRO = 운영 효율 + **부모 앱 동시 락인**
+- **확장축**: 케어플 = 센터 SaaS 단일 / AIHPRO = **B2B → B2C → B2G 풀스택**
+
+### 05. 제품 현황 (코드 검증된 것만)
+- WAVE 1 모듈: 수납·미수금 풀, 전자바우처 청구(.xlsx 자동), 5단계 온보딩 위저드
+- 멀티테넌트: Supabase RLS 기반 센터별 데이터 격리
+- 부모리포트: 화이트라벨(기관명·로고·발신자) 적용 가능
+- 트라이얼: **신규 센터 60일 무료** (`center_organizations.trial_ends_at`)
+- 가격: **₩39,000/월** (자체 결제 SKU와 분리된 B2B 정액제)
+
+### 07. 단계별 진입 조건 (KPI 트리거형)
+시기·금액 표기 없이 **조건 → 행동** 형식.
+
+```text
+Phase 1 (현재)    B2B 센터 운영 모듈 안착
+  └ 트리거: 유료 전환 센터 ≥ N곳 + 월 이탈 < X%
+
+Phase 2          부모 앱 락인 강화 (AI 리포트 일일 접점)
+  └ 트리거: 센터당 활성 학부모 비율 ≥ Y%
+
+Phase 3          파트너 스토어·광고 모듈 ON
+  └ 트리거: 학부모 MAU ≥ Z + 평균 체류 ≥ W분
+
+Phase 4          지자체 바우처 직납 + B2G 제안
+  └ 트리거: 전자바우처 청구 자동화 사용 센터 ≥ K곳
+```
+
+N/X/Y/Z/W/K는 **이번 파트너 회의에서 합의할 빈칸**으로 둠.
+
+### 12. 파트너 역할 분담
+- 제품/엔지니어링
+- B2B 영업 (센터 컨택·온보딩)
+- 임상/콘텐츠 (부모 리포트 톤·치료사 검수)
+- 운영/CS (수납·바우처 청구 지원)
+- 법무·재무 (B2G 진입 시 필요)
+
+각 항목 옆에 "현재 담당 / 합의 필요" 두 칸만.
+
+### 13. Open Question (합의 필요)
+1. ₩39,000/월이 초기 12개월 고정인가, 센터 규모별 차등인가?
+2. Phase 2 진입 KPI 수치(센터 수·학부모 활성 비율) 합의
+3. 스토어/광고 수익 배분 구조 (센터·파트너·플랫폼)
+4. B2G 진입 시 컨소시엄 구성 방식
+5. 60일 무료 종료 후 자동 청구 vs 수동 동의 정책
+
+## 4. 디자인
+
+- 메모리 룰 준수: 흰 배경 미니멀, 금색 액센트(#C8B88A), 이모지/표 금지, 번호 01·02 사용.
+- Playwright + Chromium HTML→PDF 파이프라인 재사용 (기존 IR 생성 스크립트 베이스 유지).
+- Noto Sans CJK KR.
+- 표지·마무리만 다크 배경, 본문은 화이트.
+
+## 5. 산출물 & QA
+
+- `/mnt/documents/AIHPRO_Center_IR_Deck_v2.pdf` (13장)
+- QA: 페이지별 JPEG 변환 후 1장씩 육안 검수 — 텍스트 오버플로우, 빈칸 표기 누락, 가짜 수치 잔존 여부 확인. 발견 이슈/수정 내역을 응답에 명시.
+- 기존 v1 PDF는 보존 (덮어쓰지 않음).
+
+## 6. 기술 노트
+
+- 코드베이스는 건드리지 않음. 문서 생성 스크립트는 `/tmp` 작업, 최종 PDF만 `/mnt/documents`.
+- 외부 시장 통계는 무리하게 인용하지 않고, 검증된 출처(보건복지부 발달재활서비스 바우처 페이지 등)만 1~2개 사용. 출처 표기 누락 시 그 슬라이드는 정성적 서술로 대체.

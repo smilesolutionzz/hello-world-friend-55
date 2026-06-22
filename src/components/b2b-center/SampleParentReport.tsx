@@ -121,10 +121,11 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
         if (!resolvedCenterName && data?.center_id) {
           const { data: org } = await supabase
             .from("center_organizations")
-            .select("name")
+            .select("name, branding")
             .eq("id", data.center_id)
             .maybeSingle();
           resolvedCenterName = org?.name ?? "";
+          if (!cancelled && org?.branding) setBranding(org.branding);
         }
         if (!cancelled && resolvedCenterName) setCenterName(resolvedCenterName);
         if (!cancelled && draft && draft.schema === "monthly_v1") {

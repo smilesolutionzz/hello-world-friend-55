@@ -636,6 +636,7 @@ const App = () => {
             <Route path="services/monthly" element={<CenterMonthlyServicesPage />} />
             <Route path="services/records" element={<CenterSessionRecordsPage />} />
             <Route path="billing/voucher-audit" element={<CenterVoucherAuditPage />} />
+            <Route path="audit" element={<CenterAuditKitPage />} />
             <Route path="admin/programs" element={<CenterProgramsPage />} />
             <Route path="admin/organization" element={<CenterOrganizationPage />} />
             <Route path="intelligence/parent-reports" element={<CenterParentReportsPage />} />

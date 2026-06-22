@@ -252,6 +252,7 @@ export default function B2BCenterApp() {
                     <NavLink
                       key={n.to}
                       to={demo ? `${n.to}?demo=1` : n.to}
+                      end
                       className={({ isActive }) =>
                         `flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
                           isActive

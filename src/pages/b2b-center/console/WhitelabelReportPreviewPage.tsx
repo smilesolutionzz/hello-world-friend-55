@@ -48,8 +48,7 @@ export default function WhitelabelReportPreviewPage() {
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ["css", "legacy"] },
-      }).from(previewRef.current).save();
+      } as any).from(previewRef.current).save();
       toast({ title: "PDF 다운로드 완료", description: `${centerName} 명의로 발행되었습니다.` });
     } catch (e: any) {
       toast({ title: "PDF 생성 실패", description: e?.message ?? String(e), variant: "destructive" });

@@ -15,7 +15,7 @@ const PRESETS = [
 ];
 
 export default function WhitelabelReportPreviewPage() {
-  const { demo } = useOutletContext<Ctx>();
+  const { centerId, demo } = useOutletContext<Ctx>();
   const { toast } = useToast();
   const previewRef = useRef<HTMLDivElement>(null);
 

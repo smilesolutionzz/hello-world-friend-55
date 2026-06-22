@@ -2850,6 +2850,7 @@ export type Database = {
           address: string | null
           beta_notes: string | null
           beta_started_at: string | null
+          branding: Json
           business_no: string | null
           contract_expires_at: string | null
           created_at: string
@@ -2869,6 +2870,7 @@ export type Database = {
           address?: string | null
           beta_notes?: string | null
           beta_started_at?: string | null
+          branding?: Json
           business_no?: string | null
           contract_expires_at?: string | null
           created_at?: string
@@ -2888,6 +2890,7 @@ export type Database = {
           address?: string | null
           beta_notes?: string | null
           beta_started_at?: string | null
+          branding?: Json
           business_no?: string | null
           contract_expires_at?: string | null
           created_at?: string
@@ -17926,6 +17929,7 @@ export type Database = {
           address: string | null
           beta_notes: string | null
           beta_started_at: string | null
+          branding: Json
           business_no: string | null
           contract_expires_at: string | null
           created_at: string
@@ -18157,6 +18161,7 @@ export type Database = {
           address: string | null
           beta_notes: string | null
           beta_started_at: string | null
+          branding: Json
           business_no: string | null
           contract_expires_at: string | null
           created_at: string

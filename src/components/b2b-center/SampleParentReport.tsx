@@ -94,6 +94,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
   const [data, setData] = useState<ReportData>(() => buildDefault(clientName, sessions, pk));
   const [centerName, setCenterName] = useState<string>("");
+  const [branding, setBranding] = useState<any>(null);
 
   const [editMode, setEditMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -120,10 +121,11 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
         if (!resolvedCenterName && data?.center_id) {
           const { data: org } = await supabase
             .from("center_organizations")
-            .select("name")
+            .select("name, branding")
             .eq("id", data.center_id)
             .maybeSingle();
           resolvedCenterName = org?.name ?? "";
+          if (!cancelled && org?.branding) setBranding(org.branding);
         }
         if (!cancelled && resolvedCenterName) setCenterName(resolvedCenterName);
         if (!cancelled && draft && draft.schema === "monthly_v1") {
@@ -216,6 +218,28 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.cover && (
             <header className="border-b border-[#C8B88A]/40 pb-10">
+              {branding && (branding.c1 || branding.logoText) && (
+                <div
+                  className="flex items-center justify-between rounded-2xl px-5 py-3 mb-6 text-white"
+                  style={{ background: `linear-gradient(135deg, ${branding.c1 || "#0F172A"}, ${branding.c2 || "#1E293B"})` }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-sm"
+                      style={{ background: branding.logoBg || "#FFFFFF", color: branding.logoFg || "#0F172A" }}
+                    >
+                      {branding.logoText || (centerName?.[0] ?? "·")}
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold leading-tight">{centerName || "우리 기관"}</div>
+                      {branding.tagline && <div className="text-[11px] opacity-90">{branding.tagline}</div>}
+                    </div>
+                  </div>
+                  {branding.therapist && (
+                    <div className="text-[11px] opacity-90 text-right">발신<br /><b className="text-xs">{branding.therapist}</b></div>
+                  )}
+                </div>
+              )}
               <div className="flex items-center gap-2 text-[11px] tracking-[0.3em] text-[#C8B88A] uppercase mb-6">
                 <span className="w-8 h-px bg-[#C8B88A]" /> Monthly Parent Report
               </div>

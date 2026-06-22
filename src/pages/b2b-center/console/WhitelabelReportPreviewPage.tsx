@@ -1,7 +1,8 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Download, Palette, Sparkles, Building2, User2, Eye } from "lucide-react";
+import { Download, Palette, Sparkles, Building2, User2, Eye, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import html2pdf from "html2pdf.js";
 
 type Ctx = { centerId: string; demo?: boolean };
@@ -14,7 +15,7 @@ const PRESETS = [
 ];
 
 export default function WhitelabelReportPreviewPage() {
-  const { demo } = useOutletContext<Ctx>();
+  const { centerId, demo } = useOutletContext<Ctx>();
   const { toast } = useToast();
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +38,55 @@ export default function WhitelabelReportPreviewPage() {
   };
 
   const headerGradient = useMemo(() => `linear-gradient(135deg, ${c1}, ${c2})`, [c1, c2]);
+
+  // 기관에 저장된 브랜딩이 있으면 자동으로 불러옴
+  useEffect(() => {
+    if (demo || !centerId) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("center_organizations")
+        .select("name, phone, address, branding")
+        .eq("id", centerId)
+        .maybeSingle();
+      if (cancelled || !data) return;
+      const b: any = data.branding ?? {};
+      if (data.name) setCenterName(data.name);
+      if (data.phone) setPhone(data.phone);
+      if (data.address) setAddress(data.address);
+      if (b.tagline) setTagline(b.tagline);
+      if (b.therapist) setTherapist(b.therapist);
+      if (b.logoText) setLogoText(b.logoText);
+      if (b.c1) setC1(b.c1);
+      if (b.c2) setC2(b.c2);
+      if (b.logoBg) setLogoBg(b.logoBg);
+      if (b.logoFg) setLogoFg(b.logoFg);
+    })();
+    return () => { cancelled = true; };
+  }, [centerId, demo]);
+
+  const saveBranding = async () => {
+    if (demo) { toast({ title: "데모 모드에서는 저장되지 않아요" }); return; }
+    if (!centerId) { toast({ title: "기관 선택이 필요합니다", variant: "destructive" }); return; }
+    setBusy(true);
+    try {
+      const { error } = await supabase
+        .from("center_organizations")
+        .update({
+          name: centerName,
+          phone,
+          address,
+          branding: { tagline, therapist, logoText, c1, c2, logoBg, logoFg },
+        })
+        .eq("id", centerId);
+      if (error) throw error;
+      toast({ title: "브랜딩이 저장됐어요", description: "부모 월간 리포트가 이 명의·색상으로 발행됩니다." });
+    } catch (e: any) {
+      toast({ title: "저장 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const downloadPDF = async () => {
     if (!previewRef.current) return;
@@ -67,14 +117,25 @@ export default function WhitelabelReportPreviewPage() {
             실제 발행은 <b>부모 월간 리포트</b> 페이지에서 진행합니다.
           </p>
         </div>
-        <button
-          onClick={downloadPDF}
-          disabled={busy}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-xs whitespace-nowrap disabled:opacity-50"
-        >
-          <Download className="w-3.5 h-3.5 text-[#C8B88A]" />
-          {busy ? "PDF 생성 중…" : "PDF 다운로드"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={saveBranding}
+            disabled={busy || demo}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8B88A] text-white text-xs whitespace-nowrap disabled:opacity-50"
+            title="이 설정을 기관 브랜딩으로 저장 — 부모 월간 리포트에 자동 적용됩니다"
+          >
+            <Save className="w-3.5 h-3.5" />
+            {demo ? "데모(저장 불가)" : "기관 브랜딩으로 저장"}
+          </button>
+          <button
+            onClick={downloadPDF}
+            disabled={busy}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-xs whitespace-nowrap disabled:opacity-50"
+          >
+            <Download className="w-3.5 h-3.5 text-[#C8B88A]" />
+            {busy ? "처리 중…" : "PDF 다운로드"}
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6">

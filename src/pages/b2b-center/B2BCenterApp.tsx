@@ -37,6 +37,7 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string; betaVis
   // 인텔리전스 / 스토어
   { to: "intelligence/therapy-notes", label: "치료노트 (주간·AI)", icon: Sparkles, group: "인텔리전스", betaVisible: true },
   { to: "intelligence/parent-reports", label: "부모 월간 리포트", icon: FileText, group: "인텔리전스", betaVisible: true },
+  { to: "intelligence/parent-reports/whitelabel", label: "화이트라벨 미리보기", icon: Sparkles, group: "인텔리전스", betaVisible: true },
   { to: "storefront", label: "스토어 (프로그램·교구)", icon: Store, group: "인텔리전스", betaVisible: false },
   // 관리자
   { to: "admin/organization", label: "기관 정보 및 옵션", icon: Building2, group: "관리자", betaVisible: false },

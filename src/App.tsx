@@ -218,6 +218,7 @@ const CenterMonthlyServicesPage = lazy(() => import("./pages/b2b-center/console/
 const CenterVoucherAuditPage = lazy(() => import("./pages/b2b-center/console/VoucherAuditPage"));
 const CenterProgramsPage = lazy(() => import("./pages/b2b-center/console/ProgramsPage"));
 const CenterParentReportsPage = lazy(() => import("./pages/b2b-center/console/ParentReportsPage"));
+const CenterWhitelabelReportPreviewPage = lazy(() => import("./pages/b2b-center/console/WhitelabelReportPreviewPage"));
 const CenterTherapyNotesPage = lazy(() => import("./pages/b2b-center/console/TherapyNotesPage"));
 const ParentCenterPage = lazy(() => import("./pages/parent/ParentCenterPage"));
 const ParentShareLandingPage = lazy(() => import("./pages/parent/ParentShareLandingPage"));
@@ -637,6 +638,7 @@ const App = () => {
             <Route path="admin/programs" element={<CenterProgramsPage />} />
             <Route path="admin/organization" element={<CenterOrganizationPage />} />
             <Route path="intelligence/parent-reports" element={<CenterParentReportsPage />} />
+            <Route path="intelligence/parent-reports/whitelabel" element={<CenterWhitelabelReportPreviewPage />} />
             <Route path="intelligence/therapy-notes" element={<CenterTherapyNotesPage />} />
             <Route path="intelligence/ops-dashboard" element={<CenterOpsDashboardPage />} />
             <Route path="guide" element={<CenterGuidePage />} />

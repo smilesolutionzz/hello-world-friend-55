@@ -66,8 +66,8 @@ export default function B2BCenterLanding() {
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       <Helmet>
-        <title>발달치료센터 ERP · 60일 무료 — AIHPRO</title>
-        <meta name="description" content="이용자·일정·수납. 기존 ERP 엑셀 그대로 이관, 60일 무료 체험. 카드 등록 없음." />
+        <title>발달치료센터 행정 자동화 ERP · 60일 무료 — AIHPRO Center</title>
+        <meta name="description" content="바우처 일지·지도점검·수납을 AI가 대신. 케어플에서 1클릭 이전, 60일 무료, 월 ₩39,000. 원장님이 서류지옥에서 해방되는 센터 ERP." />
       </Helmet>
 
       {/* Top bar with console entry */}
@@ -95,12 +95,12 @@ export default function B2BCenterLanding() {
           60일 무료 · 카드 등록 없음 · 베타 모집 중
         </div>
         <h1 className="text-5xl md:text-6xl font-semibold tracking-tight leading-[1.05] mb-6 break-keep">
-          이용자·일정·수납.<br/>
-          <span className="text-[#C8B88A]">한 화면, 60일 무료.</span>
+          바우처 일지·지도점검·수납.<br/>
+          <span className="text-[#C8B88A]">AI가 다 합니다.</span>
         </h1>
         <p className="text-lg text-neutral-600 max-w-2xl mx-auto break-keep mb-10">
-          기존 ERP 엑셀 파일 하나 올리면 이용자·치료사·회기·수납이 그대로 옮겨와요.
-          두 달 동안 모든 기능 무제한 — 그 다음에도 월 {KRW(B2B_CENTER_MONTHLY)}.
+          한 줄 메모만 쓰면 AI가 일지를 풀어 쓰고, 지도점검 서류를 자동 정리하고,
+          매달 수납 문자를 대신 보냅니다. 케어플 데이터는 1클릭으로 이전, 60일 무료 후에도 월 {KRW(B2B_CENTER_MONTHLY)}.
         </p>
         <div className="flex flex-wrap gap-3 justify-center">
           <Link to="/b2b-center/import" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition">
@@ -114,20 +114,20 @@ export default function B2BCenterLanding() {
         </div>
       </section>
 
-      {/* 핵심 3기능 */}
+      {/* 핵심 4기능 — 원장 행정 자동화 */}
       <section className="px-6 py-20 bg-neutral-50">
         <div className="max-w-6xl mx-auto">
-          <p className="text-xs tracking-widest text-neutral-500 mb-3">01 · 운영 핵심</p>
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4 break-keep">센터 운영의 본질, 세 가지만.</h2>
+          <p className="text-xs tracking-widest text-neutral-500 mb-3">01 · 원장이 매일 하던 일, AI가 대신</p>
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4 break-keep">서류지옥에서 해방되는 네 가지.</h2>
           <p className="text-neutral-600 mb-12 break-keep max-w-xl">
-            나머지 기능은 이 세 가지가 잡힌 다음에 따라옵니다. 처음 한 달, 이 셋부터 익혀보세요.
+            현장 원장님들의 실제 페인을 그대로 자동화했습니다. 일지·감사·수납·이관 — 이 넷이 잡히면, 센터 운영의 80%가 끝납니다.
           </p>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {coreFeatures.map((f) => (
               <div key={f.title} className="bg-white rounded-2xl p-8 border border-neutral-100">
                 <p className="text-xs tracking-widest text-[#C8B88A] mb-4">{f.num}</p>
                 <f.icon className="w-7 h-7 text-neutral-900 mb-5" strokeWidth={1.5} />
-                <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
+                <h3 className="text-lg font-semibold mb-2 break-keep">{f.title}</h3>
                 <p className="text-sm text-neutral-600 break-keep leading-relaxed">{f.desc}</p>
               </div>
             ))}
@@ -137,12 +137,12 @@ export default function B2BCenterLanding() {
 
       {/* Comparison */}
       <section id="pricing" className="px-6 py-20 max-w-5xl mx-auto">
-        <p className="text-xs tracking-widest text-neutral-500 mb-3">02 · vs C사</p>
-        <h2 className="text-3xl md:text-4xl font-semibold mb-10 break-keep">같은 일을, 더 저렴하게.</h2>
+        <p className="text-xs tracking-widest text-neutral-500 mb-3">02 · vs 케어플</p>
+        <h2 className="text-3xl md:text-4xl font-semibold mb-10 break-keep">같은 일을, 원장님 손 떼고.</h2>
         <div className="rounded-2xl border border-neutral-200 overflow-hidden">
           <div className="grid grid-cols-3 bg-neutral-100 text-sm font-medium">
             <div className="p-4">항목</div>
-            <div className="p-4 text-neutral-500">C사</div>
+            <div className="p-4 text-neutral-500">케어플</div>
             <div className="p-4 text-neutral-900">AIHPRO 센터</div>
           </div>
           {compare.map((row, i) => (

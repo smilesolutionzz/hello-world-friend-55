@@ -117,14 +117,25 @@ export default function WhitelabelReportPreviewPage() {
             실제 발행은 <b>부모 월간 리포트</b> 페이지에서 진행합니다.
           </p>
         </div>
-        <button
-          onClick={downloadPDF}
-          disabled={busy}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-xs whitespace-nowrap disabled:opacity-50"
-        >
-          <Download className="w-3.5 h-3.5 text-[#C8B88A]" />
-          {busy ? "PDF 생성 중…" : "PDF 다운로드"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={saveBranding}
+            disabled={busy || demo}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8B88A] text-white text-xs whitespace-nowrap disabled:opacity-50"
+            title="이 설정을 기관 브랜딩으로 저장 — 부모 월간 리포트에 자동 적용됩니다"
+          >
+            <Save className="w-3.5 h-3.5" />
+            {demo ? "데모(저장 불가)" : "기관 브랜딩으로 저장"}
+          </button>
+          <button
+            onClick={downloadPDF}
+            disabled={busy}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-xs whitespace-nowrap disabled:opacity-50"
+          >
+            <Download className="w-3.5 h-3.5 text-[#C8B88A]" />
+            {busy ? "처리 중…" : "PDF 다운로드"}
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6">

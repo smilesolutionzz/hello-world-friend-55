@@ -292,8 +292,9 @@ export default function B2BCenterApp() {
 
         <main className="flex-1 min-w-0 overflow-auto">
           {!demo && activeCenter?.id && (
-            <div className="sticky top-0 z-30 bg-white/85 backdrop-blur border-b border-neutral-100 px-4 md:px-6 py-2 flex items-center justify-end">
+            <div className="sticky top-0 z-30 bg-white/85 backdrop-blur border-b border-neutral-100 px-4 md:px-6 py-2 flex items-center justify-end gap-2">
               <NotificationBell centerId={activeCenter.id} />
+              <AuthMenu />
             </div>
           )}
           <div className={`${isSchedule ? "max-w-none" : "max-w-5xl"} mx-auto px-4 md:px-6 pt-4 md:pt-6 space-y-4`}>

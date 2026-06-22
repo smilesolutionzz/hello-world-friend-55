@@ -17,6 +17,7 @@ import { DEMO_CENTER, isDemoMode } from "@/lib/b2bCenter/demoData";
 import { BETA_MODE } from "@/config/betaMode";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import NotificationBell from "@/components/b2b-center/NotificationBell";
+import AuthMenu from "@/components/b2b-center/AuthMenu";
 
 const NAV: Array<{ to: string; label: string; icon: any; group?: string; betaVisible: boolean }> = [
   // 시작

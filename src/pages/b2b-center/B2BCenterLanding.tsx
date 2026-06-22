@@ -1,44 +1,51 @@
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Check, ArrowRight, Users, Calendar, CreditCard, LogIn, LayoutDashboard } from "lucide-react";
+import { Check, ArrowRight, FileText, ShieldCheck, CreditCard, Upload, LogIn, LayoutDashboard } from "lucide-react";
 import { B2B_CENTER_MONTHLY, B2B_CENTER_COMPETITOR_PRICE } from "@/constants/tokenCosts";
 import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
 import { supabase } from "@/integrations/supabase/client";
 
 const KRW = (n: number) => `₩${n.toLocaleString("ko-KR")}`;
 
-// 이수석 피드백: "2-3개로 추리는게 핵심" — 운영 핵심 3가지만
+// 틔움 김선길 대표 피드백 반영: "원장이 돈 내는 이유 = 행정 고통 해방"
+// 부모리포트는 보조, 원장 행정 자동화 4종을 wedge로.
 const coreFeatures = [
   {
-    icon: Users,
+    icon: FileText,
     num: "01",
-    title: "이용자 관리",
-    desc: "엑셀 한 번에 이관. 가족·바우처·계약 만료까지 한 화면. C사 다운로드 파일 그대로 인식.",
+    title: "바우처 일지 자동 작성",
+    desc: "한 줄 메모 또는 사진 한 장 → AI가 회기 일지 장문으로 자동 작성. 출력해서 철하면 끝. 6개월치 몰아쓰기도 일자별 백필.",
   },
   {
-    icon: Calendar,
+    icon: ShieldCheck,
     num: "02",
-    title: "일정 관리",
-    desc: "주간 캘린더 + 치료사별 색상. 회기 상태·노쇼·대체 일정 자동 정리. 모바일에서도 그대로.",
+    title: "지도점검 대응 키트",
+    desc: "연 1회 감사, 더 이상 야근 금지. 누락 서류 자동 진단 + 행정서류 양식 자동 생성. D-30 준비 가이드까지.",
   },
   {
     icon: CreditCard,
     num: "03",
-    title: "수납 관리",
-    desc: "전자바우처 자동 대조로 누락·중복결제 발견. 월별 매출·미수금 한 줄 요약.",
+    title: "수납·미수금 자동화",
+    desc: "매달 본인부담금 안내 문자 자동 발송, 입금 대조, 미수금 독촉까지. 원장이 직접 챙길 일 없게.",
+  },
+  {
+    icon: Upload,
+    num: "04",
+    title: "케어플에서 1클릭 이전",
+    desc: "기존 케어플 데이터 그대로 이관. 이용자·치료사·회기·바우처 — AI가 컬럼 자동 매핑, 초기 셋팅 0분.",
   },
 ];
 
 const compare = [
-  ["주간 일정표 가독성", "꽉 찬 색 블록 · 이름 잘림", "흰 카드 + 좌측 컬러 바, 한눈에"],
   ["월 이용료", `${KRW(B2B_CENTER_COMPETITOR_PRICE)}/월`, `${KRW(B2B_CENTER_MONTHLY)}/월`],
   ["무료 체험", "—", "60일 (카드 등록 없음)"],
-  ["엑셀 일괄 이관", "수동 입력", "포맷 자동 감지 · 1클릭"],
+  ["케어플에서 이관", "수동 입력", "AI 매핑 · 1클릭"],
+  ["바우처 일지 작성", "원장·치료사 직접", "한 줄 메모 → AI 장문 자동"],
+  ["지도점검 대응", "수기 준비", "체크리스트 + 누락 서류 자동 생성"],
+  ["수납 안내·미수금", "수기 문자·전화", "자동 발송 + 입금 대조"],
   ["전자바우처 대조", "수동", "자동"],
-  ["부모 월간 리포트", "별도 작성", "AI 자동 생성"],
-  ["전문가 매칭", "—", "AIHPRO 전문가 네트워크 연결"],
-  ["보호자 앱", "—", "B2C 앱 무료 제공"],
+  ["부모 월간 리포트", "별도 작성", "AI 자동 생성 (보조)"],
 ];
 
 export default function B2BCenterLanding() {

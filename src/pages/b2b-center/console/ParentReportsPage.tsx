@@ -149,6 +149,7 @@ export default function ParentReportsPage() {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <button onClick={() => setSampleOpen({ clientId: "c1", name: "민준 (5세)", period: "2026년 4월", periodKey: "2026-04" })} className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-[#C8B88A] text-neutral-800 text-xs whitespace-nowrap hover:bg-[#FAF6E8]"><Eye className="w-3.5 h-3.5 text-[#C8B88A]" /> 샘플 리포트 보기</button>
+          <a href="./parent-reports/whitelabel" className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-neutral-300 text-neutral-800 text-xs whitespace-nowrap hover:bg-neutral-50"><Sparkles className="w-3.5 h-3.5 text-[#C8B88A]" /> 화이트라벨 미리보기</a>
           <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-xs" />
           <button onClick={generateBatch} className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-neutral-900 text-white text-xs whitespace-nowrap"><Sparkles className="w-3.5 h-3.5 text-[#C8B88A]" /> 누락된 이용자만 생성</button>
         </div>

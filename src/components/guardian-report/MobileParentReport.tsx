@@ -18,6 +18,7 @@ interface ReportRow {
   html_content: string | null;
   metrics: any;
   coach_comment: string | null;
+  center_branding?: any;
 }
 
 interface StatBlock { participated: string; attendance: string; areas: string; therapist: string }

@@ -1,102 +1,51 @@
-# 파트너용 IR 덱 v2 재제작 계획
+# 화이트라벨 ↔ 부모 월간 리포트 실연결 검증 + 연결
 
-기존 `AIHPRO_Center_IR_Deck.pdf`는 투자자 톤 + 가설 숫자(ARR, 파일럿 N개, NPS 등)가 포함되어 있어 **공동 파트너용**으로 부적합. 전면 재작성한다.
+## 1. 지금 상태 (조사 결과)
 
----
+- **저장 경로**: `WhitelabelReportPreviewPage`의 "기관 브랜딩으로 저장" → `center_organizations.branding` JSONB (`{tagline, therapist, logoText, c1, c2, logoBg, logoFg}`) 에 정상 저장. ✅
+- **샘플 미리보기 (`SampleParentReport.tsx`)**: 저장된 `branding`을 로드해서 헤더에 적용. ✅
+- **실제 발행 경로 — 끊김 ❌**
+  - 엣지 `generate-monthly-parent-report` 는 `center_organizations` 에서 `id, name` 만 가져오고 `branding` 컬럼을 무시함.
+  - `ParentReportsPage` 의 실제 발행/보기 렌더러와 보호자가 보는 `/r/...` (`GuardianReportView`)에서 `branding` 을 사용하는 코드가 전혀 없음.
+  - 즉, **저장은 되지만 발행된 리포트엔 반영되지 않는** 상태. 사용자가 의심한 그대로.
 
-## 1. 원칙 (Non-negotiable)
+## 2. 할 일
 
-- **가짜 데이터 0건.** 운영 KPI(파일럿 센터 수, MAU, 전환율, ARR, NPS, 절감률 %)는 전부 삭제.
-- 숫자가 들어가는 자리는 셋 중 하나만 허용:
-  1. 코드베이스/메모리에서 검증 가능한 **제품 사실** (예: 5단계 온보딩 위저드, 본인부담금 기본 10%, 60일 무료 트라이얼, ₩39,000/월)
-  2. **외부 공공 출처 인용** (보건복지부 발달재활바우처, 통계청 등) + 출처 표기
-  3. **목표/가설임을 명시** ("Target", "가설", "조건부 KPI")
-- 가격: **₩39,000/월** (케어플 대비 압도적 저가)를 **유일한 자체 BM 숫자**로 단일화.
-- 톤: 투자 유치 X → **공동 합의·역할 분담·우선순위 정렬** 중심.
+### 2-1. 엣지 함수에서 branding 함께 로드 후 결과에 포함
+`supabase/functions/generate-monthly-parent-report/index.ts`
+- `center_organizations` select 에 `branding` 추가
+- 생성 결과 payload + DB 저장 시 `meta.branding` (또는 `header_branding`) 필드로 함께 기록 → 발행 후에도 그 시점의 브랜딩이 박제되도록 (저장 후 브랜딩이 바뀌어도 과거 리포트는 그대로 유지).
 
-## 2. 덱 구조 (총 13장)
+### 2-2. 발행 리포트 렌더러에 branding 적용
+- `ParentReportsPage` 의 상세 보기/미리보기 패널 (현재 일반 헤더 사용 중) 에 `SampleParentReport` 와 동일한 헤더 컴포넌트 분리 후 재사용.
+- `/r/...` 보호자 공개 뷰 `GuardianReportView` 도 동일 헤더 적용 — `report.meta.branding` 우선, 없으면 `center_organizations.branding` fallback.
+- PDF 다운로드도 같은 헤더 거쳐서 나가도록 (기존 `html2pdf` 흐름 그대로, 컴포넌트만 교체).
 
-```text
-01. Cover               파트너 합의용 자료 v2 / 날짜 / 대상
-02. 왜 지금              발달재활 시장 구조적 공백 (공공 출처만)
-03. 우리가 보는 그림      B2B 락인 → B2C 유입 → 광고·스토어 → B2G 풀스택
-04. 경쟁 지형            케어플센터 vs AIHPRO Center (가격·락인 포인트만)
-05. 제품 현황 (사실)      WAVE 1 모듈, RLS, 60일 무료, ₩39,000/월
-06. 부모 락인 장치        AI 부모리포트 — 키즈노트형 학부모 일일 접점
-07. 단계별 진입 조건      Phase 1~4 + KPI 트리거 (날짜·금액 없음)
-08. Phase 1: B2B 센터    무엇을 / 어떤 KPI 충족 시 다음 단계
-09. Phase 2: B2C 유입    부모 리포트 → 자가 코칭/상담
-10. Phase 3: 광고·스토어  파트너 프로그램·도서·교구 스토어프론트
-11. Phase 4: B2G 바우처   전자바우처 자동 청구 → 지자체 진입
-12. 파트너 역할 분담      현 시점 합의 필요한 분장표
-13. 다음 합의 항목        Open question 3~5개 (가격, GTM 채널, 지분/수익배분)
-```
+### 2-3. 공통 헤더 추출
+`src/components/b2b-center/WhitelabelHeader.tsx` 신규
+- props: `{ centerName, branding, period, therapist? }`
+- 3곳에서 공유: `SampleParentReport`, `ParentReportsPage` 상세, `GuardianReportView`.
+- 화이트라벨 미리보기 페이지의 인라인 헤더도 같은 컴포넌트로 교체 → 미리보기와 실제 발행이 1픽셀도 다르지 않게 보장.
 
-## 3. 슬라이드별 핵심 내용
+### 2-4. 저장 후 UX 보강
+- "기관 브랜딩으로 저장" 토스트에 **"다음 발행 리포트부터 자동 적용됩니다"** 문구 확정.
+- 화이트라벨 페이지에 작은 배너: "최근 발행 리포트 N건에 브랜딩 미적용 — 재발행 시 자동 적용" (선택 — `center_parent_reports` 의 `meta.branding` 없는 것 카운트).
 
-### 04. 경쟁 지형 (케어플 대비)
-표 대신 좌/우 카드 비교 (메모리 룰: Markdown 표 금지).
+### 2-5. 검증 (사용자 액션 후 확인)
+1. 화이트라벨 페이지에서 색상·기관명 변경 → 저장
+2. `/b2b-center/app/parent-reports` 에서 임의 클라이언트 4월 리포트 재발행
+3. 발행 결과·PDF·`/r/...` 공유 링크 셋 모두 동일 헤더로 보이는지 스크린샷 확인
+4. 추가로 브랜딩 한 번 더 바꿔도 **이전 리포트는 박제된 옛 브랜딩** 유지하는지 확인
 
-- **가격**: 케어플 (공시 가격 미확정 → "고가형"으로만 표기) ↔ AIHPRO **₩39,000/월 정액**
-- **데이터 락인**: 케어플 = 운영 효율 / AIHPRO = 운영 효율 + **부모 앱 동시 락인**
-- **확장축**: 케어플 = 센터 SaaS 단일 / AIHPRO = **B2B → B2C → B2G 풀스택**
+## 3. 범위 밖 (이번엔 안 함)
 
-### 05. 제품 현황 (코드 검증된 것만)
-- WAVE 1 모듈: 수납·미수금 풀, 전자바우처 청구(.xlsx 자동), 5단계 온보딩 위저드
-- 멀티테넌트: Supabase RLS 기반 센터별 데이터 격리
-- 부모리포트: 화이트라벨(기관명·로고·발신자) 적용 가능
-- 트라이얼: **신규 센터 60일 무료** (`center_organizations.trial_ends_at`)
-- 가격: **₩39,000/월** (자체 결제 SKU와 분리된 B2B 정액제)
+- 주간 치료노트 (`generate-weekly-therapy-note`) 에는 일단 적용 안 함 — 같은 패턴으로 한 번 더 작업.
+- 로고 이미지 업로드 (현재는 이니셜 텍스트만). 별도 Phase.
+- 다국어 헤더 카피.
 
-### 07. 단계별 진입 조건 (KPI 트리거형)
-시기·금액 표기 없이 **조건 → 행동** 형식.
+## 4. 산출물
 
-```text
-Phase 1 (현재)    B2B 센터 운영 모듈 안착
-  └ 트리거: 유료 전환 센터 ≥ N곳 + 월 이탈 < X%
-
-Phase 2          부모 앱 락인 강화 (AI 리포트 일일 접점)
-  └ 트리거: 센터당 활성 학부모 비율 ≥ Y%
-
-Phase 3          파트너 스토어·광고 모듈 ON
-  └ 트리거: 학부모 MAU ≥ Z + 평균 체류 ≥ W분
-
-Phase 4          지자체 바우처 직납 + B2G 제안
-  └ 트리거: 전자바우처 청구 자동화 사용 센터 ≥ K곳
-```
-
-N/X/Y/Z/W/K는 **이번 파트너 회의에서 합의할 빈칸**으로 둠.
-
-### 12. 파트너 역할 분담
-- 제품/엔지니어링
-- B2B 영업 (센터 컨택·온보딩)
-- 임상/콘텐츠 (부모 리포트 톤·치료사 검수)
-- 운영/CS (수납·바우처 청구 지원)
-- 법무·재무 (B2G 진입 시 필요)
-
-각 항목 옆에 "현재 담당 / 합의 필요" 두 칸만.
-
-### 13. Open Question (합의 필요)
-1. ₩39,000/월이 초기 12개월 고정인가, 센터 규모별 차등인가?
-2. Phase 2 진입 KPI 수치(센터 수·학부모 활성 비율) 합의
-3. 스토어/광고 수익 배분 구조 (센터·파트너·플랫폼)
-4. B2G 진입 시 컨소시엄 구성 방식
-5. 60일 무료 종료 후 자동 청구 vs 수동 동의 정책
-
-## 4. 디자인
-
-- 메모리 룰 준수: 흰 배경 미니멀, 금색 액센트(#C8B88A), 이모지/표 금지, 번호 01·02 사용.
-- Playwright + Chromium HTML→PDF 파이프라인 재사용 (기존 IR 생성 스크립트 베이스 유지).
-- Noto Sans CJK KR.
-- 표지·마무리만 다크 배경, 본문은 화이트.
-
-## 5. 산출물 & QA
-
-- `/mnt/documents/AIHPRO_Center_IR_Deck_v2.pdf` (13장)
-- QA: 페이지별 JPEG 변환 후 1장씩 육안 검수 — 텍스트 오버플로우, 빈칸 표기 누락, 가짜 수치 잔존 여부 확인. 발견 이슈/수정 내역을 응답에 명시.
-- 기존 v1 PDF는 보존 (덮어쓰지 않음).
-
-## 6. 기술 노트
-
-- 코드베이스는 건드리지 않음. 문서 생성 스크립트는 `/tmp` 작업, 최종 PDF만 `/mnt/documents`.
-- 외부 시장 통계는 무리하게 인용하지 않고, 검증된 출처(보건복지부 발달재활서비스 바우처 페이지 등)만 1~2개 사용. 출처 표기 누락 시 그 슬라이드는 정성적 서술로 대체.
+- `WhitelabelHeader.tsx` 신규
+- `SampleParentReport.tsx`, `ParentReportsPage.tsx`, `GuardianReportView.tsx`, `WhitelabelReportPreviewPage.tsx` 4파일 수정
+- `generate-monthly-parent-report/index.ts` 수정 (select + 결과 payload에 branding 포함)
+- DB 스키마 변경 없음 (`center_organizations.branding`, `center_parent_reports.meta` 둘 다 기존 JSONB 재사용)

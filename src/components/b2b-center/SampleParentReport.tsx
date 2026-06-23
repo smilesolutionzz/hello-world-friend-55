@@ -3,6 +3,7 @@ import { X, Download, Printer, Sparkles, TrendingUp, Heart, Target, MessageCircl
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import WhitelabelHeader from "@/components/b2b-center/WhitelabelHeader";
 
 interface Props {
   open: boolean;

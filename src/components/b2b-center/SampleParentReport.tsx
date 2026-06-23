@@ -117,16 +117,17 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
           .eq("period_start", periodStart)
           .maybeSingle();
         const draft: any = data?.ai_draft_json;
-        // Resolve real center name (draft.center_name preferred; fallback to org lookup)
+        // Branding priority: draft snapshot > current org branding
         let resolvedCenterName = draft?.center_name as string | undefined;
-        if (!resolvedCenterName && data?.center_id) {
+        if (data?.center_id) {
           const { data: org } = await supabase
             .from("center_organizations")
             .select("name, branding")
             .eq("id", data.center_id)
             .maybeSingle();
-          resolvedCenterName = org?.name ?? "";
-          if (!cancelled && org?.branding) setBranding(org.branding);
+          if (!resolvedCenterName) resolvedCenterName = org?.name ?? "";
+          const eff = draft?.branding || org?.branding;
+          if (!cancelled && eff) setBranding(eff);
         }
         if (!cancelled && resolvedCenterName) setCenterName(resolvedCenterName);
         if (!cancelled && draft && draft.schema === "monthly_v1") {

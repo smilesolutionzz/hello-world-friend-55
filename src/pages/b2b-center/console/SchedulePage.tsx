@@ -947,7 +947,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
   }, [recurrenceMode, recurrenceUntil, at.date]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
+    <div className="fixed inset-0 z-50 bg-black/30 flex items-start justify-center p-4 overflow-y-auto" onClick={onClose}>
       <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-md p-6 shadow-xl my-8" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between mb-4">
           <div>

@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Sparkles, TrendingUp, Calendar, Award, ChevronRight } from "lucide-react";
+import WhitelabelHeader from "@/components/b2b-center/WhitelabelHeader";
 
 interface ReportRow {
   id: string;
@@ -17,6 +18,7 @@ interface ReportRow {
   html_content: string | null;
   metrics: any;
   coach_comment: string | null;
+  center_branding?: any;
 }
 
 interface StatBlock { participated: string; attendance: string; areas: string; therapist: string }
@@ -80,10 +82,22 @@ export default function MobileParentReport({ report }: { report: ReportRow }) {
   const goals: { label: string; value: string }[] = Array.isArray(draft.goals) ? draft.goals : [];
   const goalsFooter: string = safeText(draft.goalsFooter);
 
+  // Whitelabel branding: prefer the snapshot embedded in the report draft (so old
+  // reports keep their original brand), fall back to current center branding.
+  const branding = draft.branding || report.center_branding || null;
+
   return (
     <div className="max-w-2xl mx-auto px-5 py-8 space-y-10">
       {/* Cover */}
       <header className="border-b border-[#C8B88A]/40 pb-8">
+        {branding && (
+          <WhitelabelHeader
+            centerName={report.center_name}
+            branding={branding}
+            period={periodLabel}
+            className="mb-5"
+          />
+        )}
         <div className="flex items-center gap-2 text-[10px] tracking-[0.3em] text-[#C8B88A] uppercase mb-5">
           <span className="w-6 h-px bg-[#C8B88A]" /> Monthly Parent Report
         </div>

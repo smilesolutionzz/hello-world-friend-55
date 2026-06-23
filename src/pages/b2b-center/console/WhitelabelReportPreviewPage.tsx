@@ -80,7 +80,7 @@ export default function WhitelabelReportPreviewPage() {
         })
         .eq("id", centerId);
       if (error) throw error;
-      toast({ title: "브랜딩이 저장됐어요", description: "부모 월간 리포트가 이 명의·색상으로 발행됩니다." });
+      toast({ title: "브랜딩이 저장됐어요", description: "다음에 발행/재발행되는 부모 월간 리포트부터 이 명의·색상으로 자동 적용됩니다. 기존 발행 리포트는 그대로 유지됩니다." });
     } catch (e: any) {
       toast({ title: "저장 실패", description: e?.message ?? String(e), variant: "destructive" });
     } finally {
@@ -114,6 +114,7 @@ export default function WhitelabelReportPreviewPage() {
           <h1 className="text-2xl font-semibold">부모 리포트 — 화이트라벨 미리보기</h1>
           <p className="text-xs text-neutral-500 mt-1">
             기관 로고·명의·강조색을 설정해 우리 기관 명의의 PDF 샘플을 즉시 만들어보세요.
+            저장하면 <b>다음 발행되는 부모 월간 리포트부터 자동 적용</b>됩니다.
             실제 발행은 <b>부모 월간 리포트</b> 페이지에서 진행합니다.
           </p>
         </div>

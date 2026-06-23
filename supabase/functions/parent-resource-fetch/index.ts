@@ -86,13 +86,15 @@ Deno.serve(async (req) => {
     }
 
     let centerName: string | null = null;
+    let centerBranding: any = null;
     if (report.center_id) {
       const { data: center } = await admin
         .from("center_organizations")
-        .select("name")
+        .select("name, branding")
         .eq("id", report.center_id)
         .maybeSingle();
       centerName = (center as any)?.name || null;
+      centerBranding = (center as any)?.branding ?? null;
     }
 
     return new Response(
@@ -111,6 +113,7 @@ Deno.serve(async (req) => {
         resource_type: link.resource_type,
         child_name: childName,
         center_name: centerName,
+        center_branding: centerBranding,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );

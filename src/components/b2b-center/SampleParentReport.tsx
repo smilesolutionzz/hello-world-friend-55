@@ -3,6 +3,7 @@ import { X, Download, Printer, Sparkles, TrendingUp, Heart, Target, MessageCircl
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import WhitelabelHeader from "@/components/b2b-center/WhitelabelHeader";
 
 interface Props {
   open: boolean;
@@ -116,16 +117,17 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
           .eq("period_start", periodStart)
           .maybeSingle();
         const draft: any = data?.ai_draft_json;
-        // Resolve real center name (draft.center_name preferred; fallback to org lookup)
+        // Branding priority: draft snapshot > current org branding
         let resolvedCenterName = draft?.center_name as string | undefined;
-        if (!resolvedCenterName && data?.center_id) {
+        if (data?.center_id) {
           const { data: org } = await supabase
             .from("center_organizations")
             .select("name, branding")
             .eq("id", data.center_id)
             .maybeSingle();
-          resolvedCenterName = org?.name ?? "";
-          if (!cancelled && org?.branding) setBranding(org.branding);
+          if (!resolvedCenterName) resolvedCenterName = org?.name ?? "";
+          const eff = draft?.branding || org?.branding;
+          if (!cancelled && eff) setBranding(eff);
         }
         if (!cancelled && resolvedCenterName) setCenterName(resolvedCenterName);
         if (!cancelled && draft && draft.schema === "monthly_v1") {
@@ -218,28 +220,12 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.cover && (
             <header className="border-b border-[#C8B88A]/40 pb-10">
-              {branding && (branding.c1 || branding.logoText) && (
-                <div
-                  className="flex items-center justify-between rounded-2xl px-5 py-3 mb-6 text-white"
-                  style={{ background: `linear-gradient(135deg, ${branding.c1 || "#0F172A"}, ${branding.c2 || "#1E293B"})` }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-sm"
-                      style={{ background: branding.logoBg || "#FFFFFF", color: branding.logoFg || "#0F172A" }}
-                    >
-                      {branding.logoText || (centerName?.[0] ?? "·")}
-                    </div>
-                    <div>
-                      <div className="text-sm font-bold leading-tight">{centerName || "우리 기관"}</div>
-                      {branding.tagline && <div className="text-[11px] opacity-90">{branding.tagline}</div>}
-                    </div>
-                  </div>
-                  {branding.therapist && (
-                    <div className="text-[11px] opacity-90 text-right">발신<br /><b className="text-xs">{branding.therapist}</b></div>
-                  )}
-                </div>
-              )}
+              <WhitelabelHeader
+                centerName={centerName}
+                branding={branding}
+                period={period}
+                className="mb-6"
+              />
               <div className="flex items-center gap-2 text-[11px] tracking-[0.3em] text-[#C8B88A] uppercase mb-6">
                 <span className="w-8 h-px bg-[#C8B88A]" /> Monthly Parent Report
               </div>

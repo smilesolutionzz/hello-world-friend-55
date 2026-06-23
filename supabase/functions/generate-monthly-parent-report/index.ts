@@ -77,13 +77,14 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "client_not_found" }), { status: 404, headers: { ...cors, "Content-Type": "application/json" } });
     }
 
-    // 1b) Center org (real name)
+    // 1b) Center org (real name + whitelabel branding snapshot)
     const { data: org } = await admin
       .from("center_organizations")
-      .select("id, name")
+      .select("id, name, branding")
       .eq("id", centerId)
       .maybeSingle();
     const centerName = org?.name || "발달치료센터";
+    const centerBranding = (org as any)?.branding ?? null;
 
 
     // 2) Scheduled sessions in month
@@ -323,6 +324,9 @@ JSON만 출력. 다른 텍스트·코드펜스 금지.`;
     try { draft = JSON.parse(aiJson.choices?.[0]?.message?.content ?? "{}"); } catch { draft = {}; }
     draft.schema = "monthly_v1";
     draft.center_name = centerName;
+    // Snapshot whitelabel branding into the draft so historical reports keep their
+    // brand even if the center later changes the branding settings.
+    if (centerBranding) draft.branding = centerBranding;
     if (!draft.stats || typeof draft.stats !== "object") draft.stats = {};
     draft.stats.therapist = primaryTherapist || draft.stats.therapist || "담당 치료사";
     if (areaList.length) draft.stats.areas = areaList.join(", ");

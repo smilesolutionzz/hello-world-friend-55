@@ -165,6 +165,7 @@ export default function ParentResourceViewPage() {
             ...r,
             client_name: data.child_name || "이용자",
             center_name: data.center_name || m.center_name || null,
+            center_branding: (draft as any)?.branding || data.center_branding || null,
             period_yyyymm: r.period_start?.slice(0, 7) ?? null,
             ai_summary: null,
             edited_html: null,

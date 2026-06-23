@@ -113,6 +113,7 @@ Deno.serve(async (req) => {
         resource_type: link.resource_type,
         child_name: childName,
         center_name: centerName,
+        center_branding: centerBranding,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );

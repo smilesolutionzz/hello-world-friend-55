@@ -80,7 +80,7 @@ export default function WhitelabelReportPreviewPage() {
         })
         .eq("id", centerId);
       if (error) throw error;
-      toast({ title: "브랜딩이 저장됐어요", description: "부모 월간 리포트가 이 명의·색상으로 발행됩니다." });
+      toast({ title: "브랜딩이 저장됐어요", description: "다음에 발행/재발행되는 부모 월간 리포트부터 이 명의·색상으로 자동 적용됩니다. 기존 발행 리포트는 그대로 유지됩니다." });
     } catch (e: any) {
       toast({ title: "저장 실패", description: e?.message ?? String(e), variant: "destructive" });
     } finally {

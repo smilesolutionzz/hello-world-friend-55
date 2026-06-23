@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Sparkles, TrendingUp, Calendar, Award, ChevronRight } from "lucide-react";
+import WhitelabelHeader from "@/components/b2b-center/WhitelabelHeader";
 
 interface ReportRow {
   id: string;

@@ -49,6 +49,21 @@ export default function ParentReportsPage() {
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [centerId, demo]);
 
+  // 실시간 자동 업데이트: 월간 리포트 테이블 변경 즉시 반영
+  useEffect(() => {
+    if (demo || !centerId) return;
+    const channel = supabase
+      .channel(`parent-reports-${centerId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "center_parent_reports", filter: `center_id=eq.${centerId}` },
+        () => { load(); },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+    // eslint-disable-next-line
+  }, [centerId, demo]);
+
   const generateBatch = async () => {
     if (demo) { toast({ title: "데모 모드에서는 생성되지 않아요" }); return; }
     const [y, m] = period.split("-").map(Number);

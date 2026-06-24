@@ -275,9 +275,15 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
             </header>
           )}
 
+          {tpl.intro && (
+            <div className="bg-[#FAF6E8] border border-[#C8B88A]/30 rounded-2xl px-6 py-4 text-sm text-neutral-700 whitespace-pre-wrap leading-relaxed">
+              {tpl.intro}
+            </div>
+          )}
+
           {S.summary && (
             <section>
-              <SectionLabel num="01" title="이번 달 한눈에" />
+              <SectionLabel num="01" title={titleOf("summary", "이번 달 한눈에")} />
               <div className="bg-white rounded-3xl p-8 border border-neutral-200">
                 <Editable as="p" className="text-neutral-800 leading-relaxed text-[15px] whitespace-pre-wrap" editable={editMode}
                   value={data.summary} onChange={(v) => update({ summary: v })} />

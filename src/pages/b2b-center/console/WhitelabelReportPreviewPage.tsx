@@ -39,6 +39,8 @@ export default function WhitelabelReportPreviewPage() {
   const [childName, setChildName] = useState("지호 (만 4세 7개월)");
   const [period, setPeriod] = useState("2026년 5월");
   const [busy, setBusy] = useState(false);
+  const [template, setTemplate] = useState<ReportTemplate>(DEFAULT_TEMPLATE);
+  const [tplTab, setTplTab] = useState<"monthly" | "weekly">("monthly");
 
   const applyPreset = (p: typeof PRESETS[number]) => {
     setC1(p.c1); setC2(p.c2); setLogoBg(p.logoBg); setLogoFg(p.logoFg);

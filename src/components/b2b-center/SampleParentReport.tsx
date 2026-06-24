@@ -293,7 +293,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.domains && (
             <section>
-              <SectionLabel num="02" title="영역별 발달 흐름" />
+              <SectionLabel num="02" title={titleOf("domains", "영역별 발달 흐름")} />
               <div className="space-y-3">
                 {data.domains.map((row, i) => (
                   <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5 flex items-center gap-5">
@@ -323,7 +323,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.highlights && (
             <section>
-              <SectionLabel num="03" title="이번 달 빛났던 순간" />
+              <SectionLabel num="03" title={titleOf("highlights", "이번 달 빛났던 순간")} />
               <div className="grid sm:grid-cols-2 gap-4">
                 {data.highlights.map((m, i) => (
                   <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5">
@@ -344,7 +344,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.note && (
             <section>
-              <SectionLabel num="04" title="담당 치료사 노트" />
+              <SectionLabel num="04" title={titleOf("note", "담당 치료사 노트")} />
               <div className="bg-gradient-to-br from-[#FAF6E8] to-white rounded-3xl p-8 border border-[#C8B88A]/40 relative">
                 <Editable as="p" className="text-neutral-800 leading-relaxed text-[15px] italic whitespace-pre-wrap" editable={editMode}
                   value={data.note} onChange={(v) => update({ note: v })} />
@@ -363,7 +363,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.practice && (
             <section>
-              <SectionLabel num="05" title="이번 달 가정 연습 제안" />
+              <SectionLabel num="05" title={titleOf("practice", "이번 달 가정 연습 제안")} />
               <div className="space-y-3">
                 {data.practice.map((p, i) => (
                   <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5 flex gap-4">
@@ -386,7 +386,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.goals && (
             <section>
-              <SectionLabel num="06" title="다음 달 목표" />
+              <SectionLabel num="06" title={titleOf("goals", "다음 달 목표")} />
               <div className="bg-neutral-900 text-white rounded-3xl p-8">
                 <div className="flex items-center gap-2 text-[11px] tracking-[0.3em] text-[#C8B88A] uppercase mb-4">
                   <Award className="w-3.5 h-3.5" /> Next Month Focus

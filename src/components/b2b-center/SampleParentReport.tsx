@@ -403,24 +403,30 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
         </div>
       </div>
 
-      {/* Share modal */}
-      {showShare && (
-        <div className="fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4" onClick={() => setShowShare(false)}>
-          <div className="bg-white rounded-2xl w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-neutral-900">보호자에게 리포트 보내기</h3>
-              <button onClick={() => setShowShare(false)} className="p-1 rounded-full hover:bg-neutral-100"><X className="w-4 h-4" /></button>
+      {/* Share with parent (phone-verified secure link) */}
+      {reportId ? (
+        <ShareWithParentDialog
+          open={showShare}
+          onClose={() => setShowShare(false)}
+          resourceType="parent_report"
+          resourceId={reportId}
+          childId={clientId}
+          centerId={reportCenterId}
+          defaultPhone={parentPhone}
+          childName={clientName}
+        />
+      ) : (
+        showShare && (
+          <div className="fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4" onClick={() => setShowShare(false)}>
+            <div className="bg-white rounded-2xl w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-neutral-900">먼저 리포트를 발행해주세요</h3>
+                <button onClick={() => setShowShare(false)} className="p-1 rounded-full hover:bg-neutral-100"><X className="w-4 h-4" /></button>
+              </div>
+              <p className="text-sm text-neutral-500">데모/미발행 상태에서는 보호자 공유 링크를 만들 수 없어요. 부모 리포트 목록에서 발행 후 다시 시도해주세요.</p>
             </div>
-            <p className="text-sm text-neutral-500 mb-4">선택한 섹션만 포함된 리포트 링크를 보호자에게 전달합니다.</p>
-            <div className="bg-neutral-50 rounded-lg p-3 text-xs text-neutral-600 break-all mb-4 border border-neutral-200">{shareUrl}</div>
-            <div className="grid grid-cols-3 gap-2">
-              <button onClick={copyLink} className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-xs text-neutral-700"><Copy className="w-4 h-4" /> 링크 복사</button>
-              <a href={`mailto:?subject=${encodeURIComponent(shareSubject)}&body=${encodeURIComponent(shareBody)}`} className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-xs text-neutral-700"><Mail className="w-4 h-4" /> 이메일</a>
-              <a href={`sms:?&body=${encodeURIComponent(shareBody)}`} className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-xs text-neutral-700"><MessageSquare className="w-4 h-4" /> 문자</a>
-            </div>
-            <p className="text-[11px] text-neutral-400 mt-4 leading-relaxed">기기에 설치된 메일/문자 앱으로 열립니다. 보호자 연락처가 등록되어 있으면 자동으로 채워집니다.</p>
           </div>
-        </div>
+        )
       )}
     </div>
   );

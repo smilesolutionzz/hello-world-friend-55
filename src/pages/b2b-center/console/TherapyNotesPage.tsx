@@ -115,6 +115,22 @@ export default function TherapyNotesPage() {
   const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); });
   const [viewingHistory, setViewingHistory] = useState<any>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [weeklyTpl, setWeeklyTpl] = useState<WeeklyTpl>(DEFAULT_TEMPLATE.weekly);
+
+  // Load per-center weekly template (from center_organizations.branding.template).
+  useEffect(() => {
+    if (!centerId || demo) { setWeeklyTpl(DEFAULT_TEMPLATE.weekly); return; }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("center_organizations")
+        .select("branding")
+        .eq("id", centerId)
+        .maybeSingle();
+      if (!cancelled) setWeeklyTpl(resolveTemplate((data as any)?.branding).weekly);
+    })();
+    return () => { cancelled = true; };
+  }, [centerId, demo]);
 
   const loadHistory = async () => {
     if (!selectedClient) { setHistory([]); return; }

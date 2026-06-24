@@ -383,7 +383,7 @@ export default function TherapyNotesPage() {
 
       {report && (
         <ShareWithParentDialog
-          open={shareOpen}
+          open={shareOpen && !viewingHistory}
           onClose={() => setShareOpen(false)}
           resourceType="therapy_note"
           resourceId={report.id}
@@ -419,6 +419,19 @@ export default function TherapyNotesPage() {
           clientName={clientName}
           report={viewingHistory}
           onClose={() => setViewingHistory(null)}
+          onShare={() => setShareOpen(true)}
+        />
+      )}
+      {viewingHistory && (
+        <ShareWithParentDialog
+          open={shareOpen && !!viewingHistory}
+          onClose={() => setShareOpen(false)}
+          resourceType="therapy_note"
+          resourceId={viewingHistory.id}
+          childId={selectedClient}
+          centerId={centerId}
+          defaultPhone={clients.find((c) => c.id === selectedClient)?.guardian_phone ?? ""}
+          childName={clientName}
         />
       )}
     </div>
@@ -503,7 +516,7 @@ function PublishCalendar({ clientName, history, month, onPrevMonth, onNextMonth,
   );
 }
 
-function HistoryViewer({ clientName, report, onClose }: any) {
+function HistoryViewer({ clientName, report, onClose, onShare }: any) {
   const d = report.ai_draft_json || {};
   const sections = draftToPlainSections(d);
   return (
@@ -532,6 +545,11 @@ function HistoryViewer({ clientName, report, onClose }: any) {
           <button onClick={() => downloadXLSX(clientName, report.week_key, d)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
             <FileSpreadsheet className="w-4 h-4" /> 엑셀
           </button>
+          {onShare && (
+            <button onClick={onShare} className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-neutral-900 text-white text-sm">
+              <Share2 className="w-4 h-4 text-[#C8B88A]" /> 부모 공유
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/d
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import WhitelabelHeader from "@/components/b2b-center/WhitelabelHeader";
+import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
 
 interface Props {
   open: boolean;

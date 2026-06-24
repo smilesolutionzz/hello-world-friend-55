@@ -383,7 +383,7 @@ export default function TherapyNotesPage() {
 
       {report && (
         <ShareWithParentDialog
-          open={shareOpen}
+          open={shareOpen && !viewingHistory}
           onClose={() => setShareOpen(false)}
           resourceType="therapy_note"
           resourceId={report.id}

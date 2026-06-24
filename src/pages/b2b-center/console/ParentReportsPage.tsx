@@ -120,6 +120,7 @@ export default function ParentReportsPage() {
           });
           if (error) throw error;
           ok++;
+          load(); // 한 명 끝날 때마다 즉시 화면 갱신
         } catch (e: any) {
           console.error("[monthly-report] client", cid, e);
           fail++;

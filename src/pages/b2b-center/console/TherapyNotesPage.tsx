@@ -88,8 +88,8 @@ function escapeHTML(s: string): string {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 }
 
-function downloadXLSX(clientName: string, weekKey: string, draft: any) {
-  const sections = draftToPlainSections(draft);
+function downloadXLSX(clientName: string, weekKey: string, draft: any, tpl?: WeeklyTpl) {
+  const sections = draftToPlainSections(draft, tpl);
   const rows = [["항목", "내용"], ...sections.map(s => [s.label, s.value])];
   const ws = XLSX.utils.aoa_to_sheet(rows);
   ws["!cols"] = [{ wch: 18 }, { wch: 80 }];

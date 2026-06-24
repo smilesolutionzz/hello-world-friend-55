@@ -139,10 +139,10 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
         if (clientId) {
           const { data: client } = await supabase
             .from("center_clients")
-            .select("parent_phone, guardian_phone, phone")
+            .select("guardian_phone")
             .eq("id", clientId)
             .maybeSingle();
-          const phone = (client as any)?.parent_phone || (client as any)?.guardian_phone || (client as any)?.phone || "";
+          const phone = (client as any)?.guardian_phone || "";
           if (!cancelled && phone) setParentPhone(phone);
         }
         if (!cancelled && resolvedCenterName) setCenterName(resolvedCenterName);

@@ -115,12 +115,14 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
       if (periodStart && clientId && clientId !== "demo" && clientId !== "c1") {
         const { data } = await supabase
           .from("center_parent_reports")
-          .select("ai_draft_json, center_id")
+          .select("id, ai_draft_json, center_id")
           .eq("client_id", clientId)
           .eq("period_type", "monthly")
           .eq("period_start", periodStart)
           .maybeSingle();
         const draft: any = data?.ai_draft_json;
+        if (!cancelled && data?.id) setReportId(data.id);
+        if (!cancelled && data?.center_id) setReportCenterId(data.center_id);
         // Branding priority: draft snapshot > current org branding
         let resolvedCenterName = draft?.center_name as string | undefined;
         if (data?.center_id) {
@@ -132,6 +134,16 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
           if (!resolvedCenterName) resolvedCenterName = org?.name ?? "";
           const eff = draft?.branding || org?.branding;
           if (!cancelled && eff) setBranding(eff);
+        }
+        // Try to prefill parent phone from client record
+        if (clientId) {
+          const { data: client } = await supabase
+            .from("center_clients")
+            .select("parent_phone, guardian_phone, phone")
+            .eq("id", clientId)
+            .maybeSingle();
+          const phone = (client as any)?.parent_phone || (client as any)?.guardian_phone || (client as any)?.phone || "";
+          if (!cancelled && phone) setParentPhone(phone);
         }
         if (!cancelled && resolvedCenterName) setCenterName(resolvedCenterName);
         if (!cancelled && draft && draft.schema === "monthly_v1") {

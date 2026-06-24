@@ -545,6 +545,11 @@ function HistoryViewer({ clientName, report, onClose, onShare }: any) {
           <button onClick={() => downloadXLSX(clientName, report.week_key, d)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
             <FileSpreadsheet className="w-4 h-4" /> 엑셀
           </button>
+          {onShare && (
+            <button onClick={onShare} className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-neutral-900 text-white text-sm">
+              <Share2 className="w-4 h-4 text-[#C8B88A]" /> 부모 공유
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -305,6 +305,47 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
   );
 }
 
+function TemplateSectionEditor({
+  keys,
+  value,
+  onChange,
+}: {
+  keys: ReadonlyArray<{ key: string; defaultTitle: string }>;
+  value: Record<string, { enabled: boolean; title: string }>;
+  onChange: (v: Record<string, { enabled: boolean; title: string }>) => void;
+}) {
+  return (
+    <div className="space-y-1.5">
+      {keys.map((s) => {
+        const cfg = value[s.key] ?? { enabled: true, title: s.defaultTitle };
+        return (
+          <div key={s.key} className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onChange({ ...value, [s.key]: { ...cfg, enabled: !cfg.enabled } })}
+              className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 ${
+                cfg.enabled ? "bg-[#C8B88A] border-[#C8B88A] text-white" : "bg-white border-neutral-300 text-transparent"
+              }`}
+              aria-label={cfg.enabled ? "섹션 끄기" : "섹션 켜기"}
+            >
+              <Check className="w-3 h-3" />
+            </button>
+            <input
+              value={cfg.title}
+              onChange={(e) => onChange({ ...value, [s.key]: { ...cfg, title: e.target.value } })}
+              placeholder={s.defaultTitle}
+              disabled={!cfg.enabled}
+              className={`flex-1 border border-neutral-200 rounded-lg px-3 py-1.5 text-xs ${
+                cfg.enabled ? "" : "bg-neutral-50 text-neutral-400 line-through"
+              }`}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function SampleReport(props: {
   centerName: string; tagline: string; therapist: string;
   logoText: string; logoBg: string; logoFg: string;

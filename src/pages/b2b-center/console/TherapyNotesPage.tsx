@@ -5,6 +5,14 @@ import { toast } from "@/hooks/use-toast";
 import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2, Download, FileSpreadsheet, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import * as XLSX from "xlsx";
 import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
+import {
+  resolveTemplate,
+  WEEKLY_SECTION_KEYS,
+  DEFAULT_TEMPLATE,
+  type ReportTemplate,
+} from "@/lib/b2bCenter/reportTemplate";
+
+type WeeklyTpl = ReportTemplate["weekly"];
 
 type Ctx = { centerId: string; demo?: boolean };
 

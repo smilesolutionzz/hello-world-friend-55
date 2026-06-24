@@ -419,6 +419,19 @@ export default function TherapyNotesPage() {
           clientName={clientName}
           report={viewingHistory}
           onClose={() => setViewingHistory(null)}
+          onShare={() => setShareOpen(true)}
+        />
+      )}
+      {viewingHistory && (
+        <ShareWithParentDialog
+          open={shareOpen && !!viewingHistory}
+          onClose={() => setShareOpen(false)}
+          resourceType="therapy_note"
+          resourceId={viewingHistory.id}
+          childId={selectedClient}
+          centerId={centerId}
+          defaultPhone={clients.find((c) => c.id === selectedClient)?.guardian_phone ?? ""}
+          childName={clientName}
         />
       )}
     </div>

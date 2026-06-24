@@ -70,6 +70,7 @@ export default function WhitelabelReportPreviewPage() {
       if (b.c2) setC2(b.c2);
       if (b.logoBg) setLogoBg(b.logoBg);
       if (b.logoFg) setLogoFg(b.logoFg);
+      setTemplate(resolveTemplate(b));
     })();
     return () => { cancelled = true; };
   }, [centerId, demo]);

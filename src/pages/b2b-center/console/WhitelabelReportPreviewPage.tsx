@@ -205,6 +205,61 @@ export default function WhitelabelReportPreviewPage() {
               실제 부모 리포트는 회기 데이터 기반으로 생성됩니다.
             </p>
           </div>
+
+          {/* === Report template editor === */}
+          <div className="bg-white rounded-2xl border border-neutral-200 p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
+                <FileText className="w-4 h-4 text-[#C8B88A]" /> 노트·리포트 템플릿
+              </div>
+              <div className="inline-flex rounded-full bg-neutral-100 p-0.5 text-[11px]">
+                {(["monthly", "weekly"] as const).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTplTab(t)}
+                    className={`px-3 py-1 rounded-full ${tplTab === t ? "bg-white shadow-sm font-semibold" : "text-neutral-500"}`}
+                  >
+                    {t === "monthly" ? "월간 리포트" : "주간 노트"}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <p className="text-[11px] text-neutral-500 leading-relaxed">
+              섹션을 켜고/끄거나 제목 문구를 우리 기관 톤으로 바꿔보세요. 보호자께 보내는 인사말·맺음말도 추가할 수 있어요.
+              저장 후 발행되는 노트부터 자동 적용됩니다.
+            </p>
+
+            <TemplateSectionEditor
+              keys={tplTab === "monthly" ? (MONTHLY_SECTION_KEYS as any) : (WEEKLY_SECTION_KEYS as any)}
+              value={template[tplTab].sections}
+              onChange={(sections) =>
+                setTemplate({ ...template, [tplTab]: { ...template[tplTab], sections } })
+              }
+            />
+
+            <div className="space-y-2 pt-2">
+              <label className="block">
+                <span className="text-[11px] text-neutral-500">보호자께 인사말 (선택)</span>
+                <textarea
+                  value={template[tplTab].intro}
+                  onChange={(e) => setTemplate({ ...template, [tplTab]: { ...template[tplTab], intro: e.target.value } })}
+                  rows={2}
+                  placeholder="예) 한 달간의 작은 변화들을 따뜻한 마음으로 정리했습니다."
+                  className="mt-1 w-full border border-neutral-200 rounded-lg px-3 py-2 text-sm"
+                />
+              </label>
+              <label className="block">
+                <span className="text-[11px] text-neutral-500">맺음말 (선택)</span>
+                <textarea
+                  value={template[tplTab].outro}
+                  onChange={(e) => setTemplate({ ...template, [tplTab]: { ...template[tplTab], outro: e.target.value } })}
+                  rows={2}
+                  placeholder="예) 궁금하신 점은 언제든 담임 선생님께 연락 주세요."
+                  className="mt-1 w-full border border-neutral-200 rounded-lg px-3 py-2 text-sm"
+                />
+              </label>
+            </div>
+          </div>
         </div>
 
         {/* === Live Preview === */}

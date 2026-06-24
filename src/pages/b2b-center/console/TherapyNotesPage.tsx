@@ -516,7 +516,7 @@ function PublishCalendar({ clientName, history, month, onPrevMonth, onNextMonth,
   );
 }
 
-function HistoryViewer({ clientName, report, onClose }: any) {
+function HistoryViewer({ clientName, report, onClose, onShare }: any) {
   const d = report.ai_draft_json || {};
   const sections = draftToPlainSections(d);
   return (

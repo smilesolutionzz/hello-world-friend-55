@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import WhitelabelHeader from "@/components/b2b-center/WhitelabelHeader";
 import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
+import { resolveTemplate, MONTHLY_SECTION_KEYS } from "@/lib/b2bCenter/reportTemplate";
 
 interface Props {
   open: boolean;

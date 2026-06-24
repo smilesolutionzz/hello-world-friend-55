@@ -195,7 +195,17 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
   if (!open) return null;
 
-  const S = data.sections;
+  // Per-center template (titles + enabled + intro/outro) snapshot from branding.
+  const tpl = useMemo(() => resolveTemplate(branding).monthly, [branding]);
+  // Effective visibility = per-report toggle (data.sections) AND template-level enabled.
+  const S = useMemo(() => {
+    const out: any = { ...data.sections };
+    for (const s of MONTHLY_SECTION_KEYS) {
+      out[s.key] = (data.sections as any)[s.key] !== false && tpl.sections[s.key]?.enabled !== false;
+    }
+    return out;
+  }, [data.sections, tpl]);
+  const titleOf = (k: string, fallback: string) => tpl.sections[k]?.title || fallback;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center overflow-y-auto p-4 sm:p-8">

@@ -410,6 +410,12 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
             </section>
           )}
 
+          {tpl.outro && (
+            <div className="bg-white border border-neutral-200 rounded-2xl px-6 py-4 text-sm text-neutral-700 whitespace-pre-wrap leading-relaxed">
+              {tpl.outro}
+            </div>
+          )}
+
           <footer className="pt-8 border-t border-neutral-200 text-[11px] text-neutral-500 leading-relaxed">
             <p className="mb-2"><strong className="text-neutral-700">고지사항.</strong> 본 리포트는 발달 코칭 및 의사결정 지원 목적의 관찰 기록이며, 의학적 진단이나 치료 처방이 아닙니다.</p>
             <div className="flex items-center justify-between mt-4">

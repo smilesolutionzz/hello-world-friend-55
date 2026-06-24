@@ -56,8 +56,8 @@ function draftToPlainSections(d: any, tpl?: WeeklyTpl): { label: string; value: 
   return sections;
 }
 
-function downloadPDF(clientName: string, weekKey: string, draft: any) {
-  const sections = draftToPlainSections(draft);
+function downloadPDF(clientName: string, weekKey: string, draft: any, tpl?: WeeklyTpl) {
+  const sections = draftToPlainSections(draft, tpl);
   const win = window.open("", "_blank", "width=820,height=900");
   if (!win) { alert("팝업이 차단되었습니다. 팝업을 허용해주세요."); return; }
   const html = `<!doctype html><html><head><meta charset="utf-8"><title>치료노트 ${clientName} ${weekKey}</title>

@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import WhitelabelHeader from "@/components/b2b-center/WhitelabelHeader";
 import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
+import { resolveTemplate, MONTHLY_SECTION_KEYS } from "@/lib/b2bCenter/reportTemplate";
 
 interface Props {
   open: boolean;
@@ -194,7 +195,17 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
   if (!open) return null;
 
-  const S = data.sections;
+  // Per-center template (titles + enabled + intro/outro) snapshot from branding.
+  const tpl = useMemo(() => resolveTemplate(branding).monthly, [branding]);
+  // Effective visibility = per-report toggle (data.sections) AND template-level enabled.
+  const S = useMemo(() => {
+    const out: any = { ...data.sections };
+    for (const s of MONTHLY_SECTION_KEYS) {
+      out[s.key] = (data.sections as any)[s.key] !== false && tpl.sections[s.key]?.enabled !== false;
+    }
+    return out;
+  }, [data.sections, tpl]);
+  const titleOf = (k: string, fallback: string) => tpl.sections[k]?.title || fallback;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center overflow-y-auto p-4 sm:p-8">
@@ -264,9 +275,15 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
             </header>
           )}
 
+          {tpl.intro && (
+            <div className="bg-[#FAF6E8] border border-[#C8B88A]/30 rounded-2xl px-6 py-4 text-sm text-neutral-700 whitespace-pre-wrap leading-relaxed">
+              {tpl.intro}
+            </div>
+          )}
+
           {S.summary && (
             <section>
-              <SectionLabel num="01" title="이번 달 한눈에" />
+              <SectionLabel num="01" title={titleOf("summary", "이번 달 한눈에")} />
               <div className="bg-white rounded-3xl p-8 border border-neutral-200">
                 <Editable as="p" className="text-neutral-800 leading-relaxed text-[15px] whitespace-pre-wrap" editable={editMode}
                   value={data.summary} onChange={(v) => update({ summary: v })} />
@@ -276,7 +293,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.domains && (
             <section>
-              <SectionLabel num="02" title="영역별 발달 흐름" />
+              <SectionLabel num="02" title={titleOf("domains", "영역별 발달 흐름")} />
               <div className="space-y-3">
                 {data.domains.map((row, i) => (
                   <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5 flex items-center gap-5">
@@ -306,7 +323,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.highlights && (
             <section>
-              <SectionLabel num="03" title="이번 달 빛났던 순간" />
+              <SectionLabel num="03" title={titleOf("highlights", "이번 달 빛났던 순간")} />
               <div className="grid sm:grid-cols-2 gap-4">
                 {data.highlights.map((m, i) => (
                   <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5">
@@ -327,7 +344,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.note && (
             <section>
-              <SectionLabel num="04" title="담당 치료사 노트" />
+              <SectionLabel num="04" title={titleOf("note", "담당 치료사 노트")} />
               <div className="bg-gradient-to-br from-[#FAF6E8] to-white rounded-3xl p-8 border border-[#C8B88A]/40 relative">
                 <Editable as="p" className="text-neutral-800 leading-relaxed text-[15px] italic whitespace-pre-wrap" editable={editMode}
                   value={data.note} onChange={(v) => update({ note: v })} />
@@ -346,7 +363,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.practice && (
             <section>
-              <SectionLabel num="05" title="이번 달 가정 연습 제안" />
+              <SectionLabel num="05" title={titleOf("practice", "이번 달 가정 연습 제안")} />
               <div className="space-y-3">
                 {data.practice.map((p, i) => (
                   <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5 flex gap-4">
@@ -369,7 +386,7 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
 
           {S.goals && (
             <section>
-              <SectionLabel num="06" title="다음 달 목표" />
+              <SectionLabel num="06" title={titleOf("goals", "다음 달 목표")} />
               <div className="bg-neutral-900 text-white rounded-3xl p-8">
                 <div className="flex items-center gap-2 text-[11px] tracking-[0.3em] text-[#C8B88A] uppercase mb-4">
                   <Award className="w-3.5 h-3.5" /> Next Month Focus
@@ -391,6 +408,12 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
                 </div>
               </div>
             </section>
+          )}
+
+          {tpl.outro && (
+            <div className="bg-white border border-neutral-200 rounded-2xl px-6 py-4 text-sm text-neutral-700 whitespace-pre-wrap leading-relaxed">
+              {tpl.outro}
+            </div>
           )}
 
           <footer className="pt-8 border-t border-neutral-200 text-[11px] text-neutral-500 leading-relaxed">

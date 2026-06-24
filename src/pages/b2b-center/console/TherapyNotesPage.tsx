@@ -5,6 +5,14 @@ import { toast } from "@/hooks/use-toast";
 import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2, Download, FileSpreadsheet, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import * as XLSX from "xlsx";
 import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
+import {
+  resolveTemplate,
+  WEEKLY_SECTION_KEYS,
+  DEFAULT_TEMPLATE,
+  type ReportTemplate,
+} from "@/lib/b2bCenter/reportTemplate";
+
+type WeeklyTpl = ReportTemplate["weekly"];
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -27,21 +35,29 @@ function fileToBase64(file: File): Promise<{ b64: string; mime: string }> {
   });
 }
 
-function draftToPlainSections(d: any): { label: string; value: string }[] {
+function draftToPlainSections(d: any, tpl?: WeeklyTpl): { label: string; value: string }[] {
   const J = (v: any) => Array.isArray(v) ? v.filter(Boolean).join("\n• ") : (v ?? "");
-  return [
-    { label: "제목", value: d?.title ?? "" },
-    { label: "보호자께 인사", value: d?.greeting ?? "" },
-    { label: "이번 주 하이라이트", value: Array.isArray(d?.highlights) && d.highlights.length ? "• " + J(d.highlights) : "" },
-    { label: "이번 주 활동 요약", value: d?.activities_summary ?? "" },
-    { label: "관찰된 성장", value: Array.isArray(d?.growth) && d.growth.length ? "• " + J(d.growth) : "" },
-    { label: "가정에서 해볼 활동", value: Array.isArray(d?.home_tips) && d.home_tips.length ? "• " + J(d.home_tips) : "" },
-    { label: "다음 주 집중 방향", value: d?.next_week_focus ?? "" },
+  const t = tpl ?? DEFAULT_TEMPLATE.weekly;
+  const titleOf = (k: string, fb: string) => t.sections[k]?.title || fb;
+  const enabled = (k: string) => t.sections[k]?.enabled !== false;
+  const raw: { key: string; label: string; value: string }[] = [
+    { key: "_title", label: "제목", value: d?.title ?? "" },
+    { key: "greeting", label: titleOf("greeting", "보호자께 인사"), value: d?.greeting ?? "" },
+    { key: "highlights", label: titleOf("highlights", "이번 주 하이라이트"), value: Array.isArray(d?.highlights) && d.highlights.length ? "• " + J(d.highlights) : "" },
+    { key: "activities_summary", label: titleOf("activities_summary", "이번 주 활동 요약"), value: d?.activities_summary ?? "" },
+    { key: "growth", label: titleOf("growth", "관찰된 성장"), value: Array.isArray(d?.growth) && d.growth.length ? "• " + J(d.growth) : "" },
+    { key: "home_tips", label: titleOf("home_tips", "가정에서 해볼 활동"), value: Array.isArray(d?.home_tips) && d.home_tips.length ? "• " + J(d.home_tips) : "" },
+    { key: "next_week_focus", label: titleOf("next_week_focus", "다음 주 집중 방향"), value: d?.next_week_focus ?? "" },
   ];
+  const filtered = raw.filter((r) => r.key === "_title" || enabled(r.key));
+  const sections = filtered.map(({ label, value }) => ({ label, value }));
+  if (t.intro) sections.splice(1, 0, { label: "보호자께", value: t.intro });
+  if (t.outro) sections.push({ label: "맺음말", value: t.outro });
+  return sections;
 }
 
-function downloadPDF(clientName: string, weekKey: string, draft: any) {
-  const sections = draftToPlainSections(draft);
+function downloadPDF(clientName: string, weekKey: string, draft: any, tpl?: WeeklyTpl) {
+  const sections = draftToPlainSections(draft, tpl);
   const win = window.open("", "_blank", "width=820,height=900");
   if (!win) { alert("팝업이 차단되었습니다. 팝업을 허용해주세요."); return; }
   const html = `<!doctype html><html><head><meta charset="utf-8"><title>치료노트 ${clientName} ${weekKey}</title>
@@ -72,8 +88,8 @@ function escapeHTML(s: string): string {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 }
 
-function downloadXLSX(clientName: string, weekKey: string, draft: any) {
-  const sections = draftToPlainSections(draft);
+function downloadXLSX(clientName: string, weekKey: string, draft: any, tpl?: WeeklyTpl) {
+  const sections = draftToPlainSections(draft, tpl);
   const rows = [["항목", "내용"], ...sections.map(s => [s.label, s.value])];
   const ws = XLSX.utils.aoa_to_sheet(rows);
   ws["!cols"] = [{ wch: 18 }, { wch: 80 }];
@@ -99,6 +115,22 @@ export default function TherapyNotesPage() {
   const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); });
   const [viewingHistory, setViewingHistory] = useState<any>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [weeklyTpl, setWeeklyTpl] = useState<WeeklyTpl>(DEFAULT_TEMPLATE.weekly);
+
+  // Load per-center weekly template (from center_organizations.branding.template).
+  useEffect(() => {
+    if (!centerId || demo) { setWeeklyTpl(DEFAULT_TEMPLATE.weekly); return; }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("center_organizations")
+        .select("branding")
+        .eq("id", centerId)
+        .maybeSingle();
+      if (!cancelled) setWeeklyTpl(resolveTemplate((data as any)?.branding).weekly);
+    })();
+    return () => { cancelled = true; };
+  }, [centerId, demo]);
 
   const loadHistory = async () => {
     if (!selectedClient) { setHistory([]); return; }
@@ -361,10 +393,10 @@ export default function TherapyNotesPage() {
           <EditableField label="다음 주 집중 방향" value={editedDraft.next_week_focus} onChange={(v) => setEditedDraft({ ...editedDraft, next_week_focus: v })} multiline onRewrite={(inst) => rewriteField("next_week_focus", inst)} rewriting={rewriting === "next_week_focus"} />
 
           <div className="flex flex-wrap items-center justify-end gap-2 pt-4 border-t border-neutral-100">
-            <button onClick={() => downloadPDF(clientName, weekKey, editedDraft)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+            <button onClick={() => downloadPDF(clientName, weekKey, editedDraft, weeklyTpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
               <Download className="w-4 h-4" /> PDF 다운로드
             </button>
-            <button onClick={() => downloadXLSX(clientName, weekKey, editedDraft)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+            <button onClick={() => downloadXLSX(clientName, weekKey, editedDraft, weeklyTpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
               <FileSpreadsheet className="w-4 h-4" /> 엑셀 다운로드
             </button>
             <button onClick={saveDraft} className="px-4 py-2 rounded-full border border-neutral-200 text-sm">초안 저장</button>
@@ -420,6 +452,7 @@ export default function TherapyNotesPage() {
           report={viewingHistory}
           onClose={() => setViewingHistory(null)}
           onShare={() => setShareOpen(true)}
+          tpl={weeklyTpl}
         />
       )}
       {viewingHistory && (
@@ -516,9 +549,9 @@ function PublishCalendar({ clientName, history, month, onPrevMonth, onNextMonth,
   );
 }
 
-function HistoryViewer({ clientName, report, onClose, onShare }: any) {
+function HistoryViewer({ clientName, report, onClose, onShare, tpl }: any) {
   const d = report.ai_draft_json || {};
-  const sections = draftToPlainSections(d);
+  const sections = draftToPlainSections(d, tpl);
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
@@ -539,10 +572,10 @@ function HistoryViewer({ clientName, report, onClose, onShare }: any) {
           ))}
         </div>
         <div className="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-neutral-100">
-          <button onClick={() => downloadPDF(clientName, report.week_key, d)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+          <button onClick={() => downloadPDF(clientName, report.week_key, d, tpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
             <Download className="w-4 h-4" /> PDF
           </button>
-          <button onClick={() => downloadXLSX(clientName, report.week_key, d)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+          <button onClick={() => downloadXLSX(clientName, report.week_key, d, tpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
             <FileSpreadsheet className="w-4 h-4" /> 엑셀
           </button>
           {onShare && (

@@ -1,9 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Download, Palette, Sparkles, Building2, User2, Eye, Save } from "lucide-react";
+import { Download, Palette, Sparkles, Building2, User2, Eye, Save, FileText, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import html2pdf from "html2pdf.js";
+import {
+  DEFAULT_TEMPLATE,
+  MONTHLY_SECTION_KEYS,
+  WEEKLY_SECTION_KEYS,
+  resolveTemplate,
+  type ReportTemplate,
+} from "@/lib/b2bCenter/reportTemplate";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -32,6 +39,8 @@ export default function WhitelabelReportPreviewPage() {
   const [childName, setChildName] = useState("지호 (만 4세 7개월)");
   const [period, setPeriod] = useState("2026년 5월");
   const [busy, setBusy] = useState(false);
+  const [template, setTemplate] = useState<ReportTemplate>(DEFAULT_TEMPLATE);
+  const [tplTab, setTplTab] = useState<"monthly" | "weekly">("monthly");
 
   const applyPreset = (p: typeof PRESETS[number]) => {
     setC1(p.c1); setC2(p.c2); setLogoBg(p.logoBg); setLogoFg(p.logoFg);
@@ -61,6 +70,7 @@ export default function WhitelabelReportPreviewPage() {
       if (b.c2) setC2(b.c2);
       if (b.logoBg) setLogoBg(b.logoBg);
       if (b.logoFg) setLogoFg(b.logoFg);
+      setTemplate(resolveTemplate(b));
     })();
     return () => { cancelled = true; };
   }, [centerId, demo]);
@@ -76,11 +86,11 @@ export default function WhitelabelReportPreviewPage() {
           name: centerName,
           phone,
           address,
-          branding: { tagline, therapist, logoText, c1, c2, logoBg, logoFg },
+          branding: { tagline, therapist, logoText, c1, c2, logoBg, logoFg, template },
         })
         .eq("id", centerId);
       if (error) throw error;
-      toast({ title: "브랜딩이 저장됐어요", description: "다음에 발행/재발행되는 부모 월간 리포트부터 이 명의·색상으로 자동 적용됩니다. 기존 발행 리포트는 그대로 유지됩니다." });
+      toast({ title: "브랜딩·템플릿이 저장됐어요", description: "다음 발행/재발행되는 주간 노트와 부모 월간 리포트부터 새 템플릿이 자동 적용됩니다. 이미 발행된 리포트는 그대로 유지됩니다." });
     } catch (e: any) {
       toast({ title: "저장 실패", description: e?.message ?? String(e), variant: "destructive" });
     } finally {
@@ -195,6 +205,61 @@ export default function WhitelabelReportPreviewPage() {
               실제 부모 리포트는 회기 데이터 기반으로 생성됩니다.
             </p>
           </div>
+
+          {/* === Report template editor === */}
+          <div className="bg-white rounded-2xl border border-neutral-200 p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
+                <FileText className="w-4 h-4 text-[#C8B88A]" /> 노트·리포트 템플릿
+              </div>
+              <div className="inline-flex rounded-full bg-neutral-100 p-0.5 text-[11px]">
+                {(["monthly", "weekly"] as const).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTplTab(t)}
+                    className={`px-3 py-1 rounded-full ${tplTab === t ? "bg-white shadow-sm font-semibold" : "text-neutral-500"}`}
+                  >
+                    {t === "monthly" ? "월간 리포트" : "주간 노트"}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <p className="text-[11px] text-neutral-500 leading-relaxed">
+              섹션을 켜고/끄거나 제목 문구를 우리 기관 톤으로 바꿔보세요. 보호자께 보내는 인사말·맺음말도 추가할 수 있어요.
+              저장 후 발행되는 노트부터 자동 적용됩니다.
+            </p>
+
+            <TemplateSectionEditor
+              keys={tplTab === "monthly" ? (MONTHLY_SECTION_KEYS as any) : (WEEKLY_SECTION_KEYS as any)}
+              value={template[tplTab].sections}
+              onChange={(sections) =>
+                setTemplate({ ...template, [tplTab]: { ...template[tplTab], sections } })
+              }
+            />
+
+            <div className="space-y-2 pt-2">
+              <label className="block">
+                <span className="text-[11px] text-neutral-500">보호자께 인사말 (선택)</span>
+                <textarea
+                  value={template[tplTab].intro}
+                  onChange={(e) => setTemplate({ ...template, [tplTab]: { ...template[tplTab], intro: e.target.value } })}
+                  rows={2}
+                  placeholder="예) 한 달간의 작은 변화들을 따뜻한 마음으로 정리했습니다."
+                  className="mt-1 w-full border border-neutral-200 rounded-lg px-3 py-2 text-sm"
+                />
+              </label>
+              <label className="block">
+                <span className="text-[11px] text-neutral-500">맺음말 (선택)</span>
+                <textarea
+                  value={template[tplTab].outro}
+                  onChange={(e) => setTemplate({ ...template, [tplTab]: { ...template[tplTab], outro: e.target.value } })}
+                  rows={2}
+                  placeholder="예) 궁금하신 점은 언제든 담임 선생님께 연락 주세요."
+                  className="mt-1 w-full border border-neutral-200 rounded-lg px-3 py-2 text-sm"
+                />
+              </label>
+            </div>
+          </div>
         </div>
 
         {/* === Live Preview === */}
@@ -237,6 +302,47 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
         <input value={value} onChange={(e) => onChange(e.target.value)} className="flex-1 border border-neutral-200 rounded-lg px-2 py-1.5 text-xs font-mono" />
       </div>
     </label>
+  );
+}
+
+function TemplateSectionEditor({
+  keys,
+  value,
+  onChange,
+}: {
+  keys: ReadonlyArray<{ key: string; defaultTitle: string }>;
+  value: Record<string, { enabled: boolean; title: string }>;
+  onChange: (v: Record<string, { enabled: boolean; title: string }>) => void;
+}) {
+  return (
+    <div className="space-y-1.5">
+      {keys.map((s) => {
+        const cfg = value[s.key] ?? { enabled: true, title: s.defaultTitle };
+        return (
+          <div key={s.key} className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onChange({ ...value, [s.key]: { ...cfg, enabled: !cfg.enabled } })}
+              className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 ${
+                cfg.enabled ? "bg-[#C8B88A] border-[#C8B88A] text-white" : "bg-white border-neutral-300 text-transparent"
+              }`}
+              aria-label={cfg.enabled ? "섹션 끄기" : "섹션 켜기"}
+            >
+              <Check className="w-3 h-3" />
+            </button>
+            <input
+              value={cfg.title}
+              onChange={(e) => onChange({ ...value, [s.key]: { ...cfg, title: e.target.value } })}
+              placeholder={s.defaultTitle}
+              disabled={!cfg.enabled}
+              className={`flex-1 border border-neutral-200 rounded-lg px-3 py-1.5 text-xs ${
+                cfg.enabled ? "" : "bg-neutral-50 text-neutral-400 line-through"
+              }`}
+            />
+          </div>
+        );
+      })}
+    </div>
   );
 }
 

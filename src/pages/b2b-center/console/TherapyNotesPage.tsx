@@ -393,10 +393,10 @@ export default function TherapyNotesPage() {
           <EditableField label="다음 주 집중 방향" value={editedDraft.next_week_focus} onChange={(v) => setEditedDraft({ ...editedDraft, next_week_focus: v })} multiline onRewrite={(inst) => rewriteField("next_week_focus", inst)} rewriting={rewriting === "next_week_focus"} />
 
           <div className="flex flex-wrap items-center justify-end gap-2 pt-4 border-t border-neutral-100">
-            <button onClick={() => downloadPDF(clientName, weekKey, editedDraft)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+            <button onClick={() => downloadPDF(clientName, weekKey, editedDraft, weeklyTpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
               <Download className="w-4 h-4" /> PDF 다운로드
             </button>
-            <button onClick={() => downloadXLSX(clientName, weekKey, editedDraft)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+            <button onClick={() => downloadXLSX(clientName, weekKey, editedDraft, weeklyTpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
               <FileSpreadsheet className="w-4 h-4" /> 엑셀 다운로드
             </button>
             <button onClick={saveDraft} className="px-4 py-2 rounded-full border border-neutral-200 text-sm">초안 저장</button>
@@ -548,9 +548,9 @@ function PublishCalendar({ clientName, history, month, onPrevMonth, onNextMonth,
   );
 }
 
-function HistoryViewer({ clientName, report, onClose, onShare }: any) {
+function HistoryViewer({ clientName, report, onClose, onShare, tpl }: any) {
   const d = report.ai_draft_json || {};
-  const sections = draftToPlainSections(d);
+  const sections = draftToPlainSections(d, tpl);
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
@@ -571,10 +571,10 @@ function HistoryViewer({ clientName, report, onClose, onShare }: any) {
           ))}
         </div>
         <div className="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-neutral-100">
-          <button onClick={() => downloadPDF(clientName, report.week_key, d)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+          <button onClick={() => downloadPDF(clientName, report.week_key, d, tpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
             <Download className="w-4 h-4" /> PDF
           </button>
-          <button onClick={() => downloadXLSX(clientName, report.week_key, d)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
+          <button onClick={() => downloadXLSX(clientName, report.week_key, d, tpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
             <FileSpreadsheet className="w-4 h-4" /> 엑셀
           </button>
           {onShare && (

@@ -35,17 +35,25 @@ function fileToBase64(file: File): Promise<{ b64: string; mime: string }> {
   });
 }
 
-function draftToPlainSections(d: any): { label: string; value: string }[] {
+function draftToPlainSections(d: any, tpl?: WeeklyTpl): { label: string; value: string }[] {
   const J = (v: any) => Array.isArray(v) ? v.filter(Boolean).join("\n• ") : (v ?? "");
-  return [
-    { label: "제목", value: d?.title ?? "" },
-    { label: "보호자께 인사", value: d?.greeting ?? "" },
-    { label: "이번 주 하이라이트", value: Array.isArray(d?.highlights) && d.highlights.length ? "• " + J(d.highlights) : "" },
-    { label: "이번 주 활동 요약", value: d?.activities_summary ?? "" },
-    { label: "관찰된 성장", value: Array.isArray(d?.growth) && d.growth.length ? "• " + J(d.growth) : "" },
-    { label: "가정에서 해볼 활동", value: Array.isArray(d?.home_tips) && d.home_tips.length ? "• " + J(d.home_tips) : "" },
-    { label: "다음 주 집중 방향", value: d?.next_week_focus ?? "" },
+  const t = tpl ?? DEFAULT_TEMPLATE.weekly;
+  const titleOf = (k: string, fb: string) => t.sections[k]?.title || fb;
+  const enabled = (k: string) => t.sections[k]?.enabled !== false;
+  const raw: { key: string; label: string; value: string }[] = [
+    { key: "_title", label: "제목", value: d?.title ?? "" },
+    { key: "greeting", label: titleOf("greeting", "보호자께 인사"), value: d?.greeting ?? "" },
+    { key: "highlights", label: titleOf("highlights", "이번 주 하이라이트"), value: Array.isArray(d?.highlights) && d.highlights.length ? "• " + J(d.highlights) : "" },
+    { key: "activities_summary", label: titleOf("activities_summary", "이번 주 활동 요약"), value: d?.activities_summary ?? "" },
+    { key: "growth", label: titleOf("growth", "관찰된 성장"), value: Array.isArray(d?.growth) && d.growth.length ? "• " + J(d.growth) : "" },
+    { key: "home_tips", label: titleOf("home_tips", "가정에서 해볼 활동"), value: Array.isArray(d?.home_tips) && d.home_tips.length ? "• " + J(d.home_tips) : "" },
+    { key: "next_week_focus", label: titleOf("next_week_focus", "다음 주 집중 방향"), value: d?.next_week_focus ?? "" },
   ];
+  const filtered = raw.filter((r) => r.key === "_title" || enabled(r.key));
+  const sections = filtered.map(({ label, value }) => ({ label, value }));
+  if (t.intro) sections.splice(1, 0, { label: "보호자께", value: t.intro });
+  if (t.outro) sections.push({ label: "맺음말", value: t.outro });
+  return sections;
 }
 
 function downloadPDF(clientName: string, weekKey: string, draft: any) {

@@ -452,6 +452,7 @@ export default function TherapyNotesPage() {
           report={viewingHistory}
           onClose={() => setViewingHistory(null)}
           onShare={() => setShareOpen(true)}
+          tpl={weeklyTpl}
         />
       )}
       {viewingHistory && (

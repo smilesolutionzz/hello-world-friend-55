@@ -49,6 +49,21 @@ export default function ParentReportsPage() {
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [centerId, demo]);
 
+  // 실시간 자동 업데이트: 월간 리포트 테이블 변경 즉시 반영
+  useEffect(() => {
+    if (demo || !centerId) return;
+    const channel = supabase
+      .channel(`parent-reports-${centerId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "center_parent_reports", filter: `center_id=eq.${centerId}` },
+        () => { load(); },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+    // eslint-disable-next-line
+  }, [centerId, demo]);
+
   const generateBatch = async () => {
     if (demo) { toast({ title: "데모 모드에서는 생성되지 않아요" }); return; }
     const [y, m] = period.split("-").map(Number);
@@ -105,6 +120,7 @@ export default function ParentReportsPage() {
           });
           if (error) throw error;
           ok++;
+          load(); // 한 명 끝날 때마다 즉시 화면 갱신
         } catch (e: any) {
           console.error("[monthly-report] client", cid, e);
           fail++;
@@ -151,6 +167,7 @@ export default function ParentReportsPage() {
           <button onClick={() => setSampleOpen({ clientId: "c1", name: "민준 (5세)", period: "2026년 4월", periodKey: "2026-04" })} className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-[#C8B88A] text-neutral-800 text-xs whitespace-nowrap hover:bg-[#FAF6E8]"><Eye className="w-3.5 h-3.5 text-[#C8B88A]" /> 샘플 리포트 보기</button>
           <a href="./parent-reports/whitelabel" className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-neutral-300 text-neutral-800 text-xs whitespace-nowrap hover:bg-neutral-50"><Sparkles className="w-3.5 h-3.5 text-[#C8B88A]" /> 화이트라벨 미리보기</a>
           <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-xs" />
+          <button onClick={load} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-neutral-200 text-neutral-700 text-xs hover:bg-neutral-50" title="새로고침"><RefreshCw className="w-3.5 h-3.5" /> 새로고침</button>
           <button onClick={generateBatch} className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-neutral-900 text-white text-xs whitespace-nowrap"><Sparkles className="w-3.5 h-3.5 text-[#C8B88A]" /> 누락된 이용자만 생성</button>
         </div>
       </div>

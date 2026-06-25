@@ -391,6 +391,7 @@ export default function ClientsPage() {
         open={registerOpen}
         centerId={centerId}
         demo={demo}
+        existingClients={rows}
         onClose={() => setRegisterOpen(false)}
         onCreated={load}
       />
@@ -400,9 +401,12 @@ export default function ClientsPage() {
         centerId={centerId}
         demo={demo}
         client={editClient}
+        existingClients={rows}
         onClose={() => setEditClient(null)}
         onCreated={load}
+        onDelete={editClient ? () => handleDelete(editClient) : undefined}
       />
+
 
 
       {inviteFor && (

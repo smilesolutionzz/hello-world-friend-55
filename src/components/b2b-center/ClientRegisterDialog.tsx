@@ -37,14 +37,20 @@ const STATUS_OPTS = [
 ] as const;
 
 const STATUS_TO_CODE: Record<string, string> = { 대기: "waiting", 등록: "enrolled", 종결: "terminated" };
+const STATUS_FROM_CODE: Record<string, "대기" | "등록" | "종결"> = {
+  waiting: "대기", enrolled: "등록", terminated: "종결",
+  대기: "대기", 등록: "등록", 종결: "종결",
+};
 
 interface Props {
   open: boolean;
   centerId: string;
   demo?: boolean;
+  client?: any | null; // when set, dialog is in edit mode
   onClose: () => void;
   onCreated?: () => void;
 }
+
 
 export default function ClientRegisterDialog({ open, centerId, demo, onClose, onCreated }: Props) {
   const { toast } = useToast();

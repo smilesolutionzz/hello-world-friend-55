@@ -637,111 +637,86 @@ function SampleWeeklyNote(props: {
   childName: string; period: string;
   template: PreviewTemplate;
 }) {
-  const { centerName, tagline, therapist, logoText, logoBg, logoFg, phone, address, headerGradient, accent, childName, period, template } = props;
+  const { centerName, therapist, phone, address, accent, childName, period, template } = props;
   const sec = (key: string) => template.sections[key];
   const on = (key: string) => sec(key)?.enabled !== false;
   const title = (key: string, fallback: string) => sec(key)?.title?.trim() || fallback;
 
-  const Block = ({ label, children }: { label: string; children: React.ReactNode }) => (
-    <div style={{ margin: "14px 0" }}>
-      <div style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", paddingBottom: 6, borderBottom: `2px solid ${accent}`, marginBottom: 8 }}>{label}</div>
-      <div style={{ color: "#334155" }}>{children}</div>
+  const Sec = ({ label, children }: { label: string; children: React.ReactNode }) => (
+    <div style={{ marginBottom: 22, pageBreakInside: "avoid" }}>
+      <div style={{ fontSize: 11, color: "#888", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.1em" }}>{label}</div>
+      <div style={{ whiteSpace: "pre-wrap", fontSize: 14, color: "#1a1a1a", lineHeight: 1.65 }}>{children}</div>
     </div>
   );
 
   return (
-    <>
-      {/* Brand header (재사용) */}
-      <div style={{ background: headerGradient, color: "#fff", padding: "14px 18px", borderRadius: 10, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: logoBg, color: logoFg, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14 }}>
-            {logoText || "·"}
-          </div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 15 }}>{centerName}</div>
-            <div style={{ fontSize: 11, opacity: 0.9 }}>{tagline}</div>
-          </div>
-        </div>
-        <div style={{ textAlign: "right", fontSize: 11, opacity: 0.9 }}>
-          {period} 주간 노트<br />발신: {therapist}
-        </div>
+    <div style={{ fontFamily: '-apple-system, "Pretendard Variable", "Apple SD Gothic Neo", sans-serif', color: "#1a1a1a", lineHeight: 1.65 }}>
+      <div style={{ color: accent, letterSpacing: "0.2em", fontSize: 11, fontWeight: 600 }}>WEEKLY THERAPY NOTE</div>
+      <h1 style={{ fontSize: 22, margin: "4px 0 6px", color: "#0f172a", letterSpacing: "-0.3px" }}>
+        {childName} 주간 치료노트
+      </h1>
+      <div style={{ color: "#666", fontSize: 12, marginBottom: 24 }}>
+        {centerName} · {period} · 담당 {therapist}
       </div>
 
-      <h1 style={{ fontSize: 20, margin: "0 0 6px", letterSpacing: "-0.3px", color: "#0f172a" }}>
-        {childName} 이번 주 회기 기록
-      </h1>
-      {template.intro ? (
-        <p style={{ color: "#475569", fontSize: 12, marginBottom: 16, whiteSpace: "pre-wrap" }}>{template.intro}</p>
-      ) : (
-        <p style={{ color: "#6b7280", fontSize: 12, marginBottom: 16 }}>
-          이번 주 회기에서 관찰한 활동·성장·다음 회기 방향을 정리했습니다.
-        </p>
+      {template.intro && (
+        <Sec label="보호자께">{template.intro}</Sec>
       )}
 
       {on("greeting") && (
-        <Block label={title("greeting", "보호자께 인사")}>
+        <Sec label={title("greeting", "보호자께 인사")}>
           한 주 동안 가정에서도 따뜻하게 응원해주셔서 감사합니다. 이번 주 회기에서 보인 작은 성장을 공유드려요.
-        </Block>
+        </Sec>
       )}
 
       {on("highlights") && (
-        <Block label={title("highlights", "이번 주 하이라이트")}>
-          <ul style={{ paddingLeft: 18, margin: 0 }}>
-            <li>먼저 인사를 건넨 첫 회기 ✨</li>
-            <li>5분 이상 집중하여 그림책 완독</li>
-            <li>차례 기다리기 성공 — 2회</li>
-          </ul>
-        </Block>
+        <Sec label={title("highlights", "이번 주 하이라이트")}>
+          • 먼저 인사를 건넨 첫 회기{"\n"}• 5분 이상 집중하여 그림책 완독{"\n"}• 차례 기다리기 성공 — 2회
+        </Sec>
       )}
 
       {on("activities_summary") && (
-        <Block label={title("activities_summary", "이번 주 활동 요약")}>
+        <Sec label={title("activities_summary", "이번 주 활동 요약")}>
           그림책 함께 읽기 · 감정 카드 분류 · 블록 협동 놀이. 총 3회기 진행.
-        </Block>
+        </Sec>
       )}
 
       {on("growth") && (
-        <Block label={title("growth", "관찰된 성장")}>
+        <Sec label={title("growth", "관찰된 성장")}>
           ‘도와줘’ 라는 표현을 자발적으로 사용했고, 갈등 상황에서 잠깐 멈추는 모습을 보였어요.
-        </Block>
+        </Sec>
       )}
 
       {on("home_tips") && (
-        <Block label={title("home_tips", "가정에서 해볼 활동")}>
+        <Sec label={title("home_tips", "가정에서 해볼 활동")}>
           잠자기 전 5분, 오늘 가장 즐거웠던 순간을 한 문장으로 이야기 나눠보세요.
-        </Block>
+        </Sec>
       )}
 
       {on("next_week_focus") && (
-        <Block label={title("next_week_focus", "다음 주 집중 방향")}>
+        <Sec label={title("next_week_focus", "다음 주 집중 방향")}>
           복합 감정(‘서운하지만 괜찮아’) 표현 연습 · 또래에게 먼저 제안하기.
-        </Block>
+        </Sec>
       )}
 
       {template.extras.map((e) => {
         if (!e.title.trim() && !e.body.trim()) return null;
         return (
-          <Block key={e.id} label={e.title || "추가 섹션"}>
-            <span style={{ whiteSpace: "pre-wrap" }}>{e.body}</span>
-          </Block>
+          <Sec key={e.id} label={e.title || "추가 섹션"}>{e.body}</Sec>
         );
       })}
 
       {template.outro && (
-        <p style={{ margin: "12px 0 0", color: "#475569", whiteSpace: "pre-wrap" }}>{template.outro}</p>
+        <Sec label="맺는 말">{template.outro}</Sec>
       )}
 
-      <div style={{ marginTop: 22, padding: "12px 14px", border: "1px dashed #cbd5e1", borderRadius: 12, display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5 }}>
-        <div>
-          <b>{centerName}</b> · 담당 {therapist}
-        </div>
-        <div style={{ textAlign: "right", color: "#6b7280" }}>{address} · {phone}</div>
+      <div style={{ marginTop: 30, paddingTop: 8, borderTop: "1px solid #eee", color: "#aaa", fontSize: 10 }}>
+        {centerName} · 담당 {therapist} · {address} · {phone}
       </div>
-
-      <div style={{ marginTop: 18, paddingTop: 10, borderTop: "1px solid #e5e7eb", color: "#9ca3af", fontSize: 10.5, textAlign: "center" }}>
-        Powered by AIHPRO · 주간 노트는 회기 관찰 기록이며 의료 진단을 대체하지 않습니다.
+      <div style={{ marginTop: 4, color: "#aaa", fontSize: 10 }}>
+        AIHPRO Center · 본 노트는 회기 관찰 기록이며 의료 진단을 대체하지 않습니다.
       </div>
-    </>
+    </div>
   );
 }
 

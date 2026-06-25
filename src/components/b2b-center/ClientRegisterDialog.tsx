@@ -47,12 +47,15 @@ interface Props {
   centerId: string;
   demo?: boolean;
   client?: any | null; // when set, dialog is in edit mode
+  existingClients?: any[]; // for duplicate detection
   onClose: () => void;
   onCreated?: () => void;
+  onDelete?: () => void | Promise<void>; // delegated delete (enables undo via parent)
 }
 
 
-export default function ClientRegisterDialog({ open, centerId, demo, client, onClose, onCreated }: Props) {
+export default function ClientRegisterDialog({ open, centerId, demo, client, existingClients, onClose, onCreated, onDelete }: Props) {
+
   const { toast } = useToast();
   const isEdit = !!client?.id;
   const [saving, setSaving] = useState(false);

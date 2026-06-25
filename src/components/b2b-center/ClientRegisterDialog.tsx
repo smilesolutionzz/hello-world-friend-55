@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { X, Loader2, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { X, Loader2, User, Trash2 } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+
 
 const schema = z.object({
   name: z.string().trim().min(1, "이름을 입력하세요").max(30),
@@ -36,18 +37,26 @@ const STATUS_OPTS = [
 ] as const;
 
 const STATUS_TO_CODE: Record<string, string> = { 대기: "waiting", 등록: "enrolled", 종결: "terminated" };
+const STATUS_FROM_CODE: Record<string, "대기" | "등록" | "종결"> = {
+  waiting: "대기", enrolled: "등록", terminated: "종결",
+  대기: "대기", 등록: "등록", 종결: "종결",
+};
 
 interface Props {
   open: boolean;
   centerId: string;
   demo?: boolean;
+  client?: any | null; // when set, dialog is in edit mode
   onClose: () => void;
   onCreated?: () => void;
 }
 
-export default function ClientRegisterDialog({ open, centerId, demo, onClose, onCreated }: Props) {
+
+export default function ClientRegisterDialog({ open, centerId, demo, client, onClose, onCreated }: Props) {
   const { toast } = useToast();
+  const isEdit = !!client?.id;
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [continueAfter, setContinueAfter] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [form, setForm] = useState<FormState>({
@@ -57,7 +66,41 @@ export default function ClientRegisterDialog({ open, centerId, demo, onClose, on
     status: "등록", source: "선택안함", note: "",
   });
 
+  useEffect(() => {
+    if (!open) return;
+    if (client) {
+      const di: string = client.disability_info ?? "";
+      const parts = di.split("·").map((s: string) => s.trim()).filter(Boolean);
+      const dtype = parts.find((p) => DISABILITY_TYPES.includes(p)) ?? "미응답";
+      const dgrade = parts.find((p) => DISABILITY_GRADES.includes(p)) ?? "해당없음";
+      const meta = client.meta ?? {};
+      setForm({
+        name: client.name ?? "",
+        gender: client.gender === "남" ? "남" : "여",
+        birth_date: client.birth_date ?? "",
+        member_no: client.member_no ?? "",
+        initial_consult_date: client.initial_consult_date ?? "",
+        guardian_label: meta.guardian_label ?? "모",
+        phone: client.phone ?? "",
+        guardian_phone: client.guardian_phone ?? "",
+        email: meta.email ?? "",
+        disability_type: dtype,
+        disability_grade: dgrade,
+        address: client.address ?? "",
+        school: meta.school ?? "",
+        status: STATUS_FROM_CODE[client.status] ?? "등록",
+        source: meta.source ?? "선택안함",
+        note: meta.note ?? "",
+      });
+      setErrors({});
+    } else {
+      reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, client?.id]);
+
   if (!open) return null;
+
 
   function reset() {
     setForm({
@@ -90,7 +133,7 @@ export default function ClientRegisterDialog({ open, centerId, demo, onClose, on
     }
     setSaving(true);
     try {
-      const { error } = await supabase.from("center_clients").insert({
+      const payload = {
         center_id: centerId,
         name: form.name.trim(),
         gender: form.gender,
@@ -103,24 +146,47 @@ export default function ClientRegisterDialog({ open, centerId, demo, onClose, on
         member_no: form.member_no || null,
         initial_consult_date: form.initial_consult_date || null,
         meta: {
+          ...(client?.meta ?? {}),
           email: form.email || null,
           school: form.school || null,
           source: form.source && form.source !== "선택안함" ? form.source : null,
           guardian_label: form.guardian_label || null,
           note: form.note || null,
+          last_modified_at: new Date().toISOString().slice(0, 16).replace("T", " "),
         },
-      });
+      };
+      const { error } = isEdit
+        ? await supabase.from("center_clients").update(payload).eq("id", client.id)
+        : await supabase.from("center_clients").insert(payload);
       if (error) throw error;
-      toast({ title: "이용자 등록 완료", description: form.name });
+      toast({ title: isEdit ? "이용자 정보 저장" : "이용자 등록 완료", description: form.name });
       onCreated?.();
-      if (continueAfter) { reset(); }
+      if (!isEdit && continueAfter) { reset(); }
       else { onClose(); }
     } catch (e: any) {
-      toast({ title: "등록 실패", description: e?.message ?? String(e), variant: "destructive" });
+      toast({ title: isEdit ? "저장 실패" : "등록 실패", description: e?.message ?? String(e), variant: "destructive" });
     } finally {
       setSaving(false);
     }
   }
+
+  async function handleDelete() {
+    if (!isEdit || demo) return;
+    if (!confirm(`'${client.name}' 이용자를 삭제할까요? 연결된 회기 기록은 유지되지만 이용자 정보는 복구되지 않습니다.`)) return;
+    setDeleting(true);
+    try {
+      const { error } = await supabase.from("center_clients").delete().eq("id", client.id);
+      if (error) throw error;
+      toast({ title: "이용자 삭제됨", description: client.name });
+      onCreated?.();
+      onClose();
+    } catch (e: any) {
+      toast({ title: "삭제 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setDeleting(false);
+    }
+  }
+
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
@@ -128,10 +194,11 @@ export default function ClientRegisterDialog({ open, centerId, demo, onClose, on
         {/* Header */}
         <div className="px-8 pt-7 pb-5 border-b border-neutral-100 flex items-start justify-between">
           <div>
-            <p className="text-[10px] tracking-[0.2em] text-[#C8B88A] mb-1">NEW CLIENT</p>
-            <h2 className="text-xl font-semibold">이용자 등록</h2>
-            <p className="text-xs text-neutral-500 mt-1">기본 정보만 입력해도 됩니다. 나머지는 언제든 콘솔에서 채울 수 있어요.</p>
+            <p className="text-[10px] tracking-[0.2em] text-[#C8B88A] mb-1">{isEdit ? "EDIT CLIENT" : "NEW CLIENT"}</p>
+            <h2 className="text-xl font-semibold">{isEdit ? "이용자 정보 수정" : "이용자 등록"}</h2>
+            <p className="text-xs text-neutral-500 mt-1">{isEdit ? "변경할 항목만 수정하고 저장하세요." : "기본 정보만 입력해도 됩니다. 나머지는 언제든 콘솔에서 채울 수 있어요."}</p>
           </div>
+
           <button onClick={onClose} className="p-1.5 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
         </div>
 
@@ -223,19 +290,28 @@ export default function ClientRegisterDialog({ open, centerId, demo, onClose, on
 
         {/* Footer */}
         <div className="px-8 py-5 border-t border-neutral-100 flex items-center justify-between bg-neutral-50/50 rounded-b-3xl">
-          <label className="inline-flex items-center gap-2 text-xs text-neutral-600 cursor-pointer">
-            <input type="checkbox" checked={continueAfter} onChange={(e) => setContinueAfter(e.target.checked)} className="accent-neutral-900" />
-            저장 후 계속 등록
-          </label>
+          {isEdit ? (
+            <button onClick={handleDelete} disabled={deleting || saving}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs text-rose-600 hover:bg-rose-50 disabled:opacity-50">
+              {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+              {deleting ? "삭제 중…" : "이용자 삭제"}
+            </button>
+          ) : (
+            <label className="inline-flex items-center gap-2 text-xs text-neutral-600 cursor-pointer">
+              <input type="checkbox" checked={continueAfter} onChange={(e) => setContinueAfter(e.target.checked)} className="accent-neutral-900" />
+              저장 후 계속 등록
+            </label>
+          )}
           <div className="flex gap-2">
             <button onClick={onClose} className="px-5 py-2.5 rounded-full text-sm text-neutral-600 hover:bg-neutral-100">취소</button>
-            <button onClick={submit} disabled={saving}
+            <button onClick={submit} disabled={saving || deleting}
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <User className="w-4 h-4" />}
-              {saving ? "저장 중…" : "등록"}
+              {saving ? "저장 중…" : isEdit ? "저장" : "등록"}
             </button>
           </div>
         </div>
+
       </div>
 
       <style>{`.ipt { width:100%; padding:0.55rem 0.75rem; border:1px solid #e5e5e5; border-radius:0.625rem; background:white; font-size:0.875rem; outline:none; transition:border-color .15s; }

@@ -105,8 +105,10 @@ export default function ClientsPage() {
   const [filter, setFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [editClient, setEditClient] = useState<Client | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [inviteFor, setInviteFor] = useState<{ id: string; name: string } | null>(null);
+
 
   const [visible, setVisible] = useState<Record<ColKey, boolean>>(() => {
     if (typeof window !== "undefined") {
@@ -267,12 +269,16 @@ export default function ClientsPage() {
                 </div>
               </td></tr>
             ) : filtered.map((r) => (
-              <tr key={r.id} className="hover:bg-neutral-50/50 group">
-                <td className="p-3 font-medium text-neutral-900 border-t border-r border-neutral-100 bg-white sticky left-0 z-10 group-hover:bg-neutral-50/80 whitespace-nowrap">{r.name}</td>
+              <tr key={r.id} onClick={() => !demo && setEditClient(r)}
+                className={`group ${demo ? "" : "cursor-pointer hover:bg-neutral-50/80"}`}>
+                <td className="p-3 font-medium text-neutral-900 border-t border-r border-neutral-100 bg-white sticky left-0 z-10 group-hover:bg-neutral-50/80 whitespace-nowrap">
+                  <span className={demo ? "" : "underline decoration-dotted decoration-neutral-300 underline-offset-4 group-hover:decoration-neutral-600"}>{r.name}</span>
+                </td>
+
                 {activeCols.map((c) => (
                   <td key={c.key} className="p-3 border-t border-neutral-100">{renderCell(c.key, r)}</td>
                 ))}
-                <td className="p-3 border-t border-neutral-100 text-right whitespace-nowrap">
+                <td className="p-3 border-t border-neutral-100 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                   {!BETA_MODE && (
                     <button onClick={() => setInviteFor({ id: r.id, name: r.name })}
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs bg-[#FAF6E8] text-neutral-800 hover:bg-[#F0E8C8] border border-[#C8B88A]/30">
@@ -280,6 +286,7 @@ export default function ClientsPage() {
                     </button>
                   )}
                 </td>
+
               </tr>
             ))}
           </tbody>
@@ -293,6 +300,16 @@ export default function ClientsPage() {
         onClose={() => setRegisterOpen(false)}
         onCreated={load}
       />
+
+      <ClientRegisterDialog
+        open={!!editClient}
+        centerId={centerId}
+        demo={demo}
+        client={editClient}
+        onClose={() => setEditClient(null)}
+        onCreated={load}
+      />
+
 
       {inviteFor && (
         <InviteParentDialog

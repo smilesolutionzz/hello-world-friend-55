@@ -277,18 +277,33 @@ export default function WhitelabelReportPreviewPage() {
 
         {/* === Live Preview === */}
         <div className="bg-neutral-100 rounded-2xl p-6 overflow-auto">
-          <div className="flex items-center gap-2 mb-3 text-xs text-neutral-500">
-            <Eye className="w-3.5 h-3.5" /> 실시간 미리보기 (A4)
+          <div className="flex items-center justify-between mb-3 text-xs text-neutral-500">
+            <div className="flex items-center gap-2">
+              <Eye className="w-3.5 h-3.5" /> 실시간 미리보기 (A4) — {tplTab === "monthly" ? "월간 리포트" : "주간 노트"}
+            </div>
+            <div className="text-[10px] text-neutral-400">편집과 동시에 반영됩니다</div>
           </div>
           <div className="mx-auto bg-white shadow-sm" style={{ width: "210mm", minHeight: "297mm" }}>
             <div ref={previewRef} style={{ padding: "18mm 16mm", color: "#1f2937", fontFamily: "'Pretendard Variable', Pretendard, sans-serif", lineHeight: 1.6, fontSize: 12 }}>
-              <SampleReport
-                centerName={centerName} tagline={tagline} therapist={therapist}
-                logoText={logoText} logoBg={logoBg} logoFg={logoFg}
-                phone={phone} address={address}
-                headerGradient={headerGradient} accent={c1}
-                childName={childName} period={period}
-              />
+              {tplTab === "monthly" ? (
+                <SampleReport
+                  centerName={centerName} tagline={tagline} therapist={therapist}
+                  logoText={logoText} logoBg={logoBg} logoFg={logoFg}
+                  phone={phone} address={address}
+                  headerGradient={headerGradient} accent={c1}
+                  childName={childName} period={period}
+                  template={template.monthly}
+                />
+              ) : (
+                <SampleWeeklyNote
+                  centerName={centerName} tagline={tagline} therapist={therapist}
+                  logoText={logoText} logoBg={logoBg} logoFg={logoFg}
+                  phone={phone} address={address}
+                  headerGradient={headerGradient} accent={c1}
+                  childName={childName} period={period}
+                  template={template.weekly}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -448,14 +463,21 @@ function ExtraSectionsEditor({
   );
 }
 
+type PreviewTemplate = { sections: Record<string, { enabled: boolean; title: string }>; extras: ExtraSection[]; intro: string; outro: string };
+
 function SampleReport(props: {
   centerName: string; tagline: string; therapist: string;
   logoText: string; logoBg: string; logoFg: string;
   phone: string; address: string;
   headerGradient: string; accent: string;
   childName: string; period: string;
+  template: PreviewTemplate;
 }) {
-  const { centerName, tagline, therapist, logoText, logoBg, logoFg, phone, address, headerGradient, accent, childName, period } = props;
+  const { centerName, tagline, therapist, logoText, logoBg, logoFg, phone, address, headerGradient, accent, childName, period, template } = props;
+  const sec = (key: string) => template.sections[key];
+  const on = (key: string) => sec(key)?.enabled !== false;
+  const title = (key: string, fallback: string) => sec(key)?.title?.trim() || fallback;
+
   const Bar = ({ pct, label }: { pct: number; label: string }) => (
     <div style={{ display: "grid", gridTemplateColumns: "120px 1fr 50px", gap: 10, alignItems: "center", margin: "8px 0" }}>
       <div>{label}</div>
@@ -466,84 +488,128 @@ function SampleReport(props: {
     </div>
   );
 
+  // 번호: enabled 섹션 순서대로 01,02..
+  let idx = 0;
+  const numbered = (key: string, fallback: string) => {
+    if (!on(key)) return null;
+    idx += 1;
+    return `${String(idx).padStart(2, "0")}. ${title(key, fallback)}`;
+  };
+
   return (
     <>
-      {/* Brand header */}
-      <div style={{ background: headerGradient, color: "#fff", padding: "14px 18px", borderRadius: 10, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: logoBg, color: logoFg, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14 }}>
-            {logoText || "·"}
+      {on("cover") && (
+        <div style={{ background: headerGradient, color: "#fff", padding: "14px 18px", borderRadius: 10, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: logoBg, color: logoFg, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14 }}>
+              {logoText || "·"}
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 15 }}>{centerName}</div>
+              <div style={{ fontSize: 11, opacity: 0.9 }}>{tagline}</div>
+            </div>
           </div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 15 }}>{centerName}</div>
-            <div style={{ fontSize: 11, opacity: 0.9 }}>{tagline}</div>
+          <div style={{ textAlign: "right", fontSize: 11, opacity: 0.9 }}>
+            {period} 월간 리포트<br />발신: {therapist}
           </div>
         </div>
-        <div style={{ textAlign: "right", fontSize: 11, opacity: 0.9 }}>
-          {period} 월간 리포트<br />발신: {therapist}
-        </div>
-      </div>
+      )}
 
       <h1 style={{ fontSize: 22, margin: "0 0 6px", letterSpacing: "-0.3px", color: "#0f172a" }}>
         {childName} 부모님께 — 한 달의 발달 이야기
       </h1>
-      <p style={{ color: "#6b7280", fontSize: 12, marginBottom: 20 }}>
-        이번 달 회기 4회의 관찰 기록을 기반으로, 담당 치료사가 검토·발행한 리포트입니다.
-      </p>
+      {template.intro ? (
+        <p style={{ color: "#475569", fontSize: 12, marginBottom: 18, whiteSpace: "pre-wrap" }}>{template.intro}</p>
+      ) : (
+        <p style={{ color: "#6b7280", fontSize: 12, marginBottom: 20 }}>
+          이번 달 회기 4회의 관찰 기록을 기반으로, 담당 치료사가 검토·발행한 리포트입니다.
+        </p>
+      )}
 
-      <H2 accent={accent}>01. 이번 달 한눈에 보기</H2>
-      <div style={{ display: "flex", gap: 12, margin: "12px 0 18px" }}>
-        {[
-          { v: "+22%", l: "표현 어휘 다양성 (지난달 대비)" },
-          { v: "3/4", l: "목표 미션 달성 회기 수" },
-          { v: "안정", l: "정서 패턴 — 회복 빠름" },
-        ].map((k) => (
-          <div key={k.l} style={{ flex: 1, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 12 }}>
-            <div style={{ fontSize: 20, fontWeight: 700, color: accent }}>{k.v}</div>
-            <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>{k.l}</div>
-          </div>
-        ))}
-      </div>
-
-      <H2 accent={accent}>02. 영역별 발달 신호</H2>
-      <Bar pct={82} label="표현 언어" />
-      <Bar pct={74} label="수용 언어" />
-      <Bar pct={68} label="사회적 상호작용" />
-      <Bar pct={71} label="정서 조절" />
-      <Bar pct={65} label="주의·집중" />
-
-      <H2 accent={accent}>03. 회기 요약</H2>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-        <thead>
-          <tr style={{ background: "#f8fafc" }}>
-            {["회기", "주요 활동", "관찰된 강점", "다음 도전"].map((h) => (
-              <th key={h} style={{ textAlign: "left", padding: "9px 6px", borderBottom: "1px solid #e5e7eb", fontWeight: 700, color: "#0f172a" }}>{h}</th>
+      {on("summary") && (
+        <>
+          <H2 accent={accent}>{numbered("summary", "이번 달 한눈에")}</H2>
+          <div style={{ display: "flex", gap: 12, margin: "12px 0 18px" }}>
+            {[
+              { v: "+22%", l: "표현 어휘 다양성 (지난달 대비)" },
+              { v: "3/4", l: "목표 미션 달성 회기 수" },
+              { v: "안정", l: "정서 패턴 — 회복 빠름" },
+            ].map((k) => (
+              <div key={k.l} style={{ flex: 1, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 12 }}>
+                <div style={{ fontSize: 20, fontWeight: 700, color: accent }}>{k.v}</div>
+                <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>{k.l}</div>
+              </div>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          {[
-            ["5/3", "그림책 함께 읽기", "새 단어 5개 자발 사용", "이야기 순서 회상"],
-            ["5/10", "역할놀이 — 빵집 사장님", "주문 받기 차례 지킴", "또래 갈등 시 표현"],
-            ["5/17", "감정 카드 분류", "‘서운하다’ 단어 새로 사용", "복합 감정 설명"],
-            ["5/24", "블록 협동 작업", "도움 요청 성공", "실패 후 재도전"],
-          ].map((r, i) => (
-            <tr key={i}>
-              {r.map((c, j) => <td key={j} style={{ padding: "9px 6px", borderBottom: "1px solid #e5e7eb", verticalAlign: "top" }}>{c}</td>)}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          </div>
+        </>
+      )}
 
-      <H2 accent={accent}>04. 집에서 함께 해보기</H2>
-      <ol style={{ paddingLeft: 18 }}>
-        <li style={{ marginBottom: 6 }}>저녁 식탁에서 ‘오늘의 단어’ 하나만 함께 이야기해보기</li>
-        <li style={{ marginBottom: 6 }}>일주일에 한 번, 5분 그림책 함께 읽기</li>
-        <li>화가 났을 때 ‘잠깐 멈춤’ 사인 — 손바닥 펴기 신호 함께 사용</li>
-      </ol>
-      <div style={{ background: "#ecfdf5", borderLeft: `4px solid ${accent}`, padding: "10px 14px", borderRadius: 6, fontSize: 12, marginTop: 8 }}>
-        가장 큰 변화는 <b>말로 도움을 요청한 첫 회기</b>였습니다. 작지만 중요한 신호예요.
-      </div>
+      {on("domains") && (
+        <>
+          <H2 accent={accent}>{numbered("domains", "영역별 발달 흐름")}</H2>
+          <Bar pct={82} label="표현 언어" />
+          <Bar pct={74} label="수용 언어" />
+          <Bar pct={68} label="사회적 상호작용" />
+          <Bar pct={71} label="정서 조절" />
+          <Bar pct={65} label="주의·집중" />
+        </>
+      )}
+
+      {on("highlights") && (
+        <>
+          <H2 accent={accent}>{numbered("highlights", "이번 달 빛났던 순간")}</H2>
+          <ul style={{ paddingLeft: 18, margin: "8px 0 14px" }}>
+            <li style={{ marginBottom: 4 }}>‘서운하다’ 라는 단어를 처음 스스로 사용한 회기</li>
+            <li style={{ marginBottom: 4 }}>또래에게 먼저 “같이 하자” 라고 제안</li>
+            <li>실패 후 한 번 더 시도한 블록 협동 작업</li>
+          </ul>
+        </>
+      )}
+
+      {on("note") && (
+        <>
+          <H2 accent={accent}>{numbered("note", "담당 치료사 노트")}</H2>
+          <p style={{ margin: "6px 0 14px", color: "#334155" }}>
+            지난달 대비 자발적 표현이 늘고, 갈등 상황에서 ‘잠깐 멈추는’ 모습을 관찰했습니다.
+            가정에서도 작은 멈춤 신호를 함께 연습해 주시면 효과가 더 커집니다.
+          </p>
+        </>
+      )}
+
+      {on("practice") && (
+        <>
+          <H2 accent={accent}>{numbered("practice", "이번 달 가정 연습 제안")}</H2>
+          <ol style={{ paddingLeft: 18 }}>
+            <li style={{ marginBottom: 6 }}>저녁 식탁에서 ‘오늘의 단어’ 하나만 함께 이야기해보기</li>
+            <li style={{ marginBottom: 6 }}>일주일에 한 번, 5분 그림책 함께 읽기</li>
+            <li>화가 났을 때 ‘잠깐 멈춤’ 사인 — 손바닥 펴기 신호 함께 사용</li>
+          </ol>
+        </>
+      )}
+
+      {on("goals") && (
+        <>
+          <H2 accent={accent}>{numbered("goals", "다음 달 목표")}</H2>
+          <div style={{ background: "#ecfdf5", borderLeft: `4px solid ${accent}`, padding: "10px 14px", borderRadius: 6, fontSize: 12, marginTop: 8 }}>
+            복합 감정 표현 1가지 더 늘리기 · 또래와의 협동 놀이 회기 중 2회 이상 시도
+          </div>
+        </>
+      )}
+
+      {template.extras.map((e) => {
+        if (!e.title.trim() && !e.body.trim()) return null;
+        idx += 1;
+        return (
+          <div key={e.id}>
+            <H2 accent={accent}>{`${String(idx).padStart(2, "0")}. ${e.title || "추가 섹션"}`}</H2>
+            <p style={{ margin: "6px 0 14px", color: "#334155", whiteSpace: "pre-wrap" }}>{e.body}</p>
+          </div>
+        );
+      })}
+
+      {template.outro && (
+        <p style={{ margin: "16px 0 0", color: "#475569", whiteSpace: "pre-wrap" }}>{template.outro}</p>
+      )}
 
       <div style={{ marginTop: 22, padding: "14px 16px", border: "1px dashed #cbd5e1", borderRadius: 12, display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12 }}>
         <div>
@@ -558,6 +624,122 @@ function SampleReport(props: {
 
       <div style={{ marginTop: 24, paddingTop: 12, borderTop: "1px solid #e5e7eb", color: "#9ca3af", fontSize: 10.5, textAlign: "center" }}>
         Powered by AIHPRO · 본 리포트는 의료 진단을 대체하지 않으며, 발달 코칭을 위한 관찰 기록입니다.
+      </div>
+    </>
+  );
+}
+
+function SampleWeeklyNote(props: {
+  centerName: string; tagline: string; therapist: string;
+  logoText: string; logoBg: string; logoFg: string;
+  phone: string; address: string;
+  headerGradient: string; accent: string;
+  childName: string; period: string;
+  template: PreviewTemplate;
+}) {
+  const { centerName, tagline, therapist, logoText, logoBg, logoFg, phone, address, headerGradient, accent, childName, period, template } = props;
+  const sec = (key: string) => template.sections[key];
+  const on = (key: string) => sec(key)?.enabled !== false;
+  const title = (key: string, fallback: string) => sec(key)?.title?.trim() || fallback;
+
+  const Block = ({ label, children }: { label: string; children: React.ReactNode }) => (
+    <div style={{ margin: "14px 0" }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", paddingBottom: 6, borderBottom: `2px solid ${accent}`, marginBottom: 8 }}>{label}</div>
+      <div style={{ color: "#334155" }}>{children}</div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Brand header (재사용) */}
+      <div style={{ background: headerGradient, color: "#fff", padding: "14px 18px", borderRadius: 10, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
+        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+          <div style={{ width: 38, height: 38, borderRadius: 10, background: logoBg, color: logoFg, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14 }}>
+            {logoText || "·"}
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 15 }}>{centerName}</div>
+            <div style={{ fontSize: 11, opacity: 0.9 }}>{tagline}</div>
+          </div>
+        </div>
+        <div style={{ textAlign: "right", fontSize: 11, opacity: 0.9 }}>
+          {period} 주간 노트<br />발신: {therapist}
+        </div>
+      </div>
+
+      <h1 style={{ fontSize: 20, margin: "0 0 6px", letterSpacing: "-0.3px", color: "#0f172a" }}>
+        {childName} 이번 주 회기 기록
+      </h1>
+      {template.intro ? (
+        <p style={{ color: "#475569", fontSize: 12, marginBottom: 16, whiteSpace: "pre-wrap" }}>{template.intro}</p>
+      ) : (
+        <p style={{ color: "#6b7280", fontSize: 12, marginBottom: 16 }}>
+          이번 주 회기에서 관찰한 활동·성장·다음 회기 방향을 정리했습니다.
+        </p>
+      )}
+
+      {on("greeting") && (
+        <Block label={title("greeting", "보호자께 인사")}>
+          한 주 동안 가정에서도 따뜻하게 응원해주셔서 감사합니다. 이번 주 회기에서 보인 작은 성장을 공유드려요.
+        </Block>
+      )}
+
+      {on("highlights") && (
+        <Block label={title("highlights", "이번 주 하이라이트")}>
+          <ul style={{ paddingLeft: 18, margin: 0 }}>
+            <li>먼저 인사를 건넨 첫 회기 ✨</li>
+            <li>5분 이상 집중하여 그림책 완독</li>
+            <li>차례 기다리기 성공 — 2회</li>
+          </ul>
+        </Block>
+      )}
+
+      {on("activities_summary") && (
+        <Block label={title("activities_summary", "이번 주 활동 요약")}>
+          그림책 함께 읽기 · 감정 카드 분류 · 블록 협동 놀이. 총 3회기 진행.
+        </Block>
+      )}
+
+      {on("growth") && (
+        <Block label={title("growth", "관찰된 성장")}>
+          ‘도와줘’ 라는 표현을 자발적으로 사용했고, 갈등 상황에서 잠깐 멈추는 모습을 보였어요.
+        </Block>
+      )}
+
+      {on("home_tips") && (
+        <Block label={title("home_tips", "가정에서 해볼 활동")}>
+          잠자기 전 5분, 오늘 가장 즐거웠던 순간을 한 문장으로 이야기 나눠보세요.
+        </Block>
+      )}
+
+      {on("next_week_focus") && (
+        <Block label={title("next_week_focus", "다음 주 집중 방향")}>
+          복합 감정(‘서운하지만 괜찮아’) 표현 연습 · 또래에게 먼저 제안하기.
+        </Block>
+      )}
+
+      {template.extras.map((e) => {
+        if (!e.title.trim() && !e.body.trim()) return null;
+        return (
+          <Block key={e.id} label={e.title || "추가 섹션"}>
+            <span style={{ whiteSpace: "pre-wrap" }}>{e.body}</span>
+          </Block>
+        );
+      })}
+
+      {template.outro && (
+        <p style={{ margin: "12px 0 0", color: "#475569", whiteSpace: "pre-wrap" }}>{template.outro}</p>
+      )}
+
+      <div style={{ marginTop: 22, padding: "12px 14px", border: "1px dashed #cbd5e1", borderRadius: 12, display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5 }}>
+        <div>
+          <b>{centerName}</b> · 담당 {therapist}
+        </div>
+        <div style={{ textAlign: "right", color: "#6b7280" }}>{address} · {phone}</div>
+      </div>
+
+      <div style={{ marginTop: 18, paddingTop: 10, borderTop: "1px solid #e5e7eb", color: "#9ca3af", fontSize: 10.5, textAlign: "center" }}>
+        Powered by AIHPRO · 주간 노트는 회기 관찰 기록이며 의료 진단을 대체하지 않습니다.
       </div>
     </>
   );

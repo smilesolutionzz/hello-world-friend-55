@@ -67,7 +67,7 @@ serve(async (req) => {
     // Gather scheduled sessions for the week (always — used to enrich or as sole source)
     const { data: schedSessions } = await admin
       .from("center_sessions")
-      .select("id, session_date, start_time, end_time, duration_min, status, note, therapist_id, program_id")
+      .select("id, session_date, start_time, end_time, duration_min, status, note, therapist_id, program_id, meta")
       .eq("center_id", centerId)
       .eq("client_id", clientId)
       .gte("session_date", start)
@@ -83,10 +83,26 @@ serve(async (req) => {
     const thMap = new Map((ths || []).map((t: any) => [t.id, t]));
     const pgMap = new Map((progs || []).map((p: any) => [p.id, p]));
 
+    // 회기별 치료사 직접 작성 기록 (center_sessions.meta.records)
+    const recordRows = (schedSessions || [])
+      .map((s: any) => {
+        const r = s.meta?.records;
+        if (!r) return null;
+        const parts = [];
+        if (r.consult) parts.push(`상담내용: ${r.consult}`);
+        if (r.record) parts.push(`기록내용: ${r.record}`);
+        if (r.special) parts.push(`특이사항: ${r.special}`);
+        if (parts.length === 0) return null;
+        return `[${s.session_date}] ${parts.join(" / ")}`;
+      })
+      .filter(Boolean) as string[];
+    const hasRecords = recordRows.length > 0;
+    const recordsSummary = hasRecords ? recordRows.join("\n") : "(이번 주 치료사 직접 작성 기록 없음)";
+
     const hasUploads = (uploads || []).length > 0;
     const hasSessions = (schedSessions || []).length > 0;
-    if (!hasUploads && !hasSessions && !allowEmpty) {
-      return new Response(JSON.stringify({ error: "no_data", detail: "이번 주 업로드도 일정도 없어요." }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
+    if (!hasUploads && !hasSessions && !hasRecords && !allowEmpty) {
+      return new Response(JSON.stringify({ error: "no_data", detail: "이번 주 기록이 없어요." }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
     }
 
     const { data: client } = await admin.from("center_clients").select("name, birth_date").eq("id", clientId).maybeSingle();
@@ -114,6 +130,9 @@ serve(async (req) => {
 
 [이번 주 예약/진행 회기]
 ${scheduleSummary}
+
+[치료사가 직접 작성한 회기기록 (상담/기록/특이사항)]
+${recordsSummary}
 
 [치료사 일지(사진)에서 추출한 내용]
 ${uploadSummary}

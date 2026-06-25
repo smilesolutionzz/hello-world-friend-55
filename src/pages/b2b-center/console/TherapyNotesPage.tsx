@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2, Download, FileSpreadsheet, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import * as XLSX from "xlsx";
 import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
+import WeeklySessionRecords from "@/components/b2b-center/WeeklySessionRecords";
 import {
   resolveTemplate,
   WEEKLY_SECTION_KEYS,
@@ -306,6 +307,11 @@ export default function TherapyNotesPage() {
           <input type="week" value={weekKey.replace("-W", "-W")} onChange={(e) => setWeekKey(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white" />
         </div>
       </div>
+
+      {/* 이번 주 회기 기록 (구 일일 서비스 관리 통합) */}
+      {selectedClient && (
+        <WeeklySessionRecords centerId={centerId} clientId={selectedClient} weekKey={weekKey} />
+      )}
 
       {/* Upload */}
       <div

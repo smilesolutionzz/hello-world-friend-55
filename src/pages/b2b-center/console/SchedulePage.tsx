@@ -204,6 +204,51 @@ export default function SchedulePage() {
     setSelected(null);
   }
 
+  async function handleStatusChange(s: any, status: StatusCode) {
+    const prevStatus = s.status;
+    setSessions((prev) => prev.map((x) => (x.id === s.id ? { ...x, status } : x)));
+    setSelected((sel: any) => (sel && sel.id === s.id ? { ...sel, status } : sel));
+    if (demo) { notifyDemoNoSave("상태 변경은"); return; }
+    const { error } = await supabase.from("center_sessions").update({ status }).eq("id", s.id);
+    if (error) {
+      setSessions((prev) => prev.map((x) => (x.id === s.id ? { ...x, status: prevStatus } : x)));
+      setSelected((sel: any) => (sel && sel.id === s.id ? { ...sel, status: prevStatus } : sel));
+      toast({ title: "상태 변경 실패", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({
+      title:
+        status === "cancelled" ? "일정이 취소됐어요"
+        : status === "completed" ? "완료 처리됐어요"
+        : status === "scheduled" ? "예정으로 되돌렸어요"
+        : "상태가 변경됐어요",
+    });
+  }
+
+  // 시간이 지난 예정 세션을 자동으로 완료 처리
+  useEffect(() => {
+    const tick = async () => {
+      const now = new Date();
+      const past = sessions.filter((s) => {
+        if (s.status !== "scheduled") return false;
+        const end = s.end_time || s.start_time;
+        if (!s.session_date || !end) return false;
+        const t = new Date(`${s.session_date}T${end}`);
+        return !isNaN(t.getTime()) && t <= now;
+      });
+      if (past.length === 0) return;
+      const ids = past.map((p) => p.id);
+      setSessions((prev) => prev.map((x) => (ids.includes(x.id) ? { ...x, status: "completed" } : x)));
+      setSelected((sel: any) => (sel && ids.includes(sel.id) ? { ...sel, status: "completed" } : sel));
+      if (!demo) {
+        await supabase.from("center_sessions").update({ status: "completed" }).in("id", ids);
+      }
+    };
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, [sessions, demo]);
+
   async function handleDelete(s: any) {
     const hasRecur = !!s.recurrence_key;
     const msg = hasRecur
@@ -663,7 +708,7 @@ export default function SchedulePage() {
 
       {/* 상세 팝업 */}
       {selected && (
-        <SessionDetail s={selected} onClose={() => setSelected(null)} onDelete={() => handleDelete(selected)} onEdit={() => { setEditing(selected); setSelected(null); }} therapist={therapist} clientName={clientName} programName={programName} />
+        <SessionDetail s={selected} onClose={() => setSelected(null)} onDelete={() => handleDelete(selected)} onEdit={() => { setEditing(selected); setSelected(null); }} onStatusChange={(st: StatusCode) => handleStatusChange(selected, st)} therapist={therapist} clientName={clientName} programName={programName} />
       )}
 
       {/* 일정 등록 다이얼로그 */}
@@ -1518,7 +1563,7 @@ function SessionRow({ s, therapist, clientName, programName, onPick }: any) {
 }
 
 // ===== 상세 화면 (Carepl 스타일 full-bleed 사이드 시트) =====
-function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, programName }: any) {
+function SessionDetail({ s, onClose, onDelete, onEdit, onStatusChange, therapist, clientName, programName }: any) {
   const th = therapist(s.therapist_id);
   const meta = STATUS_META[s.status as StatusCode];
   const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
@@ -1577,12 +1622,27 @@ function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, pr
         </div>
 
         {/* footer actions */}
-        {(onDelete || onEdit) && (
+        {(onDelete || onEdit || onStatusChange) && (
           <footer className="px-6 md:px-8 py-4 border-t border-neutral-100 bg-white flex flex-wrap gap-2">
             <button onClick={onClose} className="px-5 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
               닫기
             </button>
             <div className="flex-1" />
+            {onStatusChange && s.status === "scheduled" && (
+              <button onClick={() => onStatusChange("cancelled")} className="px-5 py-2.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700 text-sm font-medium hover:bg-rose-100">
+                일정 취소
+              </button>
+            )}
+            {onStatusChange && s.status === "scheduled" && (
+              <button onClick={() => onStatusChange("completed")} className="px-5 py-2.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm font-medium hover:bg-emerald-100">
+                완료 처리
+              </button>
+            )}
+            {onStatusChange && s.status && s.status !== "scheduled" && (
+              <button onClick={() => onStatusChange("scheduled")} className="px-5 py-2.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700 text-sm font-medium hover:bg-amber-100">
+                예정으로 되돌리기
+              </button>
+            )}
             {onEdit && !s.therapist_id && (
               <button onClick={onEdit} className="px-5 py-2.5 rounded-full bg-amber-50 text-amber-700 text-sm font-medium border border-amber-200 hover:bg-amber-100">
                 선생님 배정하기

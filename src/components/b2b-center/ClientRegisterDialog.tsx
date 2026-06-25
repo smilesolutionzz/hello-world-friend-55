@@ -52,9 +52,11 @@ interface Props {
 }
 
 
-export default function ClientRegisterDialog({ open, centerId, demo, onClose, onCreated }: Props) {
+export default function ClientRegisterDialog({ open, centerId, demo, client, onClose, onCreated }: Props) {
   const { toast } = useToast();
+  const isEdit = !!client?.id;
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [continueAfter, setContinueAfter] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [form, setForm] = useState<FormState>({
@@ -64,7 +66,41 @@ export default function ClientRegisterDialog({ open, centerId, demo, onClose, on
     status: "등록", source: "선택안함", note: "",
   });
 
+  useEffect(() => {
+    if (!open) return;
+    if (client) {
+      const di: string = client.disability_info ?? "";
+      const parts = di.split("·").map((s: string) => s.trim()).filter(Boolean);
+      const dtype = parts.find((p) => DISABILITY_TYPES.includes(p)) ?? "미응답";
+      const dgrade = parts.find((p) => DISABILITY_GRADES.includes(p)) ?? "해당없음";
+      const meta = client.meta ?? {};
+      setForm({
+        name: client.name ?? "",
+        gender: client.gender === "남" ? "남" : "여",
+        birth_date: client.birth_date ?? "",
+        member_no: client.member_no ?? "",
+        initial_consult_date: client.initial_consult_date ?? "",
+        guardian_label: meta.guardian_label ?? "모",
+        phone: client.phone ?? "",
+        guardian_phone: client.guardian_phone ?? "",
+        email: meta.email ?? "",
+        disability_type: dtype,
+        disability_grade: dgrade,
+        address: client.address ?? "",
+        school: meta.school ?? "",
+        status: STATUS_FROM_CODE[client.status] ?? "등록",
+        source: meta.source ?? "선택안함",
+        note: meta.note ?? "",
+      });
+      setErrors({});
+    } else {
+      reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, client?.id]);
+
   if (!open) return null;
+
 
   function reset() {
     setForm({

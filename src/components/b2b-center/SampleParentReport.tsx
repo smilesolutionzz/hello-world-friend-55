@@ -193,8 +193,6 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
     catch { toast({ title: "복사 실패", variant: "destructive" }); }
   };
 
-  if (!open) return null;
-
   // Per-center template (titles + enabled + intro/outro) snapshot from branding.
   const tpl = useMemo(() => resolveTemplate(branding).monthly, [branding]);
   // Effective visibility = per-report toggle (data.sections) AND template-level enabled.
@@ -206,6 +204,8 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
     return out;
   }, [data.sections, tpl]);
   const titleOf = (k: string, fallback: string) => tpl.sections[k]?.title || fallback;
+
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center overflow-y-auto p-4 sm:p-8">

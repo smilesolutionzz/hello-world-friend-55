@@ -708,7 +708,7 @@ export default function SchedulePage() {
 
       {/* 상세 팝업 */}
       {selected && (
-        <SessionDetail s={selected} onClose={() => setSelected(null)} onDelete={() => handleDelete(selected)} onEdit={() => { setEditing(selected); setSelected(null); }} therapist={therapist} clientName={clientName} programName={programName} />
+        <SessionDetail s={selected} onClose={() => setSelected(null)} onDelete={() => handleDelete(selected)} onEdit={() => { setEditing(selected); setSelected(null); }} onStatusChange={(st: StatusCode) => handleStatusChange(selected, st)} therapist={therapist} clientName={clientName} programName={programName} />
       )}
 
       {/* 일정 등록 다이얼로그 */}

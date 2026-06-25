@@ -169,10 +169,73 @@ export default function ClientsPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  // Load therapists + therapist→client map
+  useEffect(() => {
+    if (demo) return;
+    (async () => {
+      const [{ data: ths }, { data: sess }] = await Promise.all([
+        supabase.from("center_therapists").select("id,name").eq("center_id", centerId).order("name"),
+        supabase.from("center_sessions").select("therapist_id,client_id").eq("center_id", centerId),
+      ]);
+      setTherapists((ths ?? []) as { id: string; name: string }[]);
+      const map: Record<string, Set<string>> = {};
+      (sess ?? []).forEach((s: any) => {
+        if (!s.therapist_id || !s.client_id) return;
+        (map[s.therapist_id] ||= new Set()).add(s.client_id);
+      });
+      setTherapistClientIds(map);
+    })();
+  }, [centerId, demo]);
+
+  async function handleDelete(client: Client) {
+    if (demo) return;
+    const snapshot = { ...client };
+    const { error } = await supabase.from("center_clients").delete().eq("id", client.id);
+    if (error) {
+      sonnerToast.error("삭제 실패", { description: error.message });
+      return;
+    }
+    setEditClient(null);
+    setRows((p) => p.filter((r) => r.id !== client.id));
+    sonnerToast.success(`'${snapshot.name}' 이용자 삭제됨`, {
+      description: "10초 내에 되돌릴 수 있어요.",
+      duration: 10000,
+      action: {
+        label: "되돌리기",
+        onClick: async () => {
+          const { id, created_at, ...rest } = snapshot as any;
+          const { error: e2 } = await supabase.from("center_clients").insert({ id, ...rest });
+          if (e2) {
+            sonnerToast.error("되돌리기 실패", { description: e2.message });
+            return;
+          }
+          sonnerToast.success("이용자 복구 완료");
+          load();
+        },
+      },
+    });
+  }
+
   const filtered = rows.filter((r) => {
     if (filter !== "all" && statusCode(r.status) !== filter) return false;
-    if (q && !r.name.includes(q) && !(r.member_no ?? "").includes(q)) return false;
+    if (therapistFilter !== "all") {
+      const set = therapistClientIds[therapistFilter];
+      if (!set || !set.has(r.id)) return false;
+    }
+    if (q) {
+      const needle = q.trim().toLowerCase();
+      const digits = needle.replace(/\D/g, "");
+      const hay = [
+        r.name, r.member_no, r.phone, r.guardian_phone,
+        r.meta?.contact_raw, r.meta?.email,
+      ].filter(Boolean).map((v) => String(v).toLowerCase()).join(" ");
+      const hayDigits = [r.phone, r.guardian_phone, r.meta?.contact_raw].filter(Boolean).join(" ").replace(/\D/g, "");
+      const matchText = hay.includes(needle);
+      const matchPhone = digits.length >= 3 && hayDigits.includes(digits);
+      if (!matchText && !matchPhone) return false;
+    }
     return true;
+
   });
 
   const counts = {

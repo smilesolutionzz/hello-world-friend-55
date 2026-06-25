@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Download, Palette, Sparkles, Building2, User2, Eye, Save, FileText, Check } from "lucide-react";
+import { Download, Palette, Sparkles, Building2, User2, Eye, Save, FileText, Check, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import html2pdf from "html2pdf.js";
@@ -8,8 +8,12 @@ import {
   DEFAULT_TEMPLATE,
   MONTHLY_SECTION_KEYS,
   WEEKLY_SECTION_KEYS,
+  SUGGESTED_MONTHLY_EXTRAS,
+  SUGGESTED_WEEKLY_EXTRAS,
   resolveTemplate,
+  makeExtraId,
   type ReportTemplate,
+  type ExtraSection,
 } from "@/lib/b2bCenter/reportTemplate";
 
 type Ctx = { centerId: string; demo?: boolean };

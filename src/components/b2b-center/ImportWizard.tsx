@@ -48,6 +48,21 @@ export default function ImportWizard({ demo, centerId, onClose, onMergeDemo, onI
       }
       // 세션 시트의 헤더를 표준키로 자동 매핑 시도
       const sessSrc = p.sheets.find((s) => s.entity === "sessions");
+      const clientsSrc = p.sheets.find((s) => s.entity === "clients");
+      const hasSessionRows = (sessSrc?.rows.length ?? 0) > 0;
+      const hasClientRows = (clientsSrc?.rows.length ?? 0) > 0;
+
+      // 이용자관리 전용 엑셀: 세션이 없으면 바로 이용자 등록 단계로
+      if (!hasSessionRows && hasClientRows) {
+        setColumnMap({});
+        setStep("clientsOnly");
+        return;
+      }
+      if (!hasSessionRows && !hasClientRows) {
+        toast({ title: "엑셀에서 데이터를 찾지 못했어요", description: "헤더에 ‘이름/이용자’ 또는 ‘일자/시작시간’이 포함됐는지 확인해주세요.", variant: "destructive" });
+        return;
+      }
+
       const rawHeaders = p.rawSheets.find((r) => sessSrc?.source.startsWith(r.name))?.headers ?? [];
       const auto: Record<string, string> = {};
       for (const h of rawHeaders) {

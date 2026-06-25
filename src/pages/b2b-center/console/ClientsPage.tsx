@@ -110,6 +110,10 @@ export default function ClientsPage() {
   const [editClient, setEditClient] = useState<Client | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [inviteFor, setInviteFor] = useState<{ id: string; name: string } | null>(null);
+  const [therapists, setTherapists] = useState<{ id: string; name: string }[]>([]);
+  const [therapistClientIds, setTherapistClientIds] = useState<Record<string, Set<string>>>({});
+  const [therapistFilter, setTherapistFilter] = useState<string>("all");
+
 
 
   const [visible, setVisible] = useState<Record<ColKey, boolean>>(() => {

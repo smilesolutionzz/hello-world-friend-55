@@ -31,7 +31,7 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string; betaVis
   { to: "assessments", label: "상담 및 평가 관리", icon: BookOpen, group: "이용자 및 상담/평가", betaVisible: false },
   // 재활 서비스 — 케어플 구조
   { to: "services/monthly", label: "월 서비스 관리", icon: LayoutDashboard, group: "재활 서비스", betaVisible: false },
-  { to: "services/records", label: "일일 서비스 관리 (회기기록)", icon: FileText, group: "재활 서비스", betaVisible: true },
+  // 일일 서비스 관리(회기기록)는 치료노트로 통합되어 별도 메뉴 제거 (services/records → intelligence/therapy-notes 리다이렉트)
   { to: "services/by-therapist", label: "선생님별 이용자 현황", icon: UserCog, group: "재활 서비스", betaVisible: false },
   { to: "services/attendance", label: "일별 접수인원 현황", icon: Users, group: "재활 서비스", betaVisible: false },
   // 인텔리전스 / 스토어

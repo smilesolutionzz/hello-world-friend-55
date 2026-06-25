@@ -104,6 +104,9 @@ export default function TherapyNotesPage() {
   const [clients, setClients] = useState<any[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");
   const [clientSearch, setClientSearch] = useState("");
+  const [therapists, setTherapists] = useState<any[]>([]);
+  const [selectedTherapist, setSelectedTherapist] = useState<string>("");
+  const [therapistClientIds, setTherapistClientIds] = useState<Record<string, Set<string>>>({});
   const [weekKey, setWeekKey] = useState(() => isoWeekKey(new Date()));
   const [uploads, setUploads] = useState<any[]>([]);
   const [report, setReport] = useState<any>(null);
@@ -151,8 +154,21 @@ export default function TherapyNotesPage() {
     if (demo) return;
     supabase.from("center_clients").select("id, name, guardian_phone").eq("center_id", centerId).in("status", ["enrolled", "waiting"]).order("name").then(({ data }) => {
       setClients(data || []);
-      if (data?.[0]) setSelectedClient(data[0].id);
+      if (data?.[0]) setSelectedClient((prev) => prev || data[0].id);
     });
+    // 선생님 목록 + 선생님→담당 아동 매핑 (회기 기반)
+    (async () => {
+      const [{ data: ts }, { data: ss }] = await Promise.all([
+        supabase.from("center_therapists").select("id, name, specialty, calendar_color").eq("center_id", centerId).order("name"),
+        supabase.from("center_sessions").select("therapist_id, client_id").eq("center_id", centerId).not("therapist_id", "is", null).not("client_id", "is", null),
+      ]);
+      setTherapists(ts || []);
+      const map: Record<string, Set<string>> = {};
+      (ss || []).forEach((s: any) => {
+        (map[s.therapist_id] ||= new Set()).add(s.client_id);
+      });
+      setTherapistClientIds(map);
+    })();
   }, [centerId, demo]);
 
   const loadWeek = async () => {
@@ -292,21 +308,74 @@ export default function TherapyNotesPage() {
           <p className="text-sm text-neutral-500 mt-1 break-keep">회기 일지 사진을 올리면 AI가 주간 치료노트 초안을 만들어드려요. 편집 후 보호자에게 바로 공유하세요.</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
+          <select
+            value={selectedTherapist}
+            onChange={(e) => { setSelectedTherapist(e.target.value); setSelectedClient(""); }}
+            className="border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white max-w-[180px]"
+            title="선생님을 고르면 담당 아동만 보여요"
+          >
+            <option value="">전체 선생님 ({therapists.length})</option>
+            {therapists.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}{therapistClientIds[t.id]?.size ? ` · ${therapistClientIds[t.id].size}명` : ""}
+              </option>
+            ))}
+          </select>
           <input
             value={clientSearch}
             onChange={(e) => setClientSearch(e.target.value)}
             placeholder="이용자 이름 검색"
             className="border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white w-40"
           />
-          <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white max-w-[200px]">
-            <option value="">이용자 선택 ({clients.filter(c => !clientSearch || c.name?.toLowerCase().includes(clientSearch.toLowerCase())).length}명)</option>
-            {clients
-              .filter(c => !clientSearch || c.name?.toLowerCase().includes(clientSearch.toLowerCase()))
-              .map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
+          {(() => {
+            const filtered = clients.filter((c) => {
+              if (selectedTherapist && !therapistClientIds[selectedTherapist]?.has(c.id)) return false;
+              if (clientSearch && !c.name?.toLowerCase().includes(clientSearch.toLowerCase())) return false;
+              return true;
+            });
+            return (
+              <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white max-w-[200px]">
+                <option value="">이용자 선택 ({filtered.length}명)</option>
+                {filtered.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            );
+          })()}
           <input type="week" value={weekKey.replace("-W", "-W")} onChange={(e) => setWeekKey(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white" />
         </div>
       </div>
+
+      {/* 선생님 선택 시 담당 아동 칩 — 클릭으로 바로 선택 */}
+      {selectedTherapist && (() => {
+        const ids = therapistClientIds[selectedTherapist] ?? new Set<string>();
+        const list = clients.filter((c) => ids.has(c.id));
+        const therapistName = therapists.find((t) => t.id === selectedTherapist)?.name ?? "선생님";
+        return (
+          <div className="bg-white rounded-2xl border border-neutral-200 p-4">
+            <p className="text-xs text-neutral-500 mb-2">
+              <span className="font-medium text-neutral-900">{therapistName}</span> 담당 아동 {list.length}명 · 클릭해서 선택
+            </p>
+            {list.length === 0 ? (
+              <p className="text-xs text-neutral-400">담당 회기가 없어요.</p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {list.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => setSelectedClient(c.id)}
+                    className={`px-3 py-1.5 text-xs rounded-full border transition ${
+                      selectedClient === c.id
+                        ? "bg-neutral-900 text-white border-neutral-900"
+                        : "bg-neutral-50 text-neutral-700 border-neutral-200 hover:border-neutral-400"
+                    }`}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* 이번 주 회기 기록 (구 일일 서비스 관리 통합) */}
       {selectedClient && (

@@ -404,7 +404,7 @@ function Stepper({ step }: { step: Step }) {
     { k: "preview", l: "미리보기" },
     { k: "done", l: "완료" },
   ];
-  const i = all.findIndex((s) => s.k === step || (step === "applying" && s.k === "preview"));
+  const i = all.findIndex((s) => s.k === step || (step === "applying" && s.k === "preview") || (step === "clientsOnly" && s.k === "preview"));
   return (
     <div className="flex items-center gap-1 mt-1.5">
       {all.map((s, idx) => (

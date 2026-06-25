@@ -35,9 +35,10 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
   const [sessions, setSessions] = useState<any[]>([]);
   const [therapists, setTherapists] = useState<any[]>([]);
   const [programs, setPrograms] = useState<any[]>([]);
-  const [edits, setEdits] = useState<Record<string, { consult: string; record: string; special: string; dirty?: boolean }>>({});
+  const [edits, setEdits] = useState<Record<string, { consult: string; record: string; special: string; keywords?: string; dirty?: boolean }>>({});
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [expandingId, setExpandingId] = useState<string | null>(null);
   const range = useMemo(() => weekRangeFromKey(weekKey), [weekKey]);
 
   useEffect(() => {

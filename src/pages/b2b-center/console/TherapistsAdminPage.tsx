@@ -136,11 +136,11 @@ export default function TherapistsAdminPage() {
       </div>
 
       <div className="mb-6 rounded-2xl border border-[#C8B88A]/40 bg-[#FAF6E8]/60 p-4">
-        <p className="text-[10px] tracking-widest text-[#8B7B4A] mb-1">TIP · 치료사 본인 일정 보기</p>
+        <p className="text-[10px] tracking-widest text-[#8B7B4A] mb-1">TIP · 치료사 본인 계정 연결 (초대코드 방식)</p>
         <ol className="text-sm text-neutral-800 space-y-1.5 list-decimal pl-5 break-keep">
-          <li><b>계정</b> 칸에 선생님 AIHPRO 가입 이메일을 입력하세요.</li>
-          <li>선생님께 <Link to="/therapist/my-schedule" className="font-mono text-xs px-1.5 py-0.5 rounded bg-white border border-neutral-300">/therapist/my-schedule</Link> 링크를 전달합니다.</li>
-          <li>선생님이 "내 계정 연결"을 누르면 <span className="text-emerald-700 font-medium">연결됨</span> 으로 표시됩니다.</li>
+          <li>오른쪽 표 <b>초대코드</b> 칸의 <b>코드 발급</b>을 누르면 6자리 코드가 만들어집니다 (30일 유효).</li>
+          <li>코드와 함께 <Link to="/therapist/claim" className="font-mono text-xs px-1.5 py-0.5 rounded bg-white border border-neutral-300">/therapist/claim</Link> 링크를 선생님께 전달하세요.</li>
+          <li>선생님이 AIHPRO에 가입·로그인 후 코드를 입력하면 <span className="text-emerald-700 font-medium">연결됨</span>으로 표시됩니다.</li>
         </ol>
       </div>
 
@@ -179,7 +179,7 @@ export default function TherapistsAdminPage() {
               <th className="text-left p-3">직급</th>
               <th className="text-left p-3">전공</th>
               <th className="text-left p-3">전화</th>
-              <th className="text-left p-3">계정</th>
+              <th className="text-left p-3">초대코드</th>
               <th className="text-left p-3">연결</th>
               <th className="text-left p-3">상태</th>
               <th className="text-right p-3">관리</th>
@@ -201,18 +201,26 @@ export default function TherapistsAdminPage() {
                   <td className="p-3 text-neutral-700">{r.title ?? "—"}</td>
                   <td className="p-3 text-neutral-700">{r.specialty ?? "—"}</td>
                   <td className="p-3 text-neutral-500">{r.phone ?? "—"}</td>
-                  <td className="p-3 text-neutral-500">{r.login_account ?? "—"}</td>
+                  <td className="p-3">
+                    <InviteCodeCell
+                      therapistId={r.id}
+                      code={r.invite_code}
+                      expiresAt={r.invite_code_expires_at}
+                      linked={linked}
+                      onIssued={(code, exp) => setRows((prev) => prev.map((x) => x.id === r.id ? { ...x, invite_code: code, invite_code_expires_at: exp } : x))}
+                    />
+                  </td>
                   <td className="p-3">
                     {linked ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-emerald-50 text-emerald-700 border border-emerald-200">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />연결됨
                       </span>
-                    ) : r.login_account ? (
+                    ) : r.invite_code ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-amber-50 text-amber-700 border border-amber-200">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />대기중
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-neutral-100 text-neutral-500 border border-neutral-200">미입력</span>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-neutral-100 text-neutral-500 border border-neutral-200">미발급</span>
                     )}
                   </td>
                   <td className="p-3">
@@ -489,3 +497,42 @@ function Field({ label, children, className = "" }: { label: string; children: R
     </div>
   );
 }
+
+function InviteCodeCell({ therapistId, code, expiresAt, linked, onIssued }: {
+  therapistId: string; code: string | null; expiresAt: string | null; linked: boolean;
+  onIssued: (code: string, expiresAt: string) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const expired = expiresAt && new Date(expiresAt) < new Date();
+
+  async function issue() {
+    setBusy(true);
+    const { data, error } = await supabase.rpc("issue_therapist_invite_code", { _therapist_id: therapistId });
+    setBusy(false);
+    if (error) { toast.error("코드 발급 실패: " + error.message); return; }
+    const exp = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
+    onIssued(data as string, exp);
+    try { await navigator.clipboard.writeText(data as string); toast.success(`코드 ${data} 가 발급되어 복사되었어요`); }
+    catch { toast.success(`코드 발급 완료: ${data}`); }
+  }
+
+  async function copy() {
+    if (!code) return;
+    try { await navigator.clipboard.writeText(code); toast.success("코드가 복사되었어요"); } catch {}
+  }
+
+  if (linked) return <span className="text-xs text-neutral-400">연결 완료</span>;
+
+  if (!code) {
+    return <Button size="sm" variant="outline" disabled={busy} onClick={issue} className="h-7 text-xs rounded-full">{busy ? "발급 중…" : "코드 발급"}</Button>;
+  }
+  return (
+    <div className="flex items-center gap-1">
+      <button onClick={copy} className={`font-mono text-xs px-2 py-1 rounded border ${expired ? "border-rose-200 bg-rose-50 text-rose-600 line-through" : "border-neutral-200 bg-neutral-50 hover:bg-neutral-100"}`} title="클릭해서 복사">
+        {code}
+      </button>
+      <button onClick={issue} disabled={busy} className="text-[10px] text-neutral-500 hover:text-neutral-900 underline">{busy ? "..." : "재발급"}</button>
+    </div>
+  );
+}
+

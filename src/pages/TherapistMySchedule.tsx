@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Calendar, Check, X, RotateCcw, ChevronLeft, ChevronRight, LogOut, Building2, Loader2 } from "lucide-react";
+import { Calendar, Check, X, RotateCcw, ChevronLeft, ChevronRight, LogOut, Building2, Loader2, FileText, Users } from "lucide-react";
 
 type Session = {
   id: string;
@@ -38,7 +38,7 @@ export default function TherapistMySchedule() {
   const [programs, setPrograms] = useState<any[]>([]);
   const [view, setView] = useState<"day" | "week">("week");
   const [cursor, setCursor] = useState(new Date());
-  const [claimAccount, setClaimAccount] = useState("");
+  const [claimCode, setClaimCode] = useState("");
   const [claiming, setClaiming] = useState(false);
 
   async function reload() {
@@ -63,18 +63,20 @@ export default function TherapistMySchedule() {
 
   async function handleClaim(e: React.FormEvent) {
     e.preventDefault();
-    if (!claimAccount.trim()) return;
+    if (!claimCode.trim()) return;
     setClaiming(true);
     try {
-      const { error } = await supabase.rpc("claim_therapist_account", { _login_account: claimAccount.trim() });
+      const { error } = await supabase.rpc("redeem_therapist_invite_code", { _code: claimCode.trim().toUpperCase() });
       if (error) throw error;
       toast({ title: "계정 연결 완료", description: "내 일정을 불러옵니다." });
-      setClaimAccount("");
+      setClaimCode("");
       await reload();
     } catch (e: any) {
-      const msg = e?.message?.includes("THERAPIST_NOT_FOUND")
-        ? "해당 계정으로 등록된 치료사가 없거나 이미 다른 계정에 연결되어 있어요. 기관장에게 문의해주세요."
-        : e?.message ?? "연결에 실패했어요.";
+      const m = e?.message ?? "";
+      const msg = m.includes("CODE_NOT_FOUND") ? "유효하지 않은 코드입니다. 기관장에게 다시 받아주세요."
+        : m.includes("CODE_EXPIRED") ? "코드가 만료되었어요. 재발급을 요청해주세요."
+        : m.includes("CODE_ALREADY_USED") ? "이미 다른 계정에 연결된 코드입니다."
+        : m || "연결에 실패했어요.";
       toast({ title: "연결 실패", description: msg, variant: "destructive" });
     } finally { setClaiming(false); }
   }
@@ -123,16 +125,17 @@ export default function TherapistMySchedule() {
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-md p-6">
           <div className="flex items-center gap-2 mb-2"><Building2 className="w-5 h-5 text-neutral-500" /><span className="text-xs tracking-widest text-neutral-400">THERAPIST · CONNECT</span></div>
-          <h1 className="text-xl font-semibold mb-1">기관 등록 계정 연결</h1>
-          <p className="text-sm text-neutral-500 mb-4 break-keep">기관장이 등록해 둔 치료사 계정과 지금 로그인한 아이디를 연결하면, 내 일정이 자동으로 동기화돼요.</p>
+          <h1 className="text-xl font-semibold mb-1">초대코드로 계정 연결</h1>
+          <p className="text-sm text-neutral-500 mb-4 break-keep">기관장이 발급한 6자리 초대코드를 입력하면 본인 일정과 담당 아동이 자동으로 연결됩니다.</p>
           <form onSubmit={handleClaim} className="space-y-3">
             <input
-              value={claimAccount}
-              onChange={(e) => setClaimAccount(e.target.value)}
-              placeholder="기관에서 받은 로그인 계정 (예: park.jiyoung)"
-              className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-sm focus:border-neutral-400 outline-none"
+              value={claimCode}
+              onChange={(e) => setClaimCode(e.target.value.toUpperCase())}
+              placeholder="예: A3K9PX"
+              maxLength={6}
+              className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-base font-mono tracking-widest text-center uppercase focus:border-neutral-400 outline-none"
             />
-            <button type="submit" disabled={claiming || !claimAccount.trim()} className="w-full px-4 py-3 rounded-xl bg-neutral-900 text-white text-sm font-medium disabled:opacity-40 inline-flex items-center justify-center gap-2">
+            <button type="submit" disabled={claiming || claimCode.trim().length !== 6} className="w-full px-4 py-3 rounded-xl bg-neutral-900 text-white text-sm font-medium disabled:opacity-40 inline-flex items-center justify-center gap-2">
               {claiming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
               내 계정에 연결
             </button>
@@ -155,6 +158,11 @@ export default function TherapistMySchedule() {
             <button onClick={() => setView("day")} className={`px-3 py-1 text-xs rounded-full ${view === "day" ? "bg-neutral-900 text-white" : "text-neutral-600"}`}>일</button>
             <button onClick={() => setView("week")} className={`px-3 py-1 text-xs rounded-full ${view === "week" ? "bg-neutral-900 text-white" : "text-neutral-600"}`}>주</button>
           </div>
+        </div>
+        <div className="px-4 pb-2 flex items-center gap-2 text-xs">
+          <span className="px-3 py-1 rounded-full bg-neutral-900 text-white">일정</span>
+          <Link to="/therapist/my-notes" className="px-3 py-1 rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-100 inline-flex items-center gap-1"><FileText className="w-3 h-3" /> 주간노트</Link>
+          <Link to="/therapist/my-clients" className="px-3 py-1 rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-100 inline-flex items-center gap-1"><Users className="w-3 h-3" /> 내 아동</Link>
         </div>
         <div className="px-4 pb-3 flex items-center justify-between">
           <button onClick={() => setCursor(addDays(cursor, view === "day" ? -1 : -7))} className="p-2 rounded-full hover:bg-neutral-100"><ChevronLeft className="w-4 h-4" /></button>

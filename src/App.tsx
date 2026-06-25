@@ -32,6 +32,8 @@ const CheckFlow = lazy(() => import("./pages/lite/CheckFlow"));
 const CheckDone = lazy(() => import("./pages/lite/CheckDone"));
 const TherapistSubscriptionTeaser = lazy(() => import("./pages/lite/TherapistSubscriptionTeaser"));
 const TherapistMySchedule = lazy(() => import("./pages/TherapistMySchedule"));
+const TherapistMyNotes = lazy(() => import("./pages/TherapistMyNotes"));
+const TherapistMyClients = lazy(() => import("./pages/TherapistMyClients"));
 const FindCenter = lazy(() => import("./pages/lite/FindCenter"));
 const PublicCenter = lazy(() => import("./pages/PublicCenter"));
 const HighlightAuth = lazy(() => import("./pages/HighlightAuth"));
@@ -295,6 +297,10 @@ const App = () => {
           <Route path="/check/done" element={<CheckDone />} />
           <Route path="/therapist-subscription" element={<TherapistSubscriptionTeaser />} />
           <Route path="/therapist/my-schedule" element={<TherapistMySchedule />} />
+          <Route path="/therapist/my-notes" element={<TherapistMyNotes />} />
+          <Route path="/therapist/my-clients" element={<TherapistMyClients />} />
+          <Route path="/therapist/my-clients/:id" element={<TherapistMyClients />} />
+          <Route path="/therapist/claim" element={<TherapistMySchedule />} />
           <Route path="/g/:token" element={<GuardianNotice />} />
           <Route path="/r/:token" element={<GuardianReportView />} />
           <Route path="/parent-share/:token" element={<ParentShareLandingPage />} />

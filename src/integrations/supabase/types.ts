@@ -3526,6 +3526,9 @@ export type Database = {
           center_id: string
           created_at: string
           id: string
+          invite_code: string | null
+          invite_code_expires_at: string | null
+          invite_redeemed_at: string | null
           last_login_at: string | null
           linked_user_id: string | null
           login_account: string | null
@@ -3544,6 +3547,9 @@ export type Database = {
           center_id: string
           created_at?: string
           id?: string
+          invite_code?: string | null
+          invite_code_expires_at?: string | null
+          invite_redeemed_at?: string | null
           last_login_at?: string | null
           linked_user_id?: string | null
           login_account?: string | null
@@ -3562,6 +3568,9 @@ export type Database = {
           center_id?: string
           created_at?: string
           id?: string
+          invite_code?: string | null
+          invite_code_expires_at?: string | null
+          invite_redeemed_at?: string | null
           last_login_at?: string | null
           linked_user_id?: string | null
           login_account?: string | null
@@ -18264,6 +18273,7 @@ export type Database = {
       }
       generate_invitation_code: { Args: never; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
+      generate_therapist_invite_code: { Args: never; Returns: string }
       get_admin_overview: {
         Args: never
         Returns: {
@@ -18665,6 +18675,10 @@ export type Database = {
         Args: { session_uuid: string }
         Returns: boolean
       }
+      issue_therapist_invite_code: {
+        Args: { _therapist_id: string }
+        Returns: string
+      }
       make_user_admin: { Args: { target_email: string }; Returns: boolean }
       mark_center_notifications_read: {
         Args: { _ids: string[] }
@@ -18697,6 +18711,7 @@ export type Database = {
         Args: { _code: string; _department?: string }
         Returns: Json
       }
+      redeem_therapist_invite_code: { Args: { _code: string }; Returns: Json }
       refresh_admin_analytics: { Args: never; Returns: undefined }
       revoke_premium_access: {
         Args: { target_user_id: string }

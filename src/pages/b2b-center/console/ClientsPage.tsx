@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, UserPlus, Upload, Send, Settings2, Check } from "lucide-react";
+import { Search, UserPlus, Upload, Send, Settings2, Check, Users } from "lucide-react";
+import { toast as sonnerToast } from "sonner";
 import ClientRegisterDialog from "@/components/b2b-center/ClientRegisterDialog";
 import InviteParentDialog from "@/components/b2b-center/InviteParentDialog";
 import ImportWizard from "@/components/b2b-center/ImportWizard";
 import { DEMO_CLIENTS } from "@/lib/b2bCenter/demoData";
 import { BETA_MODE } from "@/config/betaMode";
+
 
 type Ctx = { centerId: string; demo?: boolean };
 

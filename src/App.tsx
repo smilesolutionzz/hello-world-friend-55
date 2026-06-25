@@ -32,6 +32,8 @@ const CheckFlow = lazy(() => import("./pages/lite/CheckFlow"));
 const CheckDone = lazy(() => import("./pages/lite/CheckDone"));
 const TherapistSubscriptionTeaser = lazy(() => import("./pages/lite/TherapistSubscriptionTeaser"));
 const TherapistMySchedule = lazy(() => import("./pages/TherapistMySchedule"));
+const TherapistMyNotes = lazy(() => import("./pages/TherapistMyNotes"));
+const TherapistMyClients = lazy(() => import("./pages/TherapistMyClients"));
 const FindCenter = lazy(() => import("./pages/lite/FindCenter"));
 const PublicCenter = lazy(() => import("./pages/PublicCenter"));
 const HighlightAuth = lazy(() => import("./pages/HighlightAuth"));

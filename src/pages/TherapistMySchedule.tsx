@@ -38,7 +38,7 @@ export default function TherapistMySchedule() {
   const [programs, setPrograms] = useState<any[]>([]);
   const [view, setView] = useState<"day" | "week">("week");
   const [cursor, setCursor] = useState(new Date());
-  const [claimAccount, setClaimAccount] = useState("");
+  const [claimCode, setClaimCode] = useState("");
   const [claiming, setClaiming] = useState(false);
 
   async function reload() {

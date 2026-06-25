@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Calendar, Check, X, RotateCcw, ChevronLeft, ChevronRight, LogOut, Building2, Loader2 } from "lucide-react";
+import { Calendar, Check, X, RotateCcw, ChevronLeft, ChevronRight, LogOut, Building2, Loader2, FileText, Users } from "lucide-react";
 
 type Session = {
   id: string;

@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2, Download, FileSpreadsheet, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import * as XLSX from "xlsx";
 import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
+import WeeklySessionRecords from "@/components/b2b-center/WeeklySessionRecords";
 import {
   resolveTemplate,
   WEEKLY_SECTION_KEYS,

@@ -156,13 +156,42 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
                   </div>
                   {status && <span className={`text-[11px] px-2 py-0.5 rounded-full border ${status.tone}`}>{status.label}</span>}
                 </div>
+                {/* AI 키워드 한 줄 입력 + 확장 */}
+                <div className="flex items-stretch gap-2 mb-3">
+                  <input
+                    value={e.keywords ?? ""}
+                    onChange={(ev) => updateEdit(s.id, "keywords", ev.target.value)}
+                    onKeyDown={(ev) => { if (ev.key === "Enter") { ev.preventDefault(); expandWithAI(s.id); } }}
+                    placeholder="예) 미끄럼틀 5회, 처음엔 거부 → 후반엔 자발 시도. 종료 시 정리 잘함"
+                    className="flex-1 px-3 py-2 rounded-lg border border-[#C8B88A]/50 bg-[#FBF8F1] text-sm focus:outline-none focus:border-[#C8B88A]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => expandWithAI(s.id)}
+                    disabled={expandingId === s.id || !(e.keywords ?? "").trim()}
+                    className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#C8B88A] text-neutral-900 text-xs font-medium hover:bg-[#b9a877] disabled:opacity-40 disabled:cursor-not-allowed"
+                    title="키워드를 3칸으로 확장"
+                  >
+                    {expandingId === s.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                    {expandingId === s.id ? "확장 중…" : "AI 확장"}
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                  <textarea value={e.consult} onChange={(ev) => updateEdit(s.id, "consult", ev.target.value)} placeholder="상담내용" rows={3}
-                    className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
-                  <textarea value={e.record} onChange={(ev) => updateEdit(s.id, "record", ev.target.value)} placeholder="기록내용" rows={3}
-                    className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
-                  <textarea value={e.special} onChange={(ev) => updateEdit(s.id, "special", ev.target.value)} placeholder="특이사항" rows={3}
-                    className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
+                  <div>
+                    <label className="text-[11px] text-neutral-500 mb-1 block">활동내용</label>
+                    <textarea value={e.consult} onChange={(ev) => updateEdit(s.id, "consult", ev.target.value)} placeholder="회기에 진행한 활동" rows={3}
+                      className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-neutral-500 mb-1 block">주관평가</label>
+                    <textarea value={e.record} onChange={(ev) => updateEdit(s.id, "record", ev.target.value)} placeholder="치료사 시각의 수행·반응" rows={3}
+                      className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-neutral-500 mb-1 block">특이사항</label>
+                    <textarea value={e.special} onChange={(ev) => updateEdit(s.id, "special", ev.target.value)} placeholder="컨디션·다음 회기 메모" rows={3}
+                      className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
+                  </div>
                 </div>
                 <div className="flex justify-end mt-2">
                   <button

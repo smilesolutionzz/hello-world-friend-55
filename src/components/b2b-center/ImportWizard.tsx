@@ -20,7 +20,7 @@ type Props = {
   onImported?: () => void;
 };
 
-type Step = "upload" | "map" | "options" | "preview" | "applying" | "done";
+type Step = "upload" | "clientsOnly" | "map" | "options" | "preview" | "applying" | "done";
 
 const SESSION_KEYS = SESSION_COLUMN_SPEC.map((s) => s.key);
 const KEY_LABEL: Record<string, string> = Object.fromEntries(SESSION_COLUMN_SPEC.map((s) => [s.key, s.header]));
@@ -48,6 +48,21 @@ export default function ImportWizard({ demo, centerId, onClose, onMergeDemo, onI
       }
       // 세션 시트의 헤더를 표준키로 자동 매핑 시도
       const sessSrc = p.sheets.find((s) => s.entity === "sessions");
+      const clientsSrc = p.sheets.find((s) => s.entity === "clients");
+      const hasSessionRows = (sessSrc?.rows.length ?? 0) > 0;
+      const hasClientRows = (clientsSrc?.rows.length ?? 0) > 0;
+
+      // 이용자관리 전용 엑셀: 세션이 없으면 바로 이용자 등록 단계로
+      if (!hasSessionRows && hasClientRows) {
+        setColumnMap({});
+        setStep("clientsOnly");
+        return;
+      }
+      if (!hasSessionRows && !hasClientRows) {
+        toast({ title: "엑셀에서 데이터를 찾지 못했어요", description: "헤더에 ‘이름/이용자’ 또는 ‘일자/시작시간’이 포함됐는지 확인해주세요.", variant: "destructive" });
+        return;
+      }
+
       const rawHeaders = p.rawSheets.find((r) => sessSrc?.source.startsWith(r.name))?.headers ?? [];
       const auto: Record<string, string> = {};
       for (const h of rawHeaders) {
@@ -194,6 +209,48 @@ export default function ImportWizard({ demo, centerId, onClose, onMergeDemo, onI
             </div>
           )}
 
+          {step === "clientsOnly" && parsed && (() => {
+            const cs = parsed.sheets.find((s) => s.entity === "clients");
+            const rows = cs?.rows ?? [];
+            return (
+              <div className="space-y-3">
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-4">
+                  <p className="text-[10px] tracking-widest text-emerald-700 mb-1">이용자관리 엑셀 인식됨</p>
+                  <p className="text-sm font-medium text-neutral-900">총 {rows.length}명의 이용자가 감지됐어요.</p>
+                  <p className="text-xs text-neutral-600 mt-1 break-keep">아래 미리보기를 확인한 뒤 [이용자 등록]을 누르면 기존 이용자는 정보가 보강되고, 새 이용자는 추가돼요.</p>
+                </div>
+                <div className="bg-neutral-50 rounded-xl border border-neutral-200 max-h-[45vh] overflow-auto">
+                  <table className="w-full text-xs">
+                    <thead className="bg-neutral-100 text-neutral-600 sticky top-0">
+                      <tr>
+                        <th className="text-left px-3 py-2">이름</th>
+                        <th className="text-left px-3 py-2">생년월일</th>
+                        <th className="text-left px-3 py-2">성별</th>
+                        <th className="text-left px-3 py-2 hidden sm:table-cell">연락처</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.slice(0, 200).map((r, i) => (
+                        <tr key={i} className="border-t border-neutral-200">
+                          <td className="px-3 py-1.5 font-medium">{r.name ?? r.client_name ?? "—"}</td>
+                          <td className="px-3 py-1.5 tabular-nums">{r.birth_date ?? "—"}</td>
+                          <td className="px-3 py-1.5">{r.gender ?? "—"}</td>
+                          <td className="px-3 py-1.5 hidden sm:table-cell">{r.phone ?? r.guardian_phone ?? "—"}</td>
+                        </tr>
+                      ))}
+                      {rows.length > 200 && (
+                        <tr><td colSpan={4} className="px-3 py-2 text-center text-neutral-400">… 외 {rows.length - 200}명</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                {errMsg && <p className="text-xs text-rose-600 bg-rose-50 rounded-lg px-3 py-2">⚠ {errMsg}</p>}
+              </div>
+            );
+          })()}
+
+
+
           {step === "map" && parsed && (
             <div className="space-y-3">
               <p className="text-xs text-neutral-500 break-keep">엑셀의 각 컬럼이 일정의 어떤 칸에 들어갈지 골라주세요. 자동 인식된 항목은 그대로 두면 돼요.</p>
@@ -311,7 +368,12 @@ export default function ImportWizard({ demo, centerId, onClose, onMergeDemo, onI
           </div>
           <div className="flex items-center gap-2">
             {step !== "upload" && step !== "applying" && step !== "done" && (
-              <button onClick={() => setStep(step === "map" ? "upload" : step === "options" ? "map" : "options")} className="text-xs px-3 py-2 text-neutral-600">이전</button>
+              <button onClick={() => setStep(step === "map" || step === "clientsOnly" ? "upload" : step === "options" ? "map" : "options")} className="text-xs px-3 py-2 text-neutral-600">이전</button>
+            )}
+            {step === "clientsOnly" && (
+              <button disabled={busy} onClick={handleApply} className="text-xs px-4 py-2 rounded-full bg-neutral-900 text-white inline-flex items-center gap-1 disabled:opacity-40">
+                {busy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />} 이용자 등록
+              </button>
             )}
             {step === "upload" && <button onClick={onClose} className="text-xs px-4 py-2 text-neutral-500">닫기</button>}
             {step === "map" && parsed && (
@@ -342,7 +404,7 @@ function Stepper({ step }: { step: Step }) {
     { k: "preview", l: "미리보기" },
     { k: "done", l: "완료" },
   ];
-  const i = all.findIndex((s) => s.k === step || (step === "applying" && s.k === "preview"));
+  const i = all.findIndex((s) => s.k === step || (step === "applying" && s.k === "preview") || (step === "clientsOnly" && s.k === "preview"));
   return (
     <div className="flex items-center gap-1 mt-1.5">
       {all.map((s, idx) => (

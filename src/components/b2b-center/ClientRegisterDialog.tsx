@@ -133,7 +133,7 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, onC
     }
     setSaving(true);
     try {
-      const { error } = await supabase.from("center_clients").insert({
+      const payload = {
         center_id: centerId,
         name: form.name.trim(),
         gender: form.gender,
@@ -146,24 +146,47 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, onC
         member_no: form.member_no || null,
         initial_consult_date: form.initial_consult_date || null,
         meta: {
+          ...(client?.meta ?? {}),
           email: form.email || null,
           school: form.school || null,
           source: form.source && form.source !== "선택안함" ? form.source : null,
           guardian_label: form.guardian_label || null,
           note: form.note || null,
+          last_modified_at: new Date().toISOString().slice(0, 16).replace("T", " "),
         },
-      });
+      };
+      const { error } = isEdit
+        ? await supabase.from("center_clients").update(payload).eq("id", client.id)
+        : await supabase.from("center_clients").insert(payload);
       if (error) throw error;
-      toast({ title: "이용자 등록 완료", description: form.name });
+      toast({ title: isEdit ? "이용자 정보 저장" : "이용자 등록 완료", description: form.name });
       onCreated?.();
-      if (continueAfter) { reset(); }
+      if (!isEdit && continueAfter) { reset(); }
       else { onClose(); }
     } catch (e: any) {
-      toast({ title: "등록 실패", description: e?.message ?? String(e), variant: "destructive" });
+      toast({ title: isEdit ? "저장 실패" : "등록 실패", description: e?.message ?? String(e), variant: "destructive" });
     } finally {
       setSaving(false);
     }
   }
+
+  async function handleDelete() {
+    if (!isEdit || demo) return;
+    if (!confirm(`'${client.name}' 이용자를 삭제할까요? 연결된 회기 기록은 유지되지만 이용자 정보는 복구되지 않습니다.`)) return;
+    setDeleting(true);
+    try {
+      const { error } = await supabase.from("center_clients").delete().eq("id", client.id);
+      if (error) throw error;
+      toast({ title: "이용자 삭제됨", description: client.name });
+      onCreated?.();
+      onClose();
+    } catch (e: any) {
+      toast({ title: "삭제 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setDeleting(false);
+    }
+  }
+
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 overflow-y-auto" onClick={onClose}>

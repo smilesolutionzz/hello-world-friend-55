@@ -127,7 +127,30 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, exi
     if (errors[k]) setErrors((e) => ({ ...e, [k]: undefined }));
   }
 
-  async function submit() {
+  function findDuplicate(): { row: any; reason: string } | null {
+    if (!existingClients?.length) return null;
+    const norm = (s: string | null | undefined) => (s ?? "").replace(/\D/g, "");
+    const myPhone = norm(form.phone);
+    const myGuardian = norm(form.guardian_phone);
+    const myBirth = (form.birth_date || "").trim();
+    for (const r of existingClients) {
+      if (isEdit && r.id === client?.id) continue;
+      const rPhone = norm(r.phone);
+      const rGuardian = norm(r.guardian_phone);
+      const rBirth = (r.birth_date || "").trim();
+      if (myBirth && rBirth === myBirth) {
+        if (myPhone && rPhone === myPhone) return { row: r, reason: `생년월일·이용자 연락처가 동일합니다` };
+        if (myGuardian && rGuardian === myGuardian) return { row: r, reason: `생년월일·보호자 연락처가 동일합니다` };
+        if (r.name && form.name.trim() === r.name.trim()) return { row: r, reason: `이름·생년월일이 동일합니다` };
+      }
+      if (myPhone && myPhone.length >= 9 && rPhone === myPhone) return { row: r, reason: `이용자 연락처가 동일합니다` };
+      if (myGuardian && myGuardian.length >= 9 && rGuardian === myGuardian && r.name?.trim() === form.name.trim())
+        return { row: r, reason: `이름·보호자 연락처가 동일합니다` };
+    }
+    return null;
+  }
+
+  async function submit(opts?: { skipDupe?: boolean }) {
     const parsed = schema.safeParse(form);
     if (!parsed.success) {
       const e: any = {};
@@ -141,7 +164,15 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, exi
       onClose();
       return;
     }
+    if (!opts?.skipDupe) {
+      const dup = findDuplicate();
+      if (dup) {
+        setDuplicateWarning(`이미 등록된 이용자와 중복될 수 있어요: '${dup.row.name}' — ${dup.reason}`);
+        return;
+      }
+    }
     setSaving(true);
+    setDuplicateWarning(null);
     try {
       const payload = {
         center_id: centerId,
@@ -182,7 +213,12 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, exi
 
   async function handleDelete() {
     if (!isEdit || demo) return;
-    if (!confirm(`'${client.name}' 이용자를 삭제할까요? 연결된 회기 기록은 유지되지만 이용자 정보는 복구되지 않습니다.`)) return;
+    setConfirmDelete(false);
+    if (onDelete) {
+      // delegate to parent (enables Undo via toast)
+      await onDelete();
+      return;
+    }
     setDeleting(true);
     try {
       const { error } = await supabase.from("center_clients").delete().eq("id", client.id);
@@ -196,6 +232,7 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, exi
       setDeleting(false);
     }
   }
+
 
 
   return (

@@ -368,7 +368,12 @@ export default function ImportWizard({ demo, centerId, onClose, onMergeDemo, onI
           </div>
           <div className="flex items-center gap-2">
             {step !== "upload" && step !== "applying" && step !== "done" && (
-              <button onClick={() => setStep(step === "map" ? "upload" : step === "options" ? "map" : "options")} className="text-xs px-3 py-2 text-neutral-600">이전</button>
+              <button onClick={() => setStep(step === "map" || step === "clientsOnly" ? "upload" : step === "options" ? "map" : "options")} className="text-xs px-3 py-2 text-neutral-600">이전</button>
+            )}
+            {step === "clientsOnly" && (
+              <button disabled={busy} onClick={handleApply} className="text-xs px-4 py-2 rounded-full bg-neutral-900 text-white inline-flex items-center gap-1 disabled:opacity-40">
+                {busy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />} 이용자 등록
+              </button>
             )}
             {step === "upload" && <button onClick={onClose} className="text-xs px-4 py-2 text-neutral-500">닫기</button>}
             {step === "map" && parsed && (

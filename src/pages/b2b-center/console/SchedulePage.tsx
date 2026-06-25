@@ -1622,12 +1622,27 @@ function SessionDetail({ s, onClose, onDelete, onEdit, onStatusChange, therapist
         </div>
 
         {/* footer actions */}
-        {(onDelete || onEdit) && (
+        {(onDelete || onEdit || onStatusChange) && (
           <footer className="px-6 md:px-8 py-4 border-t border-neutral-100 bg-white flex flex-wrap gap-2">
             <button onClick={onClose} className="px-5 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
               닫기
             </button>
             <div className="flex-1" />
+            {onStatusChange && s.status === "scheduled" && (
+              <button onClick={() => onStatusChange("cancelled")} className="px-5 py-2.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700 text-sm font-medium hover:bg-rose-100">
+                일정 취소
+              </button>
+            )}
+            {onStatusChange && s.status === "scheduled" && (
+              <button onClick={() => onStatusChange("completed")} className="px-5 py-2.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm font-medium hover:bg-emerald-100">
+                완료 처리
+              </button>
+            )}
+            {onStatusChange && s.status && s.status !== "scheduled" && (
+              <button onClick={() => onStatusChange("scheduled")} className="px-5 py-2.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700 text-sm font-medium hover:bg-amber-100">
+                예정으로 되돌리기
+              </button>
+            )}
             {onEdit && !s.therapist_id && (
               <button onClick={onEdit} className="px-5 py-2.5 rounded-full bg-amber-50 text-amber-700 text-sm font-medium border border-amber-200 hover:bg-amber-100">
                 선생님 배정하기

@@ -69,8 +69,48 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
     return () => { cancelled = true; };
   }, [centerId, clientId, range[0], range[1]]);
 
-  const updateEdit = (id: string, key: "consult" | "record" | "special", value: string) => {
-    setEdits((p) => ({ ...p, [id]: { ...p[id], [key]: value, dirty: true } }));
+  const updateEdit = (id: string, key: "consult" | "record" | "special" | "keywords", value: string) => {
+    setEdits((p) => ({ ...p, [id]: { ...p[id], [key]: value, dirty: key === "keywords" ? p[id]?.dirty : true } }));
+  };
+
+  const expandWithAI = async (id: string) => {
+    const e = edits[id]; if (!e) return;
+    const kw = (e.keywords ?? "").trim();
+    if (!kw) { toast({ title: "키워드를 먼저 입력해주세요", description: "예: 미끄럼틀 5회, 처음엔 거부 → 후반엔 자발 시도" }); return; }
+    const session = sessions.find((s) => s.id === id);
+    const th = therapists.find((t) => t.id === session?.therapist_id);
+    const pg = programs.find((p) => p.id === session?.program_id);
+    setExpandingId(id);
+    try {
+      const { data, error } = await supabase.functions.invoke("expand-session-record", {
+        body: {
+          keywords: kw,
+          context: {
+            program: pg?.name,
+            therapist: th?.name,
+            date: session?.session_date,
+            time: session?.start_time?.slice(0, 5),
+          },
+        },
+      });
+      if (error) throw error;
+      const out = data ?? {};
+      setEdits((p) => ({
+        ...p,
+        [id]: {
+          ...p[id],
+          consult: out.activity || p[id]?.consult || "",
+          record: out.evaluation || p[id]?.record || "",
+          special: out.special || p[id]?.special || "",
+          dirty: true,
+        },
+      }));
+      toast({ title: "AI 확장 완료", description: "내용을 확인하고 다듬은 뒤 저장하세요." });
+    } catch (err: any) {
+      toast({ title: "AI 확장 실패", description: err?.message ?? String(err), variant: "destructive" });
+    } finally {
+      setExpandingId(null);
+    }
   };
 
   const saveOne = async (id: string) => {

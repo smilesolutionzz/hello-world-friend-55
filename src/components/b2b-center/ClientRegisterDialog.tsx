@@ -194,10 +194,11 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, onC
         {/* Header */}
         <div className="px-8 pt-7 pb-5 border-b border-neutral-100 flex items-start justify-between">
           <div>
-            <p className="text-[10px] tracking-[0.2em] text-[#C8B88A] mb-1">NEW CLIENT</p>
-            <h2 className="text-xl font-semibold">이용자 등록</h2>
-            <p className="text-xs text-neutral-500 mt-1">기본 정보만 입력해도 됩니다. 나머지는 언제든 콘솔에서 채울 수 있어요.</p>
+            <p className="text-[10px] tracking-[0.2em] text-[#C8B88A] mb-1">{isEdit ? "EDIT CLIENT" : "NEW CLIENT"}</p>
+            <h2 className="text-xl font-semibold">{isEdit ? "이용자 정보 수정" : "이용자 등록"}</h2>
+            <p className="text-xs text-neutral-500 mt-1">{isEdit ? "변경할 항목만 수정하고 저장하세요." : "기본 정보만 입력해도 됩니다. 나머지는 언제든 콘솔에서 채울 수 있어요."}</p>
           </div>
+
           <button onClick={onClose} className="p-1.5 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
         </div>
 

@@ -64,8 +64,11 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, exi
   const isEdit = !!client?.id;
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [duplicateWarning, setDuplicateWarning] = useState<string | null>(null);
   const [continueAfter, setContinueAfter] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
+
   const [form, setForm] = useState<FormState>({
     name: "", gender: "여", birth_date: "", member_no: "", initial_consult_date: "",
     guardian_label: "모", phone: "", guardian_phone: "", email: "",

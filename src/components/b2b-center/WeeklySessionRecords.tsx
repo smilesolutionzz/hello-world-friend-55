@@ -132,7 +132,7 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
     <div className="bg-white rounded-3xl border border-neutral-200 p-6">
       <div className="mb-4">
         <h2 className="font-semibold">이번 주 회기 기록 ({sessions.length}건)</h2>
-        <p className="text-xs text-neutral-500 mt-0.5">회기마다 상담/기록/특이사항을 입력하면 주간 AI 노트 생성에 자동 반영됩니다.</p>
+        <p className="text-xs text-neutral-500 mt-0.5">키워드 한 줄만 적고 <span className="font-medium text-[#8B7A4A]">AI 확장</span>을 누르면 활동내용·주관평가·특이사항 3칸을 자동으로 채워드려요.</p>
       </div>
       {loading ? (
         <p className="text-sm text-neutral-400 py-6 text-center">불러오는 중…</p>

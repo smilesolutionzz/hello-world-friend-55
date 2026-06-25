@@ -1563,7 +1563,7 @@ function SessionRow({ s, therapist, clientName, programName, onPick }: any) {
 }
 
 // ===== 상세 화면 (Carepl 스타일 full-bleed 사이드 시트) =====
-function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, programName }: any) {
+function SessionDetail({ s, onClose, onDelete, onEdit, onStatusChange, therapist, clientName, programName }: any) {
   const th = therapist(s.therapist_id);
   const meta = STATUS_META[s.status as StatusCode];
   const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);

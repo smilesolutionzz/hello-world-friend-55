@@ -87,15 +87,16 @@ serve(async (req) => {
     const centerBranding = (org as any)?.branding ?? null;
 
 
-    // 2) Scheduled sessions in month
+    // 2) Scheduled sessions in month (include meta.records — therapist-authored treatment notes)
     const { data: sessions } = await admin
       .from("center_sessions")
-      .select("id, session_date, start_time, end_time, status, note, therapist_id, program_id")
+      .select("id, session_date, start_time, end_time, status, note, therapist_id, program_id, meta")
       .eq("center_id", centerId)
       .eq("client_id", clientId)
       .gte("session_date", start)
       .lte("session_date", end)
       .order("session_date", { ascending: true });
+
 
     // 2b) Parsed session logs (the real source of truth for what happened)
     const { data: uploads } = await admin

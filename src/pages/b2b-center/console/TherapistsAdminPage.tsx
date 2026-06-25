@@ -179,7 +179,7 @@ export default function TherapistsAdminPage() {
               <th className="text-left p-3">직급</th>
               <th className="text-left p-3">전공</th>
               <th className="text-left p-3">전화</th>
-              <th className="text-left p-3">계정</th>
+              <th className="text-left p-3">초대코드</th>
               <th className="text-left p-3">연결</th>
               <th className="text-left p-3">상태</th>
               <th className="text-right p-3">관리</th>
@@ -201,18 +201,26 @@ export default function TherapistsAdminPage() {
                   <td className="p-3 text-neutral-700">{r.title ?? "—"}</td>
                   <td className="p-3 text-neutral-700">{r.specialty ?? "—"}</td>
                   <td className="p-3 text-neutral-500">{r.phone ?? "—"}</td>
-                  <td className="p-3 text-neutral-500">{r.login_account ?? "—"}</td>
+                  <td className="p-3">
+                    <InviteCodeCell
+                      therapistId={r.id}
+                      code={r.invite_code}
+                      expiresAt={r.invite_code_expires_at}
+                      linked={linked}
+                      onIssued={(code, exp) => setRows((prev) => prev.map((x) => x.id === r.id ? { ...x, invite_code: code, invite_code_expires_at: exp } : x))}
+                    />
+                  </td>
                   <td className="p-3">
                     {linked ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-emerald-50 text-emerald-700 border border-emerald-200">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />연결됨
                       </span>
-                    ) : r.login_account ? (
+                    ) : r.invite_code ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-amber-50 text-amber-700 border border-amber-200">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />대기중
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-neutral-100 text-neutral-500 border border-neutral-200">미입력</span>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-neutral-100 text-neutral-500 border border-neutral-200">미발급</span>
                     )}
                   </td>
                   <td className="p-3">

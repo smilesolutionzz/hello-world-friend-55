@@ -125,16 +125,17 @@ export default function TherapistMySchedule() {
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-md p-6">
           <div className="flex items-center gap-2 mb-2"><Building2 className="w-5 h-5 text-neutral-500" /><span className="text-xs tracking-widest text-neutral-400">THERAPIST · CONNECT</span></div>
-          <h1 className="text-xl font-semibold mb-1">기관 등록 계정 연결</h1>
-          <p className="text-sm text-neutral-500 mb-4 break-keep">기관장이 등록해 둔 치료사 계정과 지금 로그인한 아이디를 연결하면, 내 일정이 자동으로 동기화돼요.</p>
+          <h1 className="text-xl font-semibold mb-1">초대코드로 계정 연결</h1>
+          <p className="text-sm text-neutral-500 mb-4 break-keep">기관장이 발급한 6자리 초대코드를 입력하면 본인 일정과 담당 아동이 자동으로 연결됩니다.</p>
           <form onSubmit={handleClaim} className="space-y-3">
             <input
-              value={claimAccount}
-              onChange={(e) => setClaimAccount(e.target.value)}
-              placeholder="기관에서 받은 로그인 계정 (예: park.jiyoung)"
-              className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-sm focus:border-neutral-400 outline-none"
+              value={claimCode}
+              onChange={(e) => setClaimCode(e.target.value.toUpperCase())}
+              placeholder="예: A3K9PX"
+              maxLength={6}
+              className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-base font-mono tracking-widest text-center uppercase focus:border-neutral-400 outline-none"
             />
-            <button type="submit" disabled={claiming || !claimAccount.trim()} className="w-full px-4 py-3 rounded-xl bg-neutral-900 text-white text-sm font-medium disabled:opacity-40 inline-flex items-center justify-center gap-2">
+            <button type="submit" disabled={claiming || claimCode.trim().length !== 6} className="w-full px-4 py-3 rounded-xl bg-neutral-900 text-white text-sm font-medium disabled:opacity-40 inline-flex items-center justify-center gap-2">
               {claiming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
               내 계정에 연결
             </button>

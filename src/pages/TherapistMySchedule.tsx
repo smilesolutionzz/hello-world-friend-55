@@ -159,6 +159,11 @@ export default function TherapistMySchedule() {
             <button onClick={() => setView("week")} className={`px-3 py-1 text-xs rounded-full ${view === "week" ? "bg-neutral-900 text-white" : "text-neutral-600"}`}>주</button>
           </div>
         </div>
+        <div className="px-4 pb-2 flex items-center gap-2 text-xs">
+          <span className="px-3 py-1 rounded-full bg-neutral-900 text-white">일정</span>
+          <Link to="/therapist/my-notes" className="px-3 py-1 rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-100 inline-flex items-center gap-1"><FileText className="w-3 h-3" /> 주간노트</Link>
+          <Link to="/therapist/my-clients" className="px-3 py-1 rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-100 inline-flex items-center gap-1"><Users className="w-3 h-3" /> 내 아동</Link>
+        </div>
         <div className="px-4 pb-3 flex items-center justify-between">
           <button onClick={() => setCursor(addDays(cursor, view === "day" ? -1 : -7))} className="p-2 rounded-full hover:bg-neutral-100"><ChevronLeft className="w-4 h-4" /></button>
           <p className="text-sm font-medium">

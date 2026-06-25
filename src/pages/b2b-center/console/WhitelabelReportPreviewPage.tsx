@@ -277,18 +277,33 @@ export default function WhitelabelReportPreviewPage() {
 
         {/* === Live Preview === */}
         <div className="bg-neutral-100 rounded-2xl p-6 overflow-auto">
-          <div className="flex items-center gap-2 mb-3 text-xs text-neutral-500">
-            <Eye className="w-3.5 h-3.5" /> 실시간 미리보기 (A4)
+          <div className="flex items-center justify-between mb-3 text-xs text-neutral-500">
+            <div className="flex items-center gap-2">
+              <Eye className="w-3.5 h-3.5" /> 실시간 미리보기 (A4) — {tplTab === "monthly" ? "월간 리포트" : "주간 노트"}
+            </div>
+            <div className="text-[10px] text-neutral-400">편집과 동시에 반영됩니다</div>
           </div>
           <div className="mx-auto bg-white shadow-sm" style={{ width: "210mm", minHeight: "297mm" }}>
             <div ref={previewRef} style={{ padding: "18mm 16mm", color: "#1f2937", fontFamily: "'Pretendard Variable', Pretendard, sans-serif", lineHeight: 1.6, fontSize: 12 }}>
-              <SampleReport
-                centerName={centerName} tagline={tagline} therapist={therapist}
-                logoText={logoText} logoBg={logoBg} logoFg={logoFg}
-                phone={phone} address={address}
-                headerGradient={headerGradient} accent={c1}
-                childName={childName} period={period}
-              />
+              {tplTab === "monthly" ? (
+                <SampleReport
+                  centerName={centerName} tagline={tagline} therapist={therapist}
+                  logoText={logoText} logoBg={logoBg} logoFg={logoFg}
+                  phone={phone} address={address}
+                  headerGradient={headerGradient} accent={c1}
+                  childName={childName} period={period}
+                  template={template.monthly}
+                />
+              ) : (
+                <SampleWeeklyNote
+                  centerName={centerName} tagline={tagline} therapist={therapist}
+                  logoText={logoText} logoBg={logoBg} logoFg={logoFg}
+                  phone={phone} address={address}
+                  headerGradient={headerGradient} accent={c1}
+                  childName={childName} period={period}
+                  template={template.weekly}
+                />
+              )}
             </div>
           </div>
         </div>

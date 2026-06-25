@@ -352,17 +352,8 @@ serve(async (req) => {
       );
     }
 
-    // Map raw program category/name to a parent-friendly developmental domain
-    const mapAreaToDomain = (a: string): string => {
-      const t = a.replace(/\s+/g, "");
-      if (/(특수체육|운동|신체|감통|감각통합|체육|놀이체육)/.test(t)) return "운동·신체 발달";
-      if (/(인지|학습|집중|주의|수학|읽기|쓰기학습)/.test(t)) return "인지·학습";
-      if (/(언어|말|발화|조음|쓰기|읽기언어)/.test(t)) return "언어·의사소통";
-      if (/(사회|상호작용|또래|놀이치료|정서사회)/.test(t)) return "사회성·상호작용";
-      if (/(정서|행동|조절|감정)/.test(t)) return "정서·행동 조절";
-      if (/(미술|음악|예술)/.test(t)) return "표현·창의";
-      return a;
-    };
+
+
 
     async function generateTrack(track: TrackData) {
       const recBlock = track.recordRows.map((r, i) => {

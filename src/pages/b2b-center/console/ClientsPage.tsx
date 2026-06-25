@@ -269,8 +269,12 @@ export default function ClientsPage() {
                 </div>
               </td></tr>
             ) : filtered.map((r) => (
-              <tr key={r.id} className="hover:bg-neutral-50/50 group">
-                <td className="p-3 font-medium text-neutral-900 border-t border-r border-neutral-100 bg-white sticky left-0 z-10 group-hover:bg-neutral-50/80 whitespace-nowrap">{r.name}</td>
+              <tr key={r.id} onClick={() => !demo && setEditClient(r)}
+                className={`group ${demo ? "" : "cursor-pointer hover:bg-neutral-50/80"}`}>
+                <td className="p-3 font-medium text-neutral-900 border-t border-r border-neutral-100 bg-white sticky left-0 z-10 group-hover:bg-neutral-50/80 whitespace-nowrap">
+                  <span className={demo ? "" : "underline decoration-dotted decoration-neutral-300 underline-offset-4 group-hover:decoration-neutral-600"}>{r.name}</span>
+                </td>
+
                 {activeCols.map((c) => (
                   <td key={c.key} className="p-3 border-t border-neutral-100">{renderCell(c.key, r)}</td>
                 ))}

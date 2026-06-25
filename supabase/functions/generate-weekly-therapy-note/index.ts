@@ -131,6 +131,9 @@ serve(async (req) => {
 [이번 주 예약/진행 회기]
 ${scheduleSummary}
 
+[치료사가 직접 작성한 회기기록 (상담/기록/특이사항)]
+${recordsSummary}
+
 [치료사 일지(사진)에서 추출한 내용]
 ${uploadSummary}
 

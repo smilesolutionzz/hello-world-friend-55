@@ -204,6 +204,51 @@ export default function SchedulePage() {
     setSelected(null);
   }
 
+  async function handleStatusChange(s: any, status: StatusCode) {
+    const prevStatus = s.status;
+    setSessions((prev) => prev.map((x) => (x.id === s.id ? { ...x, status } : x)));
+    setSelected((sel: any) => (sel && sel.id === s.id ? { ...sel, status } : sel));
+    if (demo) { notifyDemoNoSave("상태 변경은"); return; }
+    const { error } = await supabase.from("center_sessions").update({ status }).eq("id", s.id);
+    if (error) {
+      setSessions((prev) => prev.map((x) => (x.id === s.id ? { ...x, status: prevStatus } : x)));
+      setSelected((sel: any) => (sel && sel.id === s.id ? { ...sel, status: prevStatus } : sel));
+      toast({ title: "상태 변경 실패", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({
+      title:
+        status === "cancelled" ? "일정이 취소됐어요"
+        : status === "completed" ? "완료 처리됐어요"
+        : status === "scheduled" ? "예정으로 되돌렸어요"
+        : "상태가 변경됐어요",
+    });
+  }
+
+  // 시간이 지난 예정 세션을 자동으로 완료 처리
+  useEffect(() => {
+    const tick = async () => {
+      const now = new Date();
+      const past = sessions.filter((s) => {
+        if (s.status !== "scheduled") return false;
+        const end = s.end_time || s.start_time;
+        if (!s.session_date || !end) return false;
+        const t = new Date(`${s.session_date}T${end}`);
+        return !isNaN(t.getTime()) && t <= now;
+      });
+      if (past.length === 0) return;
+      const ids = past.map((p) => p.id);
+      setSessions((prev) => prev.map((x) => (ids.includes(x.id) ? { ...x, status: "completed" } : x)));
+      setSelected((sel: any) => (sel && ids.includes(sel.id) ? { ...sel, status: "completed" } : sel));
+      if (!demo) {
+        await supabase.from("center_sessions").update({ status: "completed" }).in("id", ids);
+      }
+    };
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, [sessions, demo]);
+
   async function handleDelete(s: any) {
     const hasRecur = !!s.recurrence_key;
     const msg = hasRecur

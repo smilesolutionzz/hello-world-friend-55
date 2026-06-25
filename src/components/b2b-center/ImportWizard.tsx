@@ -209,6 +209,48 @@ export default function ImportWizard({ demo, centerId, onClose, onMergeDemo, onI
             </div>
           )}
 
+          {step === "clientsOnly" && parsed && (() => {
+            const cs = parsed.sheets.find((s) => s.entity === "clients");
+            const rows = cs?.rows ?? [];
+            return (
+              <div className="space-y-3">
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-4">
+                  <p className="text-[10px] tracking-widest text-emerald-700 mb-1">이용자관리 엑셀 인식됨</p>
+                  <p className="text-sm font-medium text-neutral-900">총 {rows.length}명의 이용자가 감지됐어요.</p>
+                  <p className="text-xs text-neutral-600 mt-1 break-keep">아래 미리보기를 확인한 뒤 [이용자 등록]을 누르면 기존 이용자는 정보가 보강되고, 새 이용자는 추가돼요.</p>
+                </div>
+                <div className="bg-neutral-50 rounded-xl border border-neutral-200 max-h-[45vh] overflow-auto">
+                  <table className="w-full text-xs">
+                    <thead className="bg-neutral-100 text-neutral-600 sticky top-0">
+                      <tr>
+                        <th className="text-left px-3 py-2">이름</th>
+                        <th className="text-left px-3 py-2">생년월일</th>
+                        <th className="text-left px-3 py-2">성별</th>
+                        <th className="text-left px-3 py-2 hidden sm:table-cell">연락처</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.slice(0, 200).map((r, i) => (
+                        <tr key={i} className="border-t border-neutral-200">
+                          <td className="px-3 py-1.5 font-medium">{r.name ?? r.client_name ?? "—"}</td>
+                          <td className="px-3 py-1.5 tabular-nums">{r.birth_date ?? "—"}</td>
+                          <td className="px-3 py-1.5">{r.gender ?? "—"}</td>
+                          <td className="px-3 py-1.5 hidden sm:table-cell">{r.phone ?? r.guardian_phone ?? "—"}</td>
+                        </tr>
+                      ))}
+                      {rows.length > 200 && (
+                        <tr><td colSpan={4} className="px-3 py-2 text-center text-neutral-400">… 외 {rows.length - 200}명</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                {errMsg && <p className="text-xs text-rose-600 bg-rose-50 rounded-lg px-3 py-2">⚠ {errMsg}</p>}
+              </div>
+            );
+          })()}
+
+
+
           {step === "map" && parsed && (
             <div className="space-y-3">
               <p className="text-xs text-neutral-500 break-keep">엑셀의 각 컬럼이 일정의 어떤 칸에 들어갈지 골라주세요. 자동 인식된 항목은 그대로 두면 돼요.</p>

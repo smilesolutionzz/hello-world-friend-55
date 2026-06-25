@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
-import { X, Loader2, User, Trash2 } from "lucide-react";
+import { X, Loader2, User, Trash2, AlertTriangle } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 
 const schema = z.object({

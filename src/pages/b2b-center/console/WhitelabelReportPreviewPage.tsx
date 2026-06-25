@@ -263,6 +263,15 @@ export default function WhitelabelReportPreviewPage() {
                 />
               </label>
             </div>
+
+            {/* 추가 섹션 (커스텀) + 추천 */}
+            <ExtraSectionsEditor
+              extras={template[tplTab].extras}
+              suggestions={tplTab === "monthly" ? SUGGESTED_MONTHLY_EXTRAS : SUGGESTED_WEEKLY_EXTRAS}
+              onChange={(extras) =>
+                setTemplate({ ...template, [tplTab]: { ...template[tplTab], extras } })
+              }
+            />
           </div>
         </div>
 

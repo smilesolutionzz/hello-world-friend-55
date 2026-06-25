@@ -154,8 +154,21 @@ export default function TherapyNotesPage() {
     if (demo) return;
     supabase.from("center_clients").select("id, name, guardian_phone").eq("center_id", centerId).in("status", ["enrolled", "waiting"]).order("name").then(({ data }) => {
       setClients(data || []);
-      if (data?.[0]) setSelectedClient(data[0].id);
+      if (data?.[0]) setSelectedClient((prev) => prev || data[0].id);
     });
+    // 선생님 목록 + 선생님→담당 아동 매핑 (회기 기반)
+    (async () => {
+      const [{ data: ts }, { data: ss }] = await Promise.all([
+        supabase.from("center_therapists").select("id, name, specialty, calendar_color").eq("center_id", centerId).order("name"),
+        supabase.from("center_sessions").select("therapist_id, client_id").eq("center_id", centerId).not("therapist_id", "is", null).not("client_id", "is", null),
+      ]);
+      setTherapists(ts || []);
+      const map: Record<string, Set<string>> = {};
+      (ss || []).forEach((s: any) => {
+        (map[s.therapist_id] ||= new Set()).add(s.client_id);
+      });
+      setTherapistClientIds(map);
+    })();
   }, [centerId, demo]);
 
   const loadWeek = async () => {

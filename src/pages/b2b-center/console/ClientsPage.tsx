@@ -309,11 +309,36 @@ export default function ClientsPage() {
         </div>
       </div>
 
-      <div className="relative mb-4">
-        <Search className="w-4 h-4 absolute left-3 top-3 text-neutral-400" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="이름 또는 회원번호로 검색"
-          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-neutral-200 bg-white focus:outline-none focus:border-neutral-400" />
+      <div className="flex flex-col sm:flex-row gap-2 mb-4">
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 absolute left-3 top-3 text-neutral-400" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="이름 · 회원번호 · 연락처로 검색"
+            className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-neutral-200 bg-white focus:outline-none focus:border-neutral-400" />
+        </div>
+        {!demo && therapists.length > 0 && (
+          <div className="relative">
+            <Users className="w-4 h-4 absolute left-3 top-3 text-neutral-400 pointer-events-none" />
+            <select
+              value={therapistFilter}
+              onChange={(e) => setTherapistFilter(e.target.value)}
+              className="pl-9 pr-8 py-2.5 rounded-xl border border-neutral-200 bg-white text-sm focus:outline-none focus:border-neutral-400 min-w-[200px]"
+            >
+              <option value="all">담당 치료사 전체</option>
+              {therapists.map((t) => {
+                const n = therapistClientIds[t.id]?.size ?? 0;
+                return <option key={t.id} value={t.id}>{t.name} · {n}명</option>;
+              })}
+            </select>
+          </div>
+        )}
+        {(q || therapistFilter !== "all") && (
+          <button
+            onClick={() => { setQ(""); setTherapistFilter("all"); }}
+            className="px-4 py-2.5 rounded-xl border border-neutral-200 bg-white text-sm text-neutral-600 hover:bg-neutral-50"
+          >초기화</button>
+        )}
       </div>
+
 
       <div className="bg-white rounded-2xl border border-neutral-200 overflow-auto max-h-[calc(100vh-260px)]">
         <table className="w-full text-sm border-separate border-spacing-0">

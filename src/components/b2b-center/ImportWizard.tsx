@@ -20,7 +20,7 @@ type Props = {
   onImported?: () => void;
 };
 
-type Step = "upload" | "map" | "options" | "preview" | "applying" | "done";
+type Step = "upload" | "clientsOnly" | "map" | "options" | "preview" | "applying" | "done";
 
 const SESSION_KEYS = SESSION_COLUMN_SPEC.map((s) => s.key);
 const KEY_LABEL: Record<string, string> = Object.fromEntries(SESSION_COLUMN_SPEC.map((s) => [s.key, s.header]));

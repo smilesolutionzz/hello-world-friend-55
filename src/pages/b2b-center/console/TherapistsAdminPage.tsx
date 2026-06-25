@@ -136,11 +136,11 @@ export default function TherapistsAdminPage() {
       </div>
 
       <div className="mb-6 rounded-2xl border border-[#C8B88A]/40 bg-[#FAF6E8]/60 p-4">
-        <p className="text-[10px] tracking-widest text-[#8B7B4A] mb-1">TIP · 치료사 본인 일정 보기</p>
+        <p className="text-[10px] tracking-widest text-[#8B7B4A] mb-1">TIP · 치료사 본인 계정 연결 (초대코드 방식)</p>
         <ol className="text-sm text-neutral-800 space-y-1.5 list-decimal pl-5 break-keep">
-          <li><b>계정</b> 칸에 선생님 AIHPRO 가입 이메일을 입력하세요.</li>
-          <li>선생님께 <Link to="/therapist/my-schedule" className="font-mono text-xs px-1.5 py-0.5 rounded bg-white border border-neutral-300">/therapist/my-schedule</Link> 링크를 전달합니다.</li>
-          <li>선생님이 "내 계정 연결"을 누르면 <span className="text-emerald-700 font-medium">연결됨</span> 으로 표시됩니다.</li>
+          <li>오른쪽 표 <b>초대코드</b> 칸의 <b>코드 발급</b>을 누르면 6자리 코드가 만들어집니다 (30일 유효).</li>
+          <li>코드와 함께 <Link to="/therapist/claim" className="font-mono text-xs px-1.5 py-0.5 rounded bg-white border border-neutral-300">/therapist/claim</Link> 링크를 선생님께 전달하세요.</li>
+          <li>선생님이 AIHPRO에 가입·로그인 후 코드를 입력하면 <span className="text-emerald-700 font-medium">연결됨</span>으로 표시됩니다.</li>
         </ol>
       </div>
 

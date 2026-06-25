@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, UserPlus, Upload, Send, Settings2, Check } from "lucide-react";
+import { Search, UserPlus, Upload, Send, Settings2, Check, Users } from "lucide-react";
+import { toast as sonnerToast } from "sonner";
 import ClientRegisterDialog from "@/components/b2b-center/ClientRegisterDialog";
 import InviteParentDialog from "@/components/b2b-center/InviteParentDialog";
 import ImportWizard from "@/components/b2b-center/ImportWizard";
 import { DEMO_CLIENTS } from "@/lib/b2bCenter/demoData";
 import { BETA_MODE } from "@/config/betaMode";
+
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -108,6 +110,10 @@ export default function ClientsPage() {
   const [editClient, setEditClient] = useState<Client | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [inviteFor, setInviteFor] = useState<{ id: string; name: string } | null>(null);
+  const [therapists, setTherapists] = useState<{ id: string; name: string }[]>([]);
+  const [therapistClientIds, setTherapistClientIds] = useState<Record<string, Set<string>>>({});
+  const [therapistFilter, setTherapistFilter] = useState<string>("all");
+
 
 
   const [visible, setVisible] = useState<Record<ColKey, boolean>>(() => {
@@ -163,10 +169,73 @@ export default function ClientsPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  // Load therapists + therapist→client map
+  useEffect(() => {
+    if (demo) return;
+    (async () => {
+      const [{ data: ths }, { data: sess }] = await Promise.all([
+        supabase.from("center_therapists").select("id,name").eq("center_id", centerId).order("name"),
+        supabase.from("center_sessions").select("therapist_id,client_id").eq("center_id", centerId),
+      ]);
+      setTherapists((ths ?? []) as { id: string; name: string }[]);
+      const map: Record<string, Set<string>> = {};
+      (sess ?? []).forEach((s: any) => {
+        if (!s.therapist_id || !s.client_id) return;
+        (map[s.therapist_id] ||= new Set()).add(s.client_id);
+      });
+      setTherapistClientIds(map);
+    })();
+  }, [centerId, demo]);
+
+  async function handleDelete(client: Client) {
+    if (demo) return;
+    const snapshot = { ...client };
+    const { error } = await supabase.from("center_clients").delete().eq("id", client.id);
+    if (error) {
+      sonnerToast.error("삭제 실패", { description: error.message });
+      return;
+    }
+    setEditClient(null);
+    setRows((p) => p.filter((r) => r.id !== client.id));
+    sonnerToast.success(`'${snapshot.name}' 이용자 삭제됨`, {
+      description: "10초 내에 되돌릴 수 있어요.",
+      duration: 10000,
+      action: {
+        label: "되돌리기",
+        onClick: async () => {
+          const { id, created_at, ...rest } = snapshot as any;
+          const { error: e2 } = await supabase.from("center_clients").insert({ id, ...rest });
+          if (e2) {
+            sonnerToast.error("되돌리기 실패", { description: e2.message });
+            return;
+          }
+          sonnerToast.success("이용자 복구 완료");
+          load();
+        },
+      },
+    });
+  }
+
   const filtered = rows.filter((r) => {
     if (filter !== "all" && statusCode(r.status) !== filter) return false;
-    if (q && !r.name.includes(q) && !(r.member_no ?? "").includes(q)) return false;
+    if (therapistFilter !== "all") {
+      const set = therapistClientIds[therapistFilter];
+      if (!set || !set.has(r.id)) return false;
+    }
+    if (q) {
+      const needle = q.trim().toLowerCase();
+      const digits = needle.replace(/\D/g, "");
+      const hay = [
+        r.name, r.member_no, r.phone, r.guardian_phone,
+        r.meta?.contact_raw, r.meta?.email,
+      ].filter(Boolean).map((v) => String(v).toLowerCase()).join(" ");
+      const hayDigits = [r.phone, r.guardian_phone, r.meta?.contact_raw].filter(Boolean).join(" ").replace(/\D/g, "");
+      const matchText = hay.includes(needle);
+      const matchPhone = digits.length >= 3 && hayDigits.includes(digits);
+      if (!matchText && !matchPhone) return false;
+    }
     return true;
+
   });
 
   const counts = {
@@ -240,11 +309,36 @@ export default function ClientsPage() {
         </div>
       </div>
 
-      <div className="relative mb-4">
-        <Search className="w-4 h-4 absolute left-3 top-3 text-neutral-400" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="이름 또는 회원번호로 검색"
-          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-neutral-200 bg-white focus:outline-none focus:border-neutral-400" />
+      <div className="flex flex-col sm:flex-row gap-2 mb-4">
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 absolute left-3 top-3 text-neutral-400" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="이름 · 회원번호 · 연락처로 검색"
+            className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-neutral-200 bg-white focus:outline-none focus:border-neutral-400" />
+        </div>
+        {!demo && therapists.length > 0 && (
+          <div className="relative">
+            <Users className="w-4 h-4 absolute left-3 top-3 text-neutral-400 pointer-events-none" />
+            <select
+              value={therapistFilter}
+              onChange={(e) => setTherapistFilter(e.target.value)}
+              className="pl-9 pr-8 py-2.5 rounded-xl border border-neutral-200 bg-white text-sm focus:outline-none focus:border-neutral-400 min-w-[200px]"
+            >
+              <option value="all">담당 치료사 전체</option>
+              {therapists.map((t) => {
+                const n = therapistClientIds[t.id]?.size ?? 0;
+                return <option key={t.id} value={t.id}>{t.name} · {n}명</option>;
+              })}
+            </select>
+          </div>
+        )}
+        {(q || therapistFilter !== "all") && (
+          <button
+            onClick={() => { setQ(""); setTherapistFilter("all"); }}
+            className="px-4 py-2.5 rounded-xl border border-neutral-200 bg-white text-sm text-neutral-600 hover:bg-neutral-50"
+          >초기화</button>
+        )}
       </div>
+
 
       <div className="bg-white rounded-2xl border border-neutral-200 overflow-auto max-h-[calc(100vh-260px)]">
         <table className="w-full text-sm border-separate border-spacing-0">
@@ -297,6 +391,7 @@ export default function ClientsPage() {
         open={registerOpen}
         centerId={centerId}
         demo={demo}
+        existingClients={rows}
         onClose={() => setRegisterOpen(false)}
         onCreated={load}
       />
@@ -306,9 +401,12 @@ export default function ClientsPage() {
         centerId={centerId}
         demo={demo}
         client={editClient}
+        existingClients={rows}
         onClose={() => setEditClient(null)}
         onCreated={load}
+        onDelete={editClient ? () => handleDelete(editClient) : undefined}
       />
+
 
 
       {inviteFor && (

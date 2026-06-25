@@ -63,18 +63,20 @@ export default function TherapistMySchedule() {
 
   async function handleClaim(e: React.FormEvent) {
     e.preventDefault();
-    if (!claimAccount.trim()) return;
+    if (!claimCode.trim()) return;
     setClaiming(true);
     try {
-      const { error } = await supabase.rpc("claim_therapist_account", { _login_account: claimAccount.trim() });
+      const { error } = await supabase.rpc("redeem_therapist_invite_code", { _code: claimCode.trim().toUpperCase() });
       if (error) throw error;
       toast({ title: "계정 연결 완료", description: "내 일정을 불러옵니다." });
-      setClaimAccount("");
+      setClaimCode("");
       await reload();
     } catch (e: any) {
-      const msg = e?.message?.includes("THERAPIST_NOT_FOUND")
-        ? "해당 계정으로 등록된 치료사가 없거나 이미 다른 계정에 연결되어 있어요. 기관장에게 문의해주세요."
-        : e?.message ?? "연결에 실패했어요.";
+      const m = e?.message ?? "";
+      const msg = m.includes("CODE_NOT_FOUND") ? "유효하지 않은 코드입니다. 기관장에게 다시 받아주세요."
+        : m.includes("CODE_EXPIRED") ? "코드가 만료되었어요. 재발급을 요청해주세요."
+        : m.includes("CODE_ALREADY_USED") ? "이미 다른 계정에 연결된 코드입니다."
+        : m || "연결에 실패했어요.";
       toast({ title: "연결 실패", description: msg, variant: "destructive" });
     } finally { setClaiming(false); }
   }

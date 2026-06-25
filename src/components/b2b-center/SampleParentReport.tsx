@@ -458,6 +458,20 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
                     </div>
                   </section>
                 )}
+
+                {/* 화이트라벨 추가 섹션 (기관 자체 항목). 트랙 모드일 땐 첫 트랙에만 노출. */}
+                {(!hasTracks || ti === 0) && tpl.extras && tpl.extras.length > 0 && (
+                  <div className="mt-8 space-y-8">
+                    {tpl.extras.map((ex, ei) => (
+                      <section key={ex.id}>
+                        <SectionLabel num={String(7 + ei).padStart(2, "0")} title={ex.title || "추가 섹션"} />
+                        <div className="bg-white rounded-3xl p-8 border border-neutral-200">
+                          <p className="text-neutral-800 leading-relaxed text-[15px] whitespace-pre-wrap">{ex.body}</p>
+                        </div>
+                      </section>
+                    ))}
+                  </div>
+                )}
               </div>
             ));
           })()}

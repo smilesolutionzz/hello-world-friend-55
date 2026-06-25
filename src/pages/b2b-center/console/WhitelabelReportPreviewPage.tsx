@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Download, Palette, Sparkles, Building2, User2, Eye, Save, FileText, Check } from "lucide-react";
+import { Download, Palette, Sparkles, Building2, User2, Eye, Save, FileText, Check, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import html2pdf from "html2pdf.js";
@@ -8,8 +8,12 @@ import {
   DEFAULT_TEMPLATE,
   MONTHLY_SECTION_KEYS,
   WEEKLY_SECTION_KEYS,
+  SUGGESTED_MONTHLY_EXTRAS,
+  SUGGESTED_WEEKLY_EXTRAS,
   resolveTemplate,
+  makeExtraId,
   type ReportTemplate,
+  type ExtraSection,
 } from "@/lib/b2bCenter/reportTemplate";
 
 type Ctx = { centerId: string; demo?: boolean };
@@ -259,6 +263,15 @@ export default function WhitelabelReportPreviewPage() {
                 />
               </label>
             </div>
+
+            {/* 추가 섹션 (커스텀) + 추천 */}
+            <ExtraSectionsEditor
+              extras={template[tplTab].extras}
+              suggestions={tplTab === "monthly" ? SUGGESTED_MONTHLY_EXTRAS : SUGGESTED_WEEKLY_EXTRAS}
+              onChange={(extras) =>
+                setTemplate({ ...template, [tplTab]: { ...template[tplTab], extras } })
+              }
+            />
           </div>
         </div>
 
@@ -342,6 +355,95 @@ function TemplateSectionEditor({
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function ExtraSectionsEditor({
+  extras,
+  suggestions,
+  onChange,
+}: {
+  extras: ExtraSection[];
+  suggestions: Array<{ title: string; body: string }>;
+  onChange: (v: ExtraSection[]) => void;
+}) {
+  const add = (title = "", body = "") =>
+    onChange([...extras, { id: makeExtraId(), title, body }]);
+  const remove = (id: string) => onChange(extras.filter((e) => e.id !== id));
+  const update = (id: string, patch: Partial<ExtraSection>) =>
+    onChange(extras.map((e) => (e.id === id ? { ...e, ...patch } : e)));
+
+  const usedTitles = new Set(extras.map((e) => e.title.trim()));
+  const remaining = suggestions.filter((s) => !usedTitles.has(s.title.trim()));
+
+  return (
+    <div className="pt-3 border-t border-neutral-100 space-y-3">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-semibold text-neutral-700">추가 섹션</span>
+        <button
+          type="button"
+          onClick={() => add()}
+          className="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-md bg-neutral-900 text-white hover:bg-neutral-800"
+        >
+          <Plus className="w-3 h-3" /> 직접 추가
+        </button>
+      </div>
+
+      {remaining.length > 0 && (
+        <div className="space-y-1.5">
+          <div className="text-[10px] text-neutral-400 uppercase tracking-wider">추천 섹션 (클릭해서 추가)</div>
+          <div className="flex flex-wrap gap-1.5">
+            {remaining.map((s) => (
+              <button
+                key={s.title}
+                type="button"
+                onClick={() => add(s.title, s.body)}
+                className="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-dashed border-[#C8B88A] text-[#9B8B5A] hover:bg-[#FAF6E8]"
+              >
+                <Plus className="w-3 h-3" /> {s.title}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {extras.length === 0 ? (
+        <p className="text-[11px] text-neutral-400 leading-relaxed">
+          추천 섹션을 클릭하거나 직접 추가해서 우리 기관만의 항목을 넣을 수 있어요. 저장 후 발행되는 리포트에 자동 반영됩니다.
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {extras.map((e, i) => (
+            <div key={e.id} className="border border-neutral-200 rounded-lg p-2.5 space-y-1.5 bg-neutral-50/50">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-neutral-400 font-mono shrink-0">#{i + 1}</span>
+                <input
+                  value={e.title}
+                  placeholder="섹션 제목"
+                  onChange={(ev) => update(e.id, { title: ev.target.value })}
+                  className="flex-1 border border-neutral-200 rounded-md px-2 py-1 text-xs font-semibold bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => remove(e.id)}
+                  className="p-1 text-neutral-400 hover:text-red-500"
+                  aria-label="삭제"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <textarea
+                value={e.body}
+                placeholder="섹션 내용 (보호자께 보여질 본문)"
+                rows={2}
+                onChange={(ev) => update(e.id, { body: ev.target.value })}
+                className="w-full border border-neutral-200 rounded-md px-2 py-1.5 text-xs bg-white"
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

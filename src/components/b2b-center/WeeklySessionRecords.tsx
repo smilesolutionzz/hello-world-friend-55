@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Save, Loader2 } from "lucide-react";
+import { Save, Loader2, Sparkles } from "lucide-react";
 
 type Props = {
   centerId: string;
@@ -35,9 +35,10 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
   const [sessions, setSessions] = useState<any[]>([]);
   const [therapists, setTherapists] = useState<any[]>([]);
   const [programs, setPrograms] = useState<any[]>([]);
-  const [edits, setEdits] = useState<Record<string, { consult: string; record: string; special: string; dirty?: boolean }>>({});
+  const [edits, setEdits] = useState<Record<string, { consult: string; record: string; special: string; keywords?: string; dirty?: boolean }>>({});
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [expandingId, setExpandingId] = useState<string | null>(null);
   const range = useMemo(() => weekRangeFromKey(weekKey), [weekKey]);
 
   useEffect(() => {
@@ -68,8 +69,48 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
     return () => { cancelled = true; };
   }, [centerId, clientId, range[0], range[1]]);
 
-  const updateEdit = (id: string, key: "consult" | "record" | "special", value: string) => {
-    setEdits((p) => ({ ...p, [id]: { ...p[id], [key]: value, dirty: true } }));
+  const updateEdit = (id: string, key: "consult" | "record" | "special" | "keywords", value: string) => {
+    setEdits((p) => ({ ...p, [id]: { ...p[id], [key]: value, dirty: key === "keywords" ? p[id]?.dirty : true } }));
+  };
+
+  const expandWithAI = async (id: string) => {
+    const e = edits[id]; if (!e) return;
+    const kw = (e.keywords ?? "").trim();
+    if (!kw) { toast({ title: "키워드를 먼저 입력해주세요", description: "예: 미끄럼틀 5회, 처음엔 거부 → 후반엔 자발 시도" }); return; }
+    const session = sessions.find((s) => s.id === id);
+    const th = therapists.find((t) => t.id === session?.therapist_id);
+    const pg = programs.find((p) => p.id === session?.program_id);
+    setExpandingId(id);
+    try {
+      const { data, error } = await supabase.functions.invoke("expand-session-record", {
+        body: {
+          keywords: kw,
+          context: {
+            program: pg?.name,
+            therapist: th?.name,
+            date: session?.session_date,
+            time: session?.start_time?.slice(0, 5),
+          },
+        },
+      });
+      if (error) throw error;
+      const out = data ?? {};
+      setEdits((p) => ({
+        ...p,
+        [id]: {
+          ...p[id],
+          consult: out.activity || p[id]?.consult || "",
+          record: out.evaluation || p[id]?.record || "",
+          special: out.special || p[id]?.special || "",
+          dirty: true,
+        },
+      }));
+      toast({ title: "AI 확장 완료", description: "내용을 확인하고 다듬은 뒤 저장하세요." });
+    } catch (err: any) {
+      toast({ title: "AI 확장 실패", description: err?.message ?? String(err), variant: "destructive" });
+    } finally {
+      setExpandingId(null);
+    }
   };
 
   const saveOne = async (id: string) => {
@@ -91,7 +132,7 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
     <div className="bg-white rounded-3xl border border-neutral-200 p-6">
       <div className="mb-4">
         <h2 className="font-semibold">이번 주 회기 기록 ({sessions.length}건)</h2>
-        <p className="text-xs text-neutral-500 mt-0.5">회기마다 상담/기록/특이사항을 입력하면 주간 AI 노트 생성에 자동 반영됩니다.</p>
+        <p className="text-xs text-neutral-500 mt-0.5">키워드 한 줄만 적고 <span className="font-medium text-[#8B7A4A]">AI 확장</span>을 누르면 활동내용·주관평가·특이사항 3칸을 자동으로 채워드려요.</p>
       </div>
       {loading ? (
         <p className="text-sm text-neutral-400 py-6 text-center">불러오는 중…</p>
@@ -115,13 +156,42 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
                   </div>
                   {status && <span className={`text-[11px] px-2 py-0.5 rounded-full border ${status.tone}`}>{status.label}</span>}
                 </div>
+                {/* AI 키워드 한 줄 입력 + 확장 */}
+                <div className="flex items-stretch gap-2 mb-3">
+                  <input
+                    value={e.keywords ?? ""}
+                    onChange={(ev) => updateEdit(s.id, "keywords", ev.target.value)}
+                    onKeyDown={(ev) => { if (ev.key === "Enter") { ev.preventDefault(); expandWithAI(s.id); } }}
+                    placeholder="예) 미끄럼틀 5회, 처음엔 거부 → 후반엔 자발 시도. 종료 시 정리 잘함"
+                    className="flex-1 px-3 py-2 rounded-lg border border-[#C8B88A]/50 bg-[#FBF8F1] text-sm focus:outline-none focus:border-[#C8B88A]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => expandWithAI(s.id)}
+                    disabled={expandingId === s.id || !(e.keywords ?? "").trim()}
+                    className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#C8B88A] text-neutral-900 text-xs font-medium hover:bg-[#b9a877] disabled:opacity-40 disabled:cursor-not-allowed"
+                    title="키워드를 3칸으로 확장"
+                  >
+                    {expandingId === s.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                    {expandingId === s.id ? "확장 중…" : "AI 확장"}
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                  <textarea value={e.consult} onChange={(ev) => updateEdit(s.id, "consult", ev.target.value)} placeholder="상담내용" rows={3}
-                    className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
-                  <textarea value={e.record} onChange={(ev) => updateEdit(s.id, "record", ev.target.value)} placeholder="기록내용" rows={3}
-                    className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
-                  <textarea value={e.special} onChange={(ev) => updateEdit(s.id, "special", ev.target.value)} placeholder="특이사항" rows={3}
-                    className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
+                  <div>
+                    <label className="text-[11px] text-neutral-500 mb-1 block">활동내용</label>
+                    <textarea value={e.consult} onChange={(ev) => updateEdit(s.id, "consult", ev.target.value)} placeholder="회기에 진행한 활동" rows={3}
+                      className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-neutral-500 mb-1 block">주관평가</label>
+                    <textarea value={e.record} onChange={(ev) => updateEdit(s.id, "record", ev.target.value)} placeholder="치료사 시각의 수행·반응" rows={3}
+                      className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-neutral-500 mb-1 block">특이사항</label>
+                    <textarea value={e.special} onChange={(ev) => updateEdit(s.id, "special", ev.target.value)} placeholder="컨디션·다음 회기 메모" rows={3}
+                      className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 resize-y bg-white" />
+                  </div>
                 </div>
                 <div className="flex justify-end mt-2">
                   <button

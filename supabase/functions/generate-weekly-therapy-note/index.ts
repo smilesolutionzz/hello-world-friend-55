@@ -44,7 +44,7 @@ serve(async (req) => {
     const { data: { user } } = await admin.auth.getUser(auth.replace("Bearer ", ""));
     if (!user) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
 
-    const { centerId, clientId, weekKey, allowEmpty } = await req.json();
+    const { centerId, clientId, weekKey, allowEmpty, therapistId } = await req.json();
     if (!centerId || !clientId || !weekKey) {
       return new Response(JSON.stringify({ error: "centerId, clientId, weekKey required" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
     }
@@ -64,8 +64,8 @@ serve(async (req) => {
       .eq("status", "parsed")
       .order("session_date", { ascending: true });
 
-    // Gather scheduled sessions for the week (always — used to enrich or as sole source)
-    const { data: schedSessions } = await admin
+    // Gather scheduled sessions for the week — filter by therapist if requested
+    let sessQuery = admin
       .from("center_sessions")
       .select("id, session_date, start_time, end_time, duration_min, status, note, therapist_id, program_id, meta")
       .eq("center_id", centerId)
@@ -73,6 +73,8 @@ serve(async (req) => {
       .gte("session_date", start)
       .lte("session_date", end)
       .order("session_date", { ascending: true });
+    if (therapistId) sessQuery = sessQuery.eq("therapist_id", therapistId);
+    const { data: schedSessions } = await sessQuery;
 
     const therapistIds = Array.from(new Set((schedSessions || []).map((s) => s.therapist_id).filter(Boolean)));
     const programIds = Array.from(new Set((schedSessions || []).map((s) => s.program_id).filter(Boolean)));

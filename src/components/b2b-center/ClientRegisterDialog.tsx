@@ -290,19 +290,28 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, onC
 
         {/* Footer */}
         <div className="px-8 py-5 border-t border-neutral-100 flex items-center justify-between bg-neutral-50/50 rounded-b-3xl">
-          <label className="inline-flex items-center gap-2 text-xs text-neutral-600 cursor-pointer">
-            <input type="checkbox" checked={continueAfter} onChange={(e) => setContinueAfter(e.target.checked)} className="accent-neutral-900" />
-            저장 후 계속 등록
-          </label>
+          {isEdit ? (
+            <button onClick={handleDelete} disabled={deleting || saving}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs text-rose-600 hover:bg-rose-50 disabled:opacity-50">
+              {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+              {deleting ? "삭제 중…" : "이용자 삭제"}
+            </button>
+          ) : (
+            <label className="inline-flex items-center gap-2 text-xs text-neutral-600 cursor-pointer">
+              <input type="checkbox" checked={continueAfter} onChange={(e) => setContinueAfter(e.target.checked)} className="accent-neutral-900" />
+              저장 후 계속 등록
+            </label>
+          )}
           <div className="flex gap-2">
             <button onClick={onClose} className="px-5 py-2.5 rounded-full text-sm text-neutral-600 hover:bg-neutral-100">취소</button>
-            <button onClick={submit} disabled={saving}
+            <button onClick={submit} disabled={saving || deleting}
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <User className="w-4 h-4" />}
-              {saving ? "저장 중…" : "등록"}
+              {saving ? "저장 중…" : isEdit ? "저장" : "등록"}
             </button>
           </div>
         </div>
+
       </div>
 
       <style>{`.ipt { width:100%; padding:0.55rem 0.75rem; border:1px solid #e5e5e5; border-radius:0.625rem; background:white; font-size:0.875rem; outline:none; transition:border-color .15s; }

@@ -633,7 +633,7 @@ const App = () => {
             <Route path="schedule" element={<CenterSchedulePage />} />
             <Route path="assessments" element={<CenterAssessmentsPage />} />
             <Route path="services/monthly" element={<CenterMonthlyServicesPage />} />
-            <Route path="services/records" element={<CenterSessionRecordsPage />} />
+            <Route path="services/records" element={<Navigate to="../intelligence/therapy-notes" replace />} />
             <Route path="billing/voucher-audit" element={<CenterVoucherAuditPage />} />
             <Route path="admin/programs" element={<CenterProgramsPage />} />
             <Route path="admin/organization" element={<CenterOrganizationPage />} />

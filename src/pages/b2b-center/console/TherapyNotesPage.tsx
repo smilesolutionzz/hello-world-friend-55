@@ -308,6 +308,11 @@ export default function TherapyNotesPage() {
         </div>
       </div>
 
+      {/* 이번 주 회기 기록 (구 일일 서비스 관리 통합) */}
+      {selectedClient && (
+        <WeeklySessionRecords centerId={centerId} clientId={selectedClient} weekKey={weekKey} />
+      )}
+
       {/* Upload */}
       <div
         onDragOver={(e) => e.preventDefault()}

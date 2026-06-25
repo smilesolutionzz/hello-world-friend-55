@@ -27,6 +27,22 @@ const ALL_SECTIONS: { key: SectionKey; label: string }[] = [
   { key: "goals", label: "다음 달 목표" },
 ];
 
+interface TrackData {
+  key?: string;
+  area: string;
+  therapist?: string;
+  sessionCount?: number;
+  stats?: Partial<{ participated: string; attendance: string; areas: string; therapist: string }>;
+  summary: string;
+  domains: { domain: string; prev: number; curr: number; delta: string; color: "emerald" | "amber"; note: string }[];
+  highlights: { date: string; title: string; body: string }[];
+  note: string;
+  noteTherapist: { name: string; meta: string };
+  practice: { title: string; desc: string; time: string }[];
+  goals: { label: string; value: string }[];
+  goalsFooter: string;
+}
+
 interface ReportData {
   sections: Record<SectionKey, boolean>;
   stats: { participated: string; attendance: string; areas: string; therapist: string };
@@ -38,7 +54,9 @@ interface ReportData {
   practice: { title: string; desc: string; time: string }[];
   goals: { label: string; value: string }[];
   goalsFooter: string;
+  tracks?: TrackData[];
 }
+
 
 const DEFAULT_SECTIONS: Record<SectionKey, boolean> = {
   cover: true, summary: true, domains: true, highlights: true, note: true, practice: true, goals: true,
@@ -281,134 +299,169 @@ export default function SampleParentReport({ open, onClose, clientId = "demo", c
             </div>
           )}
 
-          {S.summary && (
-            <section>
-              <SectionLabel num="01" title={titleOf("summary", "이번 달 한눈에")} />
-              <div className="bg-white rounded-3xl p-8 border border-neutral-200">
-                <Editable as="p" className="text-neutral-800 leading-relaxed text-[15px] whitespace-pre-wrap" editable={editMode}
-                  value={data.summary} onChange={(v) => update({ summary: v })} />
-              </div>
-            </section>
-          )}
-
-          {S.domains && (
-            <section>
-              <SectionLabel num="02" title={titleOf("domains", "영역별 발달 흐름")} />
-              <div className="space-y-3">
-                {data.domains.map((row, i) => (
-                  <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5 flex items-center gap-5">
-                    <div className="w-12 h-12 rounded-2xl bg-[#FAF6E8] flex items-center justify-center shrink-0">
-                      <TrendingUp className="w-5 h-5 text-[#9B8B5A]" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-baseline justify-between gap-3">
-                        <Editable as="div" className="font-semibold text-neutral-900" editable={editMode}
-                          value={row.domain} onChange={(v) => { const d = [...data.domains]; d[i] = { ...d[i], domain: v }; update({ domains: d }); }} />
-                        <Editable as="div" className={`text-sm font-semibold ${row.color === "emerald" ? "text-emerald-600" : "text-amber-600"}`} editable={editMode}
-                          value={row.delta} onChange={(v) => { const d = [...data.domains]; d[i] = { ...d[i], delta: v }; update({ domains: d }); }} />
+          {(() => {
+            const hasTracks = Array.isArray(data.tracks) && data.tracks.length > 0;
+            const bodies: (TrackData | ReportData)[] = hasTracks ? (data.tracks as TrackData[]) : [data];
+            const updateBody = (idx: number, patch: Partial<TrackData>) => {
+              if (!hasTracks) { update(patch as any); return; }
+              const tracks = [...(data.tracks ?? [])];
+              tracks[idx] = { ...tracks[idx], ...patch } as TrackData;
+              update({ tracks } as any);
+            };
+            return bodies.map((src, ti) => (
+              <div key={ti} className={ti > 0 ? "pt-12 mt-12 border-t border-dashed border-[#C8B88A]/40 print:break-before-page" : ""}>
+                {hasTracks && (
+                  <div className="mb-8 flex items-center justify-between gap-4 bg-[#FAF6E8] border border-[#C8B88A]/40 rounded-2xl px-6 py-4">
+                    <div>
+                      <div className="text-[10px] tracking-[0.3em] text-[#C8B88A] uppercase mb-1">
+                        Therapy {String(ti + 1).padStart(2, "0")} / {bodies.length}
                       </div>
-                      <div className="mt-2 h-2 bg-neutral-100 rounded-full overflow-hidden relative">
-                        <div className="absolute inset-y-0 left-0 bg-neutral-300 rounded-full" style={{ width: `${row.prev}%` }} />
-                        <div className={`absolute inset-y-0 left-0 rounded-full ${row.color === "emerald" ? "bg-emerald-500" : "bg-amber-500"}`} style={{ width: `${row.curr}%` }} />
+                      <h2 className="text-2xl font-serif text-neutral-900">
+                        {(src as TrackData).area ?? "치료"}
+                      </h2>
+                      {(src as TrackData).therapist && (
+                        <p className="text-sm text-neutral-600 mt-1">{(src as TrackData).therapist} 치료사</p>
+                      )}
+                    </div>
+                    <div className="text-right text-xs text-neutral-500 shrink-0">
+                      <div>참여 회기</div>
+                      <div className="text-lg font-semibold text-neutral-900">{(src as TrackData).sessionCount ?? src.stats?.participated ?? "-"}{typeof (src as TrackData).sessionCount === "number" ? "회" : ""}</div>
+                    </div>
+                  </div>
+                )}
+
+                {S.summary && (
+                  <section>
+                    <SectionLabel num="01" title={titleOf("summary", "이번 달 한눈에")} />
+                    <div className="bg-white rounded-3xl p-8 border border-neutral-200">
+                      <Editable as="p" className="text-neutral-800 leading-relaxed text-[15px] whitespace-pre-wrap" editable={editMode}
+                        value={src.summary} onChange={(v) => updateBody(ti, { summary: v })} />
+                    </div>
+                  </section>
+                )}
+
+                {S.domains && (
+                  <section className="mt-8">
+                    <SectionLabel num="02" title={titleOf("domains", "영역별 발달 흐름")} />
+                    <div className="space-y-3">
+                      {src.domains.map((row, i) => (
+                        <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5 flex items-center gap-5">
+                          <div className="w-12 h-12 rounded-2xl bg-[#FAF6E8] flex items-center justify-center shrink-0">
+                            <TrendingUp className="w-5 h-5 text-[#9B8B5A]" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-baseline justify-between gap-3">
+                              <Editable as="div" className="font-semibold text-neutral-900" editable={editMode}
+                                value={row.domain} onChange={(v) => { const d = [...src.domains]; d[i] = { ...d[i], domain: v }; updateBody(ti, { domains: d }); }} />
+                              <Editable as="div" className={`text-sm font-semibold ${row.color === "emerald" ? "text-emerald-600" : "text-amber-600"}`} editable={editMode}
+                                value={row.delta} onChange={(v) => { const d = [...src.domains]; d[i] = { ...d[i], delta: v }; updateBody(ti, { domains: d }); }} />
+                            </div>
+                            <div className="mt-2 h-2 bg-neutral-100 rounded-full overflow-hidden relative">
+                              <div className="absolute inset-y-0 left-0 bg-neutral-300 rounded-full" style={{ width: `${row.prev}%` }} />
+                              <div className={`absolute inset-y-0 left-0 rounded-full ${row.color === "emerald" ? "bg-emerald-500" : "bg-amber-500"}`} style={{ width: `${row.curr}%` }} />
+                            </div>
+                            <Editable as="div" className="mt-2 text-xs text-neutral-500" editable={editMode}
+                              value={row.note} onChange={(v) => { const d = [...src.domains]; d[i] = { ...d[i], note: v }; updateBody(ti, { domains: d }); }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-neutral-400 mt-3 px-1">* 막대는 이번 달 도달 수준이며, 회색은 지난달 기준치입니다. 표준화 점수가 아닌 센터 내부 관찰 척도(0-100)입니다.</p>
+                  </section>
+                )}
+
+                {S.highlights && (
+                  <section className="mt-8">
+                    <SectionLabel num="03" title={titleOf("highlights", "이번 달 빛났던 순간")} />
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {src.highlights.map((m, i) => (
+                        <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5">
+                          <div className="flex items-center gap-2 text-[11px] text-[#C8B88A] uppercase tracking-wider mb-2">
+                            <Calendar className="w-3 h-3" />
+                            <Editable as="span" editable={editMode} value={m.date}
+                              onChange={(v) => { const h = [...src.highlights]; h[i] = { ...h[i], date: v }; updateBody(ti, { highlights: h }); }} />
+                          </div>
+                          <Editable as="div" className="font-semibold text-neutral-900 leading-snug mb-2" editable={editMode}
+                            value={m.title} onChange={(v) => { const h = [...src.highlights]; h[i] = { ...h[i], title: v }; updateBody(ti, { highlights: h }); }} />
+                          <Editable as="p" className="text-sm text-neutral-600 leading-relaxed" editable={editMode}
+                            value={m.body} onChange={(v) => { const h = [...src.highlights]; h[i] = { ...h[i], body: v }; updateBody(ti, { highlights: h }); }} />
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {S.note && (
+                  <section className="mt-8">
+                    <SectionLabel num="04" title={titleOf("note", "담당 치료사 노트")} />
+                    <div className="bg-gradient-to-br from-[#FAF6E8] to-white rounded-3xl p-8 border border-[#C8B88A]/40 relative">
+                      <Editable as="p" className="text-neutral-800 leading-relaxed text-[15px] italic whitespace-pre-wrap" editable={editMode}
+                        value={src.note} onChange={(v) => updateBody(ti, { note: v })} />
+                      <div className="mt-6 flex items-center gap-3 pt-6 border-t border-[#C8B88A]/30">
+                        <div className="w-10 h-10 rounded-full bg-[#FFB4A2] flex items-center justify-center text-white font-semibold">{src.noteTherapist.name.charAt(0)}</div>
+                        <div>
+                          <Editable as="div" className="font-semibold text-neutral-900 text-sm" editable={editMode}
+                            value={src.noteTherapist.name} onChange={(v) => updateBody(ti, { noteTherapist: { ...src.noteTherapist, name: v } })} />
+                          <Editable as="div" className="text-xs text-neutral-500" editable={editMode}
+                            value={src.noteTherapist.meta} onChange={(v) => updateBody(ti, { noteTherapist: { ...src.noteTherapist, meta: v } })} />
+                        </div>
                       </div>
-                      <Editable as="div" className="mt-2 text-xs text-neutral-500" editable={editMode}
-                        value={row.note} onChange={(v) => { const d = [...data.domains]; d[i] = { ...d[i], note: v }; update({ domains: d }); }} />
                     </div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-[11px] text-neutral-400 mt-3 px-1">* 막대는 이번 달 도달 수준이며, 회색은 지난달 기준치입니다. 표준화 점수가 아닌 센터 내부 관찰 척도(0-100)입니다.</p>
-            </section>
-          )}
+                  </section>
+                )}
 
-          {S.highlights && (
-            <section>
-              <SectionLabel num="03" title={titleOf("highlights", "이번 달 빛났던 순간")} />
-              <div className="grid sm:grid-cols-2 gap-4">
-                {data.highlights.map((m, i) => (
-                  <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5">
-                    <div className="flex items-center gap-2 text-[11px] text-[#C8B88A] uppercase tracking-wider mb-2">
-                      <Calendar className="w-3 h-3" />
-                      <Editable as="span" editable={editMode} value={m.date}
-                        onChange={(v) => { const h = [...data.highlights]; h[i] = { ...h[i], date: v }; update({ highlights: h }); }} />
+                {S.practice && (
+                  <section className="mt-8">
+                    <SectionLabel num="05" title={titleOf("practice", "이번 달 가정 연습 제안")} />
+                    <div className="space-y-3">
+                      {src.practice.map((p, i) => (
+                        <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5 flex gap-4">
+                          <div className="w-8 h-8 rounded-full bg-neutral-900 text-white text-sm font-semibold flex items-center justify-center shrink-0">{i + 1}</div>
+                          <div className="flex-1">
+                            <div className="flex items-baseline justify-between gap-3 mb-1">
+                              <Editable as="div" className="font-semibold text-neutral-900" editable={editMode}
+                                value={p.title} onChange={(v) => { const a = [...src.practice]; a[i] = { ...a[i], title: v }; updateBody(ti, { practice: a }); }} />
+                              <Editable as="div" className="text-[11px] text-[#C8B88A] uppercase tracking-wider shrink-0" editable={editMode}
+                                value={p.time} onChange={(v) => { const a = [...src.practice]; a[i] = { ...a[i], time: v }; updateBody(ti, { practice: a }); }} />
+                            </div>
+                            <Editable as="p" className="text-sm text-neutral-600 leading-relaxed" editable={editMode}
+                              value={p.desc} onChange={(v) => { const a = [...src.practice]; a[i] = { ...a[i], desc: v }; updateBody(ti, { practice: a }); }} />
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <Editable as="div" className="font-semibold text-neutral-900 leading-snug mb-2" editable={editMode}
-                      value={m.title} onChange={(v) => { const h = [...data.highlights]; h[i] = { ...h[i], title: v }; update({ highlights: h }); }} />
-                    <Editable as="p" className="text-sm text-neutral-600 leading-relaxed" editable={editMode}
-                      value={m.body} onChange={(v) => { const h = [...data.highlights]; h[i] = { ...h[i], body: v }; update({ highlights: h }); }} />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+                  </section>
+                )}
 
-          {S.note && (
-            <section>
-              <SectionLabel num="04" title={titleOf("note", "담당 치료사 노트")} />
-              <div className="bg-gradient-to-br from-[#FAF6E8] to-white rounded-3xl p-8 border border-[#C8B88A]/40 relative">
-                <Editable as="p" className="text-neutral-800 leading-relaxed text-[15px] italic whitespace-pre-wrap" editable={editMode}
-                  value={data.note} onChange={(v) => update({ note: v })} />
-                <div className="mt-6 flex items-center gap-3 pt-6 border-t border-[#C8B88A]/30">
-                  <div className="w-10 h-10 rounded-full bg-[#FFB4A2] flex items-center justify-center text-white font-semibold">{data.noteTherapist.name.charAt(0)}</div>
-                  <div>
-                    <Editable as="div" className="font-semibold text-neutral-900 text-sm" editable={editMode}
-                      value={data.noteTherapist.name} onChange={(v) => update({ noteTherapist: { ...data.noteTherapist, name: v } })} />
-                    <Editable as="div" className="text-xs text-neutral-500" editable={editMode}
-                      value={data.noteTherapist.meta} onChange={(v) => update({ noteTherapist: { ...data.noteTherapist, meta: v } })} />
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-
-          {S.practice && (
-            <section>
-              <SectionLabel num="05" title={titleOf("practice", "이번 달 가정 연습 제안")} />
-              <div className="space-y-3">
-                {data.practice.map((p, i) => (
-                  <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5 flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-neutral-900 text-white text-sm font-semibold flex items-center justify-center shrink-0">{i + 1}</div>
-                    <div className="flex-1">
-                      <div className="flex items-baseline justify-between gap-3 mb-1">
-                        <Editable as="div" className="font-semibold text-neutral-900" editable={editMode}
-                          value={p.title} onChange={(v) => { const a = [...data.practice]; a[i] = { ...a[i], title: v }; update({ practice: a }); }} />
-                        <Editable as="div" className="text-[11px] text-[#C8B88A] uppercase tracking-wider shrink-0" editable={editMode}
-                          value={p.time} onChange={(v) => { const a = [...data.practice]; a[i] = { ...a[i], time: v }; update({ practice: a }); }} />
+                {S.goals && (
+                  <section className="mt-8">
+                    <SectionLabel num="06" title={titleOf("goals", "다음 달 목표")} />
+                    <div className="bg-neutral-900 text-white rounded-3xl p-8">
+                      <div className="flex items-center gap-2 text-[11px] tracking-[0.3em] text-[#C8B88A] uppercase mb-4">
+                        <Award className="w-3.5 h-3.5" /> Next Month Focus
                       </div>
-                      <Editable as="p" className="text-sm text-neutral-600 leading-relaxed" editable={editMode}
-                        value={p.desc} onChange={(v) => { const a = [...data.practice]; a[i] = { ...a[i], desc: v }; update({ practice: a }); }} />
+                      <div className="grid sm:grid-cols-3 gap-6">
+                        {src.goals.map((g, i) => (
+                          <div key={i}>
+                            <Editable as="div" className="text-[11px] text-neutral-400 uppercase tracking-wider mb-1" editable={editMode}
+                              value={g.label} onChange={(v) => { const a = [...src.goals]; a[i] = { ...a[i], label: v }; updateBody(ti, { goals: a }); }} />
+                            <Editable as="div" className="text-lg font-semibold" editable={editMode}
+                              value={g.value} onChange={(v) => { const a = [...src.goals]; a[i] = { ...a[i], value: v }; updateBody(ti, { goals: a }); }} />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-6 pt-6 border-t border-white/10 flex items-center justify-between text-sm gap-3">
+                        <Editable as="span" className="text-neutral-300 flex-1" editable={editMode}
+                          value={src.goalsFooter} onChange={(v) => updateBody(ti, { goalsFooter: v })} />
+                        <ChevronRight className="w-4 h-4 text-[#C8B88A] shrink-0" />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  </section>
+                )}
               </div>
-            </section>
-          )}
+            ));
+          })()}
 
-          {S.goals && (
-            <section>
-              <SectionLabel num="06" title={titleOf("goals", "다음 달 목표")} />
-              <div className="bg-neutral-900 text-white rounded-3xl p-8">
-                <div className="flex items-center gap-2 text-[11px] tracking-[0.3em] text-[#C8B88A] uppercase mb-4">
-                  <Award className="w-3.5 h-3.5" /> Next Month Focus
-                </div>
-                <div className="grid sm:grid-cols-3 gap-6">
-                  {data.goals.map((g, i) => (
-                    <div key={i}>
-                      <Editable as="div" className="text-[11px] text-neutral-400 uppercase tracking-wider mb-1" editable={editMode}
-                        value={g.label} onChange={(v) => { const a = [...data.goals]; a[i] = { ...a[i], label: v }; update({ goals: a }); }} />
-                      <Editable as="div" className="text-lg font-semibold" editable={editMode}
-                        value={g.value} onChange={(v) => { const a = [...data.goals]; a[i] = { ...a[i], value: v }; update({ goals: a }); }} />
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 pt-6 border-t border-white/10 flex items-center justify-between text-sm gap-3">
-                  <Editable as="span" className="text-neutral-300 flex-1" editable={editMode}
-                    value={data.goalsFooter} onChange={(v) => update({ goalsFooter: v })} />
-                  <ChevronRight className="w-4 h-4 text-[#C8B88A] shrink-0" />
-                </div>
-              </div>
-            </section>
-          )}
 
           {tpl.outro && (
             <div className="bg-white border border-neutral-200 rounded-2xl px-6 py-4 text-sm text-neutral-700 whitespace-pre-wrap leading-relaxed">

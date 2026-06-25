@@ -70,20 +70,41 @@ export default function ParentReportsPage() {
     const period_start = `${period}-01`;
     const period_end = new Date(y, m, 0).toISOString().slice(0, 10);
 
-    // 치료노트(주간) 가 있는 이용자만 대상 — 데이터 근거 확보
-    const { data: notes, error: notesErr } = await supabase
-      .from("center_parent_reports")
-      .select("client_id")
-      .eq("center_id", centerId)
-      .eq("period_type", "weekly")
-      .gte("period_start", period_start)
-      .lte("period_end", period_end);
-    if (notesErr) { toast({ title: "치료노트 조회 실패", description: notesErr.message, variant: "destructive" }); return; }
-    const clientIds = Array.from(new Set((notes ?? []).map((n: any) => n.client_id)));
+    // 회기기록(center_sessions.meta.records) 또는 주간 노트 둘 중 하나라도 있는 이용자만 대상
+    const [notesRes, sessRes] = await Promise.all([
+      supabase
+        .from("center_parent_reports")
+        .select("client_id")
+        .eq("center_id", centerId)
+        .eq("period_type", "weekly")
+        .gte("period_start", period_start)
+        .lte("period_end", period_end),
+      supabase
+        .from("center_sessions")
+        .select("client_id, meta")
+        .eq("center_id", centerId)
+        .gte("session_date", period_start)
+        .lte("session_date", period_end),
+    ]);
+    if (notesRes.error) { toast({ title: "치료노트 조회 실패", description: notesRes.error.message, variant: "destructive" }); return; }
+    if (sessRes.error) { toast({ title: "회기 조회 실패", description: sessRes.error.message, variant: "destructive" }); return; }
+    const noteClientIds = (notesRes.data ?? []).map((n: any) => n.client_id);
+    const recordClientIds = (sessRes.data ?? [])
+      .filter((s: any) => {
+        const r = s.meta?.records;
+        return r && (r.consult || r.record || r.special);
+      })
+      .map((s: any) => s.client_id);
+    const clientIds = Array.from(new Set([...noteClientIds, ...recordClientIds]));
     if (!clientIds.length) {
-      toast({ title: "이번 달 발행된 치료노트가 없어요", description: "치료노트 페이지에서 주간 노트를 먼저 작성/발행해주세요.", variant: "destructive" });
+      toast({
+        title: "이번 달 회기기록·치료노트가 없어요",
+        description: "회기기록 페이지(치료노트)에서 활동내용을 먼저 작성해주세요. 작성된 치료만 월간 리포트에 포함됩니다.",
+        variant: "destructive",
+      });
       return;
     }
+
 
     // 이미 이 달에 월간 리포트가 존재하는 이용자는 제외 (AI 재호출 비용 방지)
     const { data: existing } = await supabase

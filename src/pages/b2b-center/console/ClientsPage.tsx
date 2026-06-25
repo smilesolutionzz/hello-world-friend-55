@@ -301,6 +301,16 @@ export default function ClientsPage() {
         onCreated={load}
       />
 
+      <ClientRegisterDialog
+        open={!!editClient}
+        centerId={centerId}
+        demo={demo}
+        client={editClient}
+        onClose={() => setEditClient(null)}
+        onCreated={load}
+      />
+
+
       {inviteFor && (
         <InviteParentDialog
           open={!!inviteFor}

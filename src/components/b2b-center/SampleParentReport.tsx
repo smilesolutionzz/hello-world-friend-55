@@ -27,6 +27,22 @@ const ALL_SECTIONS: { key: SectionKey; label: string }[] = [
   { key: "goals", label: "다음 달 목표" },
 ];
 
+interface TrackData {
+  key?: string;
+  area: string;
+  therapist?: string;
+  sessionCount?: number;
+  stats?: Partial<{ participated: string; attendance: string; areas: string; therapist: string }>;
+  summary: string;
+  domains: { domain: string; prev: number; curr: number; delta: string; color: "emerald" | "amber"; note: string }[];
+  highlights: { date: string; title: string; body: string }[];
+  note: string;
+  noteTherapist: { name: string; meta: string };
+  practice: { title: string; desc: string; time: string }[];
+  goals: { label: string; value: string }[];
+  goalsFooter: string;
+}
+
 interface ReportData {
   sections: Record<SectionKey, boolean>;
   stats: { participated: string; attendance: string; areas: string; therapist: string };
@@ -38,7 +54,9 @@ interface ReportData {
   practice: { title: string; desc: string; time: string }[];
   goals: { label: string; value: string }[];
   goalsFooter: string;
+  tracks?: TrackData[];
 }
+
 
 const DEFAULT_SECTIONS: Record<SectionKey, boolean> = {
   cover: true, summary: true, domains: true, highlights: true, note: true, practice: true, goals: true,

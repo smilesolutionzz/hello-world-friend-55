@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { X, Loader2, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { X, Loader2, User, Trash2 } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+
 
 const schema = z.object({
   name: z.string().trim().min(1, "이름을 입력하세요").max(30),

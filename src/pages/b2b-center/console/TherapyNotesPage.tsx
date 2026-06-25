@@ -104,6 +104,9 @@ export default function TherapyNotesPage() {
   const [clients, setClients] = useState<any[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");
   const [clientSearch, setClientSearch] = useState("");
+  const [therapists, setTherapists] = useState<any[]>([]);
+  const [selectedTherapist, setSelectedTherapist] = useState<string>("");
+  const [therapistClientIds, setTherapistClientIds] = useState<Record<string, Set<string>>>({});
   const [weekKey, setWeekKey] = useState(() => isoWeekKey(new Date()));
   const [uploads, setUploads] = useState<any[]>([]);
   const [report, setReport] = useState<any>(null);

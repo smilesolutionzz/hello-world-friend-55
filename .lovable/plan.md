@@ -1,51 +1,82 @@
-# 화이트라벨 ↔ 부모 월간 리포트 실연결 검증 + 연결
 
-## 1. 지금 상태 (조사 결과)
+## 목표
 
-- **저장 경로**: `WhitelabelReportPreviewPage`의 "기관 브랜딩으로 저장" → `center_organizations.branding` JSONB (`{tagline, therapist, logoText, c1, c2, logoBg, logoFg}`) 에 정상 저장. ✅
-- **샘플 미리보기 (`SampleParentReport.tsx`)**: 저장된 `branding`을 로드해서 헤더에 적용. ✅
-- **실제 발행 경로 — 끊김 ❌**
-  - 엣지 `generate-monthly-parent-report` 는 `center_organizations` 에서 `id, name` 만 가져오고 `branding` 컬럼을 무시함.
-  - `ParentReportsPage` 의 실제 발행/보기 렌더러와 보호자가 보는 `/r/...` (`GuardianReportView`)에서 `branding` 을 사용하는 코드가 전혀 없음.
-  - 즉, **저장은 되지만 발행된 리포트엔 반영되지 않는** 상태. 사용자가 의심한 그대로.
+치료사가 같은 회기를 두 곳(`services/records`의 텍스트 입력, `intelligence/therapy-notes`의 사진 업로드)에 따로 기록하던 흐름을, **치료노트** 한 화면에서 모두 처리하도록 통합합니다. 회기기록 텍스트와 사진 OCR이 **동등한 입력원**으로 합쳐져 주간 AI 노트가 생성됩니다.
 
-## 2. 할 일
+## 새 치료노트 화면 구성 (단일 진입)
 
-### 2-1. 엣지 함수에서 branding 함께 로드 후 결과에 포함
-`supabase/functions/generate-monthly-parent-report/index.ts`
-- `center_organizations` select 에 `branding` 추가
-- 생성 결과 payload + DB 저장 시 `meta.branding` (또는 `header_branding`) 필드로 함께 기록 → 발행 후에도 그 시점의 브랜딩이 박제되도록 (저장 후 브랜딩이 바뀌어도 과거 리포트는 그대로 유지).
+라우트 `/b2b-center/app/intelligence/therapy-notes` 한 곳에 모든 흐름을 둡니다. `services/records`는 동일 라우트로 리다이렉트하고 사이드바에서 제거(또는 "치료노트"로 라벨 통합)합니다.
 
-### 2-2. 발행 리포트 렌더러에 branding 적용
-- `ParentReportsPage` 의 상세 보기/미리보기 패널 (현재 일반 헤더 사용 중) 에 `SampleParentReport` 와 동일한 헤더 컴포넌트 분리 후 재사용.
-- `/r/...` 보호자 공개 뷰 `GuardianReportView` 도 동일 헤더 적용 — `report.meta.branding` 우선, 없으면 `center_organizations.branding` fallback.
-- PDF 다운로드도 같은 헤더 거쳐서 나가도록 (기존 `html2pdf` 흐름 그대로, 컴포넌트만 교체).
+화면 레이아웃:
 
-### 2-3. 공통 헤더 추출
-`src/components/b2b-center/WhitelabelHeader.tsx` 신규
-- props: `{ centerName, branding, period, therapist? }`
-- 3곳에서 공유: `SampleParentReport`, `ParentReportsPage` 상세, `GuardianReportView`.
-- 화이트라벨 미리보기 페이지의 인라인 헤더도 같은 컴포넌트로 교체 → 미리보기와 실제 발행이 1픽셀도 다르지 않게 보장.
+```text
+┌──────────────────────────────────────────────────────────┐
+│ 이용자 선택 · 주차(week picker)                          │
+├──────────────────────────────────────────────────────────┤
+│ [이번 주 회기 타임라인]                                  │
+│  · 회기 카드 = (일자/시간/상태/선생님/프로그램)          │
+│  · 카드 펼치기 → 상담내용 / 기록내용 / 특이사항 textarea │
+│  · 카드 우측 → "사진 첨부" 버튼 (해당 회기에 사진 묶음) │
+├──────────────────────────────────────────────────────────┤
+│ [주간 AI 치료노트]                                       │
+│  · "주간 노트 자동 생성" 버튼                            │
+│  · 생성된 초안 편집 → 저장 → 발행 → 보호자 공유          │
+└──────────────────────────────────────────────────────────┘
+```
 
-### 2-4. 저장 후 UX 보강
-- "기관 브랜딩으로 저장" 토스트에 **"다음 발행 리포트부터 자동 적용됩니다"** 문구 확정.
-- 화이트라벨 페이지에 작은 배너: "최근 발행 리포트 N건에 브랜딩 미적용 — 재발행 시 자동 적용" (선택 — `center_parent_reports` 의 `meta.branding` 없는 것 카운트).
+회기 카드는 기존 `SessionRecordsPage`의 카드 UI/저장 로직을 그대로 옮겨와 사용합니다.
 
-### 2-5. 검증 (사용자 액션 후 확인)
-1. 화이트라벨 페이지에서 색상·기관명 변경 → 저장
-2. `/b2b-center/app/parent-reports` 에서 임의 클라이언트 4월 리포트 재발행
-3. 발행 결과·PDF·`/r/...` 공유 링크 셋 모두 동일 헤더로 보이는지 스크린샷 확인
-4. 추가로 브랜딩 한 번 더 바꿔도 **이전 리포트는 박제된 옛 브랜딩** 유지하는지 확인
+## 데이터 모델
 
-## 3. 범위 밖 (이번엔 안 함)
+추가 마이그레이션 없음. 기존 컬럼만 활용:
 
-- 주간 치료노트 (`generate-weekly-therapy-note`) 에는 일단 적용 안 함 — 같은 패턴으로 한 번 더 작업.
-- 로고 이미지 업로드 (현재는 이니셜 텍스트만). 별도 Phase.
-- 다국어 헤더 카피.
+- 회기별 텍스트: `center_sessions.meta.records = { consult, record, special }` (현행 그대로)
+- 회기별 사진: `center_session_uploads` — 업로드 시 `session_date`만이 아니라 **해당 `center_sessions.id`**도 함께 저장하도록 `analyze-session-upload`에 `sessionId` 파라미터를 추가하고, `center_session_uploads.meta.session_id`에 보관(컬럼 추가 없이 JSONB로). 미연결 사진은 기존처럼 날짜 기준으로 처리.
 
-## 4. 산출물
+## AI 생성 로직 변경
 
-- `WhitelabelHeader.tsx` 신규
-- `SampleParentReport.tsx`, `ParentReportsPage.tsx`, `GuardianReportView.tsx`, `WhitelabelReportPreviewPage.tsx` 4파일 수정
-- `generate-monthly-parent-report/index.ts` 수정 (select + 결과 payload에 branding 포함)
-- DB 스키마 변경 없음 (`center_organizations.branding`, `center_parent_reports.meta` 둘 다 기존 JSONB 재사용)
+`supabase/functions/generate-weekly-therapy-note/index.ts`의 프롬프트 구성에 **회기기록 텍스트**를 추가합니다:
+
+```text
+[치료사가 직접 작성한 회기기록]
+- {일자} 상담내용: ...
+- {일자} 기록내용: ...
+- {일자} 특이사항: ...
+
+[치료사 일지(사진)에서 추출한 내용]
+(기존 uploadSummary)
+```
+
+- 두 입력원을 동등 비중으로 결합. 둘 중 하나만 있어도 동작.
+- `hasSessions`/`hasUploads` 분기는 유지하되, `hasRecords`(텍스트 기록 존재 여부) 추가.
+- 빈 케이스 경고 메시지는 "이번 주 기록이 없어요"로 통합.
+
+## 사이드바/네비게이션
+
+`B2BCenterApp.tsx`:
+- "일일 서비스 관리 (회기기록)" 항목 제거.
+- "치료노트 (주간·AI)" → "치료노트 (회기기록 · 주간노트)"로 라벨 변경.
+- "월 서비스 관리"는 현황 대시보드 성격이라 **유지**.
+- `services/records` 라우트는 호환을 위해 남기되 `Navigate to="../intelligence/therapy-notes"`로 리다이렉트.
+
+## 영향 받는 파일
+
+- `src/pages/b2b-center/console/TherapyNotesPage.tsx` — 회기 카드 섹션 신설, `center_sessions` 조회/저장 로직 흡수, 사진 첨부를 회기 카드 안으로 이동.
+- `src/pages/b2b-center/console/SessionRecordsPage.tsx` — 삭제 또는 리다이렉트 shim으로 축소.
+- `src/pages/b2b-center/B2BCenterApp.tsx` — 메뉴 항목 정리, 라우트 리다이렉트.
+- `supabase/functions/generate-weekly-therapy-note/index.ts` — 프롬프트에 회기기록 텍스트 합치기.
+- `supabase/functions/analyze-session-upload/index.ts` — `sessionId` 옵션 수용.
+- `src/pages/b2b-center/console/GuidePage.tsx` — 안내 문구 갱신.
+
+## 영향 없는 항목
+
+- 부모 월간 리포트(`SampleParentReport`)·화이트라벨 템플릿·발행/공유 흐름은 그대로.
+- 월 서비스 관리(달력 뷰)는 유지.
+- 데이터 스키마/RLS 변경 없음.
+
+## 단계
+
+1. AI 프롬프트에 회기기록 텍스트 합치기 (엣지 함수).
+2. `TherapyNotesPage`에 회기 카드 섹션 추가 + 사진 첨부를 카드 단위로 묶기.
+3. 사이드바/라우팅 정리, 리다이렉트 shim.
+4. Guide 페이지 문구 업데이트.

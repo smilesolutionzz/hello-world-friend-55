@@ -335,10 +335,33 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, exi
           </Section>
         </div>
 
+        {/* Duplicate warning */}
+        {duplicateWarning && (
+          <div className="mx-8 mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm">
+            <div className="flex items-start gap-2 mb-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+              <div>
+                <p className="font-medium text-amber-900">중복 가능 이용자가 발견되었습니다</p>
+                <p className="text-amber-800 mt-1">{duplicateWarning}</p>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-3">
+              <button onClick={() => setDuplicateWarning(null)}
+                className="px-3 py-1.5 rounded-full text-xs bg-white border border-amber-300 text-amber-900 hover:bg-amber-100">
+                수정하기
+              </button>
+              <button onClick={() => submit({ skipDupe: true })} disabled={saving}
+                className="px-3 py-1.5 rounded-full text-xs bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-50">
+                무시하고 저장
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Footer */}
         <div className="px-8 py-5 border-t border-neutral-100 flex items-center justify-between bg-neutral-50/50 rounded-b-3xl">
           {isEdit ? (
-            <button onClick={handleDelete} disabled={deleting || saving}
+            <button onClick={() => setConfirmDelete(true)} disabled={deleting || saving}
               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs text-rose-600 hover:bg-rose-50 disabled:opacity-50">
               {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
               {deleting ? "삭제 중…" : "이용자 삭제"}
@@ -351,7 +374,7 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, exi
           )}
           <div className="flex gap-2">
             <button onClick={onClose} className="px-5 py-2.5 rounded-full text-sm text-neutral-600 hover:bg-neutral-100">취소</button>
-            <button onClick={submit} disabled={saving || deleting}
+            <button onClick={() => submit()} disabled={saving || deleting}
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <User className="w-4 h-4" />}
               {saving ? "저장 중…" : isEdit ? "저장" : "등록"}
@@ -361,9 +384,27 @@ export default function ClientRegisterDialog({ open, centerId, demo, client, exi
 
       </div>
 
+      <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>이용자를 삭제할까요?</AlertDialogTitle>
+            <AlertDialogDescription>
+              '{client?.name}' 이용자를 삭제합니다. 연결된 회기 기록은 유지되며, 삭제 직후 10초 안에는 토스트의 '되돌리기'로 복구할 수 있어요.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-rose-600 hover:bg-rose-700">
+              삭제
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <style>{`.ipt { width:100%; padding:0.55rem 0.75rem; border:1px solid #e5e5e5; border-radius:0.625rem; background:white; font-size:0.875rem; outline:none; transition:border-color .15s; }
         .ipt:focus { border-color:#171717; }`}</style>
     </div>
+
   );
 }
 

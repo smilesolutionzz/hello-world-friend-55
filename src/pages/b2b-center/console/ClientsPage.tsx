@@ -105,8 +105,10 @@ export default function ClientsPage() {
   const [filter, setFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [editClient, setEditClient] = useState<Client | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [inviteFor, setInviteFor] = useState<{ id: string; name: string } | null>(null);
+
 
   const [visible, setVisible] = useState<Record<ColKey, boolean>>(() => {
     if (typeof window !== "undefined") {

@@ -497,3 +497,42 @@ function Field({ label, children, className = "" }: { label: string; children: R
     </div>
   );
 }
+
+function InviteCodeCell({ therapistId, code, expiresAt, linked, onIssued }: {
+  therapistId: string; code: string | null; expiresAt: string | null; linked: boolean;
+  onIssued: (code: string, expiresAt: string) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const expired = expiresAt && new Date(expiresAt) < new Date();
+
+  async function issue() {
+    setBusy(true);
+    const { data, error } = await supabase.rpc("issue_therapist_invite_code", { _therapist_id: therapistId });
+    setBusy(false);
+    if (error) { toast.error("코드 발급 실패: " + error.message); return; }
+    const exp = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
+    onIssued(data as string, exp);
+    try { await navigator.clipboard.writeText(data as string); toast.success(`코드 ${data} 가 발급되어 복사되었어요`); }
+    catch { toast.success(`코드 발급 완료: ${data}`); }
+  }
+
+  async function copy() {
+    if (!code) return;
+    try { await navigator.clipboard.writeText(code); toast.success("코드가 복사되었어요"); } catch {}
+  }
+
+  if (linked) return <span className="text-xs text-neutral-400">연결 완료</span>;
+
+  if (!code) {
+    return <Button size="sm" variant="outline" disabled={busy} onClick={issue} className="h-7 text-xs rounded-full">{busy ? "발급 중…" : "코드 발급"}</Button>;
+  }
+  return (
+    <div className="flex items-center gap-1">
+      <button onClick={copy} className={`font-mono text-xs px-2 py-1 rounded border ${expired ? "border-rose-200 bg-rose-50 text-rose-600 line-through" : "border-neutral-200 bg-neutral-50 hover:bg-neutral-100"}`} title="클릭해서 복사">
+        {code}
+      </button>
+      <button onClick={issue} disabled={busy} className="text-[10px] text-neutral-500 hover:text-neutral-900 underline">{busy ? "..." : "재발급"}</button>
+    </div>
+  );
+}
+

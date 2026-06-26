@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
-import { Building2, UserCog, BookOpen, Users, Calendar, CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
+import { Building2, UserCog, BookOpen, Users, Calendar, CheckCircle2, ArrowRight, Sparkles, Upload } from "lucide-react";
+import ImportWizard from "@/components/b2b-center/ImportWizard";
+import { toast } from "sonner";
 
 type Ctx = { centerId: string; demo?: boolean };
 

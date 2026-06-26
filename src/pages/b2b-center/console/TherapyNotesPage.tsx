@@ -99,8 +99,45 @@ function downloadXLSX(clientName: string, weekKey: string, draft: any, tpl?: Wee
   XLSX.writeFile(wb, `치료노트_${clientName}_${weekKey}.xlsx`);
 }
 
+function PhotoGallery({ photos }: { photos: Array<{ path: string; session_date?: string }> }) {
+  const [urls, setUrls] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const paths = photos.map((p) => p.path).filter(Boolean);
+    if (!paths.length) { setUrls({}); return; }
+    let cancelled = false;
+    (async () => {
+      const out: Record<string, string> = {};
+      await Promise.all(paths.map(async (p) => {
+        const { data } = await supabase.storage.from("center-session-uploads").createSignedUrl(p, 3600);
+        if (data?.signedUrl) out[p] = data.signedUrl;
+      }));
+      if (!cancelled) setUrls(out);
+    })();
+    return () => { cancelled = true; };
+  }, [photos.map((p) => p.path).join("|")]);
+  if (!photos.length) return null;
+  return (
+    <div>
+      <div className="text-xs font-medium text-neutral-600 mb-2">이번 주 회기 사진 ({photos.length})</div>
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+        {photos.map((p, i) => (
+          <a key={i} href={urls[p.path]} target="_blank" rel="noreferrer"
+            className="block aspect-square rounded-lg overflow-hidden border border-neutral-200 bg-neutral-100">
+            {urls[p.path] ? (
+              <img src={urls[p.path]} alt={p.session_date || `회기 사진 ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[10px] text-neutral-400">로딩…</div>
+            )}
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function TherapyNotesPage() {
   const { centerId, demo } = useOutletContext<Ctx>();
+
   const [clients, setClients] = useState<any[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");
   const [clientSearch, setClientSearch] = useState("");
@@ -467,6 +504,11 @@ export default function TherapyNotesPage() {
           <EditableArray label="가정에서 해볼 활동" value={editedDraft.home_tips} onChange={(v) => setEditedDraft({ ...editedDraft, home_tips: v })} />
           <EditableField label="다음 주 집중 방향" value={editedDraft.next_week_focus} onChange={(v) => setEditedDraft({ ...editedDraft, next_week_focus: v })} multiline onRewrite={(inst) => rewriteField("next_week_focus", inst)} rewriting={rewriting === "next_week_focus"} />
 
+          {Array.isArray(editedDraft?.photos) && editedDraft.photos.length > 0 && (
+            <PhotoGallery photos={editedDraft.photos} />
+          )}
+
+
           <div className="flex flex-wrap items-center justify-end gap-2 pt-4 border-t border-neutral-100">
             <button onClick={() => downloadPDF(clientName, weekKey, editedDraft, weeklyTpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
               <Download className="w-4 h-4" /> PDF 다운로드
@@ -645,7 +687,11 @@ function HistoryViewer({ clientName, report, onClose, onShare, tpl }: any) {
               <div className="text-sm whitespace-pre-wrap text-neutral-800">{s.value}</div>
             </div>
           ))}
+          {Array.isArray(d?.photos) && d.photos.length > 0 && (
+            <PhotoGallery photos={d.photos} />
+          )}
         </div>
+
         <div className="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-neutral-100">
           <button onClick={() => downloadPDF(clientName, report.week_key, d, tpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
             <Download className="w-4 h-4" /> PDF

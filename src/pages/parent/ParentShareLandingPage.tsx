@@ -25,8 +25,11 @@ export default function ParentShareLandingPage() {
 
   useEffect(() => {
     if (!token) return;
+    // Sanitize token: SMS clients sometimes append a trailing punctuation/whitespace
+    // char when the URL is auto-linkified. Our tokens are hex-only (0-9a-f).
+    const cleanToken = token.trim().toLowerCase().replace(/[^0-9a-f]/g, "");
     (async () => {
-      const { data, error } = await supabase.functions.invoke("parent-share-resolve", { body: { token } });
+      const { data, error } = await supabase.functions.invoke("parent-share-resolve", { body: { token: cleanToken } });
       if (error || (data as any)?.error) {
         setErrorMsg((data as any)?.error ?? error?.message ?? "링크를 불러올 수 없어요");
         setStage("error");

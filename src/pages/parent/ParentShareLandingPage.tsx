@@ -30,12 +30,13 @@ export default function ParentShareLandingPage() {
   const [resourceInfo, setResourceInfo] = useState<{ resource_type: string; resource_id: string; child_id: string | null } | null>(null);
 
   useEffect(() => {
-    if (!token) return;
-    // Sanitize token: SMS clients sometimes append a trailing punctuation/whitespace
-    // char when the URL is auto-linkified. Our tokens are hex-only (0-9a-f).
-    const cleanToken = token.trim().toLowerCase().replace(/[^0-9a-f]/g, "");
+    if (!token) {
+      setErrorMsg("링크가 올바르지 않아요");
+      setStage("error");
+      return;
+    }
     (async () => {
-      const { data, error } = await supabase.functions.invoke("parent-share-resolve", { body: { token: cleanToken } });
+      const { data, error } = await supabase.functions.invoke("parent-share-resolve", { body: { token } });
       if (error || (data as any)?.error) {
         setErrorMsg((data as any)?.error ?? error?.message ?? "링크를 불러올 수 없어요");
         setStage("error");

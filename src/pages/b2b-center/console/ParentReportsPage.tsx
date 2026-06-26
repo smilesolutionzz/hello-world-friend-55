@@ -178,20 +178,21 @@ export default function ParentReportsPage() {
   const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? "—";
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-semibold">부모 월간 리포트</h1>
-          <p className="text-xs text-neutral-500 mt-1 whitespace-nowrap">발행된 주간 치료노트를 자동으로 묶어 월간 리포트 초안을 생성합니다. 이미 리포트가 있는 이용자는 건너뛰며, 다시 만들려면 행의 ‘재생성’을 사용하세요.</p>
+    <div className="p-4 md:p-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <div className="min-w-0">
+          <h1 className="text-xl md:text-2xl font-semibold">부모 월간 리포트</h1>
+          <p className="text-xs text-neutral-500 mt-1">발행된 주간 치료노트를 자동으로 묶어 월간 리포트 초안을 생성합니다. 이미 리포트가 있는 이용자는 건너뛰며, 다시 만들려면 행의 ‘재생성’을 사용하세요.</p>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <button onClick={() => setSampleOpen({ clientId: "c1", name: "민준 (5세)", period: "2026년 4월", periodKey: "2026-04" })} className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-[#C8B88A] text-neutral-800 text-xs whitespace-nowrap hover:bg-[#FAF6E8]"><Eye className="w-3.5 h-3.5 text-[#C8B88A]" /> 샘플 리포트 보기</button>
-          <a href="./parent-reports/whitelabel" className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-neutral-300 text-neutral-800 text-xs whitespace-nowrap hover:bg-neutral-50"><Sparkles className="w-3.5 h-3.5 text-[#C8B88A]" /> 화이트라벨 미리보기</a>
-          <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-xs" />
-          <button onClick={load} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-neutral-200 text-neutral-700 text-xs hover:bg-neutral-50" title="새로고침"><RefreshCw className="w-3.5 h-3.5" /> 새로고침</button>
-          <button onClick={generateBatch} className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-neutral-900 text-white text-xs whitespace-nowrap"><Sparkles className="w-3.5 h-3.5 text-[#C8B88A]" /> 누락된 이용자만 생성</button>
+        <div className="flex items-center gap-2 overflow-x-auto md:overflow-visible md:shrink-0 -mx-4 px-4 md:mx-0 md:px-0 pb-1">
+          <button onClick={() => setSampleOpen({ clientId: "c1", name: "민준 (5세)", period: "2026년 4월", periodKey: "2026-04" })} className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-[#C8B88A] text-neutral-800 text-xs whitespace-nowrap hover:bg-[#FAF6E8] shrink-0"><Eye className="w-3.5 h-3.5 text-[#C8B88A]" /> 샘플</button>
+          <a href="./parent-reports/whitelabel" className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-neutral-300 text-neutral-800 text-xs whitespace-nowrap hover:bg-neutral-50 shrink-0"><Sparkles className="w-3.5 h-3.5 text-[#C8B88A]" /> 화이트라벨</a>
+          <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-xs shrink-0" />
+          <button onClick={load} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-neutral-200 text-neutral-700 text-xs hover:bg-neutral-50 shrink-0" title="새로고침"><RefreshCw className="w-3.5 h-3.5" /> 새로고침</button>
+          <button onClick={generateBatch} className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-neutral-900 text-white text-xs whitespace-nowrap shrink-0"><Sparkles className="w-3.5 h-3.5 text-[#C8B88A]" /> 누락 생성</button>
         </div>
       </div>
+
 
       <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
         <table className="w-full text-sm">

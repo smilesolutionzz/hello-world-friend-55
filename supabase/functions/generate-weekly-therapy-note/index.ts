@@ -182,6 +182,23 @@ ${uploadSummary}
 
     const uploadIds = (uploads || []).map((u) => u.id);
 
+    // Collect photos: (a) per-session meta.photos[].path uploaded in the records UI,
+    //                 (b) center_session_uploads.storage_path from OCR uploads.
+    const sessionPhotos: { path: string; session_date?: string }[] = [];
+    for (const s of schedSessions || []) {
+      const arr = (s as any)?.meta?.photos;
+      if (Array.isArray(arr)) {
+        for (const p of arr) {
+          if (p?.path) sessionPhotos.push({ path: p.path, session_date: s.session_date });
+        }
+      }
+    }
+    for (const u of uploads || []) {
+      if ((u as any)?.storage_path) sessionPhotos.push({ path: (u as any).storage_path, session_date: u.session_date });
+    }
+    if (sessionPhotos.length) (draft as any).photos = sessionPhotos;
+
+
     // Upsert weekly report
     const { data: existing } = await admin
       .from("center_parent_reports")

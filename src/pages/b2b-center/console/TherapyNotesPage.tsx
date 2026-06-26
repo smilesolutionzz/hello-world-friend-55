@@ -504,6 +504,11 @@ export default function TherapyNotesPage() {
           <EditableArray label="가정에서 해볼 활동" value={editedDraft.home_tips} onChange={(v) => setEditedDraft({ ...editedDraft, home_tips: v })} />
           <EditableField label="다음 주 집중 방향" value={editedDraft.next_week_focus} onChange={(v) => setEditedDraft({ ...editedDraft, next_week_focus: v })} multiline onRewrite={(inst) => rewriteField("next_week_focus", inst)} rewriting={rewriting === "next_week_focus"} />
 
+          {Array.isArray(editedDraft?.photos) && editedDraft.photos.length > 0 && (
+            <PhotoGallery photos={editedDraft.photos} />
+          )}
+
+
           <div className="flex flex-wrap items-center justify-end gap-2 pt-4 border-t border-neutral-100">
             <button onClick={() => downloadPDF(clientName, weekKey, editedDraft, weeklyTpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
               <Download className="w-4 h-4" /> PDF 다운로드

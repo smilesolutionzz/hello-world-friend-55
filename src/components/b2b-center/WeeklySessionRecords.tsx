@@ -279,7 +279,15 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
                     {expandingId === s.id ? "확장 중…" : "AI 확장"}
                   </button>
                 </div>
+                <SessionPhotoStrip
+                  centerId={centerId}
+                  clientId={clientId}
+                  sessionId={s.id}
+                  photos={Array.isArray(s.meta?.photos) ? s.meta.photos : []}
+                  onChange={(next) => updatePhotos(s.id, next)}
+                />
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+
                   <div>
                     <label className="text-[11px] text-neutral-500 mb-1 block">활동내용</label>
                     <textarea value={e.consult} onChange={(ev) => updateEdit(s.id, "consult", ev.target.value)} placeholder="회기에 진행한 활동" rows={3}

@@ -48,6 +48,7 @@ export default function OnboardingWizardPage() {
         return (count ?? 0) > 0;
       },
       cta: { label: "선생님 추가", href: "/b2b-center/app/admin/therapists" },
+      importable: true,
     },
     {
       key: "programs",

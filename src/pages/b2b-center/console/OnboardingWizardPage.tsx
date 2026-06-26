@@ -15,6 +15,7 @@ interface Step {
   icon: any;
   check: () => Promise<boolean>;
   cta: { label: string; href: string };
+  importable?: boolean;
 }
 
 export default function OnboardingWizardPage() {
@@ -22,6 +23,8 @@ export default function OnboardingWizardPage() {
   const navigate = useNavigate();
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
+  const [importOpen, setImportOpen] = useState(false);
+  const [refreshTick, setRefreshTick] = useState(0);
 
   const steps: Step[] = [
     {

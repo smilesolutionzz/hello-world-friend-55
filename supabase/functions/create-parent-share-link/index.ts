@@ -173,7 +173,17 @@ Deno.serve(async (req) => {
       }
     }
     if (send_sms && missingSecrets.length === 0) {
-      const message = `[AIHPRO] 자녀 리포트가 도착했습니다.\n${shareUrl}\n전화번호 인증 후 열람하실 수 있어요.`;
+      // Place the URL on its OWN line at the END of the message, surrounded by
+      // blank lines. Korean SMS/LMS clients (KT/SKT/LGU+) auto-linkify by
+      // scanning forward to the next whitespace — when the URL is mid-message
+      // or immediately followed by Korean text, some clients include trailing
+      // bytes or strip query chars, producing a broken link on tap (but the
+      // raw text copies fine, which matches the reported symptom).
+      const message =
+        `[AIHPRO] 자녀 리포트가 도착했어요.\n` +
+        `전화번호 인증 후 열람하실 수 있습니다.\n` +
+        `\n` +
+        `${shareUrl}`;
       const twResp = await fetch(
         `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
         {

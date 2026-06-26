@@ -97,6 +97,19 @@ Deno.serve(async (req) => {
       centerBranding = (center as any)?.branding ?? null;
     }
 
+    // Sign photo URLs (24h) so the parent can view them inline.
+    const draftAny: any = report.ai_draft_json ?? {};
+    if (Array.isArray(draftAny?.photos) && draftAny.photos.length) {
+      const signed = await Promise.all(
+        draftAny.photos.map(async (p: any) => {
+          if (!p?.path) return null;
+          const { data } = await admin.storage.from("center-session-uploads").createSignedUrl(p.path, 60 * 60 * 24);
+          return data?.signedUrl ? { ...p, url: data.signedUrl } : null;
+        }),
+      );
+      draftAny.photos = signed.filter(Boolean);
+    }
+
     return new Response(
       JSON.stringify({
         ok: true,
@@ -108,7 +121,7 @@ Deno.serve(async (req) => {
           period_start: report.period_start,
           period_end: report.period_end,
           published_at: report.published_at,
-          ai_draft_json: report.ai_draft_json,
+          ai_draft_json: draftAny,
         },
         resource_type: link.resource_type,
         child_name: childName,
@@ -117,6 +130,7 @@ Deno.serve(async (req) => {
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
+
   } catch (e) {
     console.error("parent-resource-fetch error", e);
     return new Response(JSON.stringify({ error: String(e) }), {

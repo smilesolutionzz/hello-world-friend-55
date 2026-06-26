@@ -150,6 +150,14 @@ export default function OnboardingWizardPage() {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold">{s.title}</h3>
                   <p className="text-sm text-neutral-600 mt-1 break-keep">{s.desc}</p>
+                  {s.importable && (
+                    <button
+                      onClick={() => { if (demo) { toast.info("데모 모드에서는 실제 임포트가 비활성화돼요"); return; } setImportOpen(true); }}
+                      className="mt-3 inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-[#C8B88A]/40 bg-[#FAF6E8] text-neutral-800 hover:bg-[#F4ECC9]"
+                    >
+                      <Upload className="w-3.5 h-3.5" /> 엑셀로 일괄 등록
+                    </button>
+                  )}
                 </div>
                 <button onClick={() => navigate(s.cta.href)} className={`shrink-0 px-3 py-1.5 rounded-lg text-sm ${done ? "border border-emerald-200 text-emerald-700 hover:bg-emerald-50" : "bg-neutral-900 text-white hover:bg-neutral-800"}`}>
                   {done ? "확인" : s.cta.label}
@@ -159,6 +167,16 @@ export default function OnboardingWizardPage() {
           );
         })}
       </div>
+
+      {importOpen && !demo && (
+        <ImportWizard
+          demo={false}
+          centerId={centerId}
+          onClose={() => setImportOpen(false)}
+          onMergeDemo={() => {}}
+          onImported={() => { setRefreshTick((t) => t + 1); toast.success("임포트 완료 — 진행률을 갱신했어요"); }}
+        />
+      )}
     </div>
   );
 }

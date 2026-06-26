@@ -215,7 +215,7 @@ export default function ParentResourceViewPage() {
 
           {isMonthly ? (
             <MonthlyView m={m} />
-          ) : wSections.length === 0 ? (
+          ) : wSections.length === 0 && !(Array.isArray((draft as any)?.photos) && (draft as any).photos.length) ? (
             <div className="text-sm text-neutral-500 py-8 text-center">아직 표시할 내용이 없어요.</div>
           ) : (
             <div className="space-y-6">
@@ -225,8 +225,22 @@ export default function ParentResourceViewPage() {
                   <div className="text-[15px] leading-relaxed whitespace-pre-wrap text-neutral-800 break-keep">{sec.value}</div>
                 </div>
               ))}
+              {Array.isArray((draft as any)?.photos) && (draft as any).photos.length > 0 && (
+                <div>
+                  <div className="text-[11px] uppercase tracking-wider text-neutral-500 mb-2">이번 주 회기 사진</div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {(draft as any).photos.map((p: any, i: number) => p?.url && (
+                      <a key={i} href={p.url} target="_blank" rel="noreferrer"
+                        className="block rounded-xl overflow-hidden border border-neutral-200 bg-neutral-100 aspect-square">
+                        <img src={p.url} alt={`회기 사진 ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
+
 
           <div className="mt-8 pt-5 border-t border-neutral-100 flex items-center justify-between">
             <div className="text-[11px] text-neutral-400">

@@ -1628,21 +1628,28 @@ function SessionDetail({ s, onClose, onDelete, onEdit, onStatusChange, therapist
               닫기
             </button>
             <div className="flex-1" />
-            {onStatusChange && s.status === "scheduled" && (
-              <button onClick={() => onStatusChange("cancelled")} className="px-5 py-2.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700 text-sm font-medium hover:bg-rose-100">
-                일정 취소
-              </button>
+            {onStatusChange && (
+              <div className="inline-flex rounded-full border border-neutral-200 bg-neutral-50 p-1 text-xs font-medium">
+                {([
+                  { code: "scheduled", label: "예정", active: "bg-amber-100 text-amber-800" },
+                  { code: "completed", label: "완료", active: "bg-emerald-100 text-emerald-800" },
+                  { code: "cancelled", label: "취소", active: "bg-rose-100 text-rose-800" },
+                ] as const).map((opt) => {
+                  const current = s.status?.startsWith("cancelled") ? "cancelled" : s.status;
+                  const isActive = current === opt.code;
+                  return (
+                    <button
+                      key={opt.code}
+                      onClick={() => !isActive && onStatusChange(opt.code as StatusCode)}
+                      className={`px-4 py-1.5 rounded-full transition ${isActive ? opt.active : "text-neutral-500 hover:text-neutral-900"}`}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
             )}
-            {onStatusChange && s.status === "scheduled" && (
-              <button onClick={() => onStatusChange("completed")} className="px-5 py-2.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm font-medium hover:bg-emerald-100">
-                완료 처리
-              </button>
-            )}
-            {onStatusChange && s.status && s.status !== "scheduled" && (
-              <button onClick={() => onStatusChange("scheduled")} className="px-5 py-2.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700 text-sm font-medium hover:bg-amber-100">
-                예정으로 되돌리기
-              </button>
-            )}
+
             {onEdit && !s.therapist_id && (
               <button onClick={onEdit} className="px-5 py-2.5 rounded-full bg-amber-50 text-amber-700 text-sm font-medium border border-amber-200 hover:bg-amber-100">
                 선생님 배정하기

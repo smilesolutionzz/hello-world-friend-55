@@ -100,7 +100,7 @@ export default function OnboardingWizardPage() {
       setLoading(false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [centerId, demo]);
+  }, [centerId, demo, refreshTick]);
 
   const doneCount = Object.values(completed).filter(Boolean).length;
   const progress = Math.round((doneCount / steps.length) * 100);

@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
-import { Building2, UserCog, BookOpen, Users, Calendar, CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
+import { Building2, UserCog, BookOpen, Users, Calendar, CheckCircle2, ArrowRight, Sparkles, Upload } from "lucide-react";
+import ImportWizard from "@/components/b2b-center/ImportWizard";
+import { toast } from "sonner";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -13,6 +15,7 @@ interface Step {
   icon: any;
   check: () => Promise<boolean>;
   cta: { label: string; href: string };
+  importable?: boolean;
 }
 
 export default function OnboardingWizardPage() {
@@ -20,6 +23,8 @@ export default function OnboardingWizardPage() {
   const navigate = useNavigate();
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
+  const [importOpen, setImportOpen] = useState(false);
+  const [refreshTick, setRefreshTick] = useState(0);
 
   const steps: Step[] = [
     {
@@ -43,6 +48,7 @@ export default function OnboardingWizardPage() {
         return (count ?? 0) > 0;
       },
       cta: { label: "선생님 추가", href: "/b2b-center/app/admin/therapists" },
+      importable: true,
     },
     {
       key: "programs",
@@ -65,6 +71,7 @@ export default function OnboardingWizardPage() {
         return (count ?? 0) > 0;
       },
       cta: { label: "이용자 추가", href: "/b2b-center/app/clients" },
+      importable: true,
     },
     {
       key: "schedule",
@@ -76,6 +83,7 @@ export default function OnboardingWizardPage() {
         return (count ?? 0) > 0;
       },
       cta: { label: "일정 만들기", href: "/b2b-center/app/schedule" },
+      importable: true,
     },
   ];
 
@@ -92,7 +100,7 @@ export default function OnboardingWizardPage() {
       setLoading(false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [centerId, demo]);
+  }, [centerId, demo, refreshTick]);
 
   const doneCount = Object.values(completed).filter(Boolean).length;
   const progress = Math.round((doneCount / steps.length) * 100);
@@ -142,6 +150,14 @@ export default function OnboardingWizardPage() {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold">{s.title}</h3>
                   <p className="text-sm text-neutral-600 mt-1 break-keep">{s.desc}</p>
+                  {s.importable && (
+                    <button
+                      onClick={() => { if (demo) { toast.info("데모 모드에서는 실제 임포트가 비활성화돼요"); return; } setImportOpen(true); }}
+                      className="mt-3 inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-[#C8B88A]/40 bg-[#FAF6E8] text-neutral-800 hover:bg-[#F4ECC9]"
+                    >
+                      <Upload className="w-3.5 h-3.5" /> 엑셀로 일괄 등록
+                    </button>
+                  )}
                 </div>
                 <button onClick={() => navigate(s.cta.href)} className={`shrink-0 px-3 py-1.5 rounded-lg text-sm ${done ? "border border-emerald-200 text-emerald-700 hover:bg-emerald-50" : "bg-neutral-900 text-white hover:bg-neutral-800"}`}>
                   {done ? "확인" : s.cta.label}
@@ -151,6 +167,16 @@ export default function OnboardingWizardPage() {
           );
         })}
       </div>
+
+      {importOpen && !demo && (
+        <ImportWizard
+          demo={false}
+          centerId={centerId}
+          onClose={() => setImportOpen(false)}
+          onMergeDemo={() => {}}
+          onImported={() => { setRefreshTick((t) => t + 1); toast.success("임포트 완료 — 진행률을 갱신했어요"); }}
+        />
+      )}
     </div>
   );
 }

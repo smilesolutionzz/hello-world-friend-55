@@ -99,7 +99,42 @@ function downloadXLSX(clientName: string, weekKey: string, draft: any, tpl?: Wee
   XLSX.writeFile(wb, `치료노트_${clientName}_${weekKey}.xlsx`);
 }
 
-export default function TherapyNotesPage() {
+function PhotoGallery({ photos }: { photos: Array<{ path: string; session_date?: string }> }) {
+  const [urls, setUrls] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const paths = photos.map((p) => p.path).filter(Boolean);
+    if (!paths.length) { setUrls({}); return; }
+    let cancelled = false;
+    (async () => {
+      const out: Record<string, string> = {};
+      await Promise.all(paths.map(async (p) => {
+        const { data } = await supabase.storage.from("center-session-uploads").createSignedUrl(p, 3600);
+        if (data?.signedUrl) out[p] = data.signedUrl;
+      }));
+      if (!cancelled) setUrls(out);
+    })();
+    return () => { cancelled = true; };
+  }, [photos.map((p) => p.path).join("|")]);
+  if (!photos.length) return null;
+  return (
+    <div>
+      <div className="text-xs font-medium text-neutral-600 mb-2">이번 주 회기 사진 ({photos.length})</div>
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+        {photos.map((p, i) => (
+          <a key={i} href={urls[p.path]} target="_blank" rel="noreferrer"
+            className="block aspect-square rounded-lg overflow-hidden border border-neutral-200 bg-neutral-100">
+            {urls[p.path] ? (
+              <img src={urls[p.path]} alt={p.session_date || `회기 사진 ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[10px] text-neutral-400">로딩…</div>
+            )}
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
   const { centerId, demo } = useOutletContext<Ctx>();
   const [clients, setClients] = useState<any[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");

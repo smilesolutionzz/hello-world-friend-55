@@ -71,6 +71,7 @@ export default function OnboardingWizardPage() {
         return (count ?? 0) > 0;
       },
       cta: { label: "이용자 추가", href: "/b2b-center/app/clients" },
+      importable: true,
     },
     {
       key: "schedule",

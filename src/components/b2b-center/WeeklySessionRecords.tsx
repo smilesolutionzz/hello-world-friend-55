@@ -166,6 +166,16 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
     setEdits((p) => ({ ...p, [id]: { ...p[id], [key]: value, dirty: key === "keywords" ? p[id]?.dirty : true } }));
   };
 
+  const updatePhotos = async (sessionId: string, photos: SessionPhoto[]) => {
+    const session = sessions.find((s) => s.id === sessionId);
+    if (!session) return;
+    const nextMeta = { ...(session.meta ?? {}), photos };
+    const { error } = await supabase.from("center_sessions").update({ meta: nextMeta }).eq("id", sessionId);
+    if (error) { toast({ title: "사진 저장 실패", description: error.message, variant: "destructive" }); return; }
+    setSessions((prev) => prev.map((s) => (s.id === sessionId ? { ...s, meta: nextMeta } : s)));
+  };
+
+
   const expandWithAI = async (id: string) => {
     const e = edits[id]; if (!e) return;
     const kw = (e.keywords ?? "").trim();

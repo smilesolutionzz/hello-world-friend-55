@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,13 @@ import { toast } from "@/hooks/use-toast";
 type Stage = "loading" | "confirm_phone" | "enter_otp" | "verified" | "error";
 
 export default function ParentShareLandingPage() {
-  const { token } = useParams<{ token: string }>();
+  const { token: rawToken } = useParams<{ token: string }>();
+  // Sanitize token: SMS clients sometimes append trailing punctuation/whitespace
+  // when auto-linkifying URLs. Our tokens are hex-only (0-9a-f).
+  const token = useMemo(
+    () => (rawToken ?? "").trim().toLowerCase().replace(/[^0-9a-f]/g, ""),
+    [rawToken],
+  );
   const navigate = useNavigate();
 
   const [stage, setStage] = useState<Stage>("loading");
@@ -24,7 +30,11 @@ export default function ParentShareLandingPage() {
   const [resourceInfo, setResourceInfo] = useState<{ resource_type: string; resource_id: string; child_id: string | null } | null>(null);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setErrorMsg("링크가 올바르지 않아요");
+      setStage("error");
+      return;
+    }
     (async () => {
       const { data, error } = await supabase.functions.invoke("parent-share-resolve", { body: { token } });
       if (error || (data as any)?.error) {

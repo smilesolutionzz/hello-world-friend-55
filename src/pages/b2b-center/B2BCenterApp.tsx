@@ -301,13 +301,6 @@ export default function B2BCenterApp() {
             </div>
           )}
           <div className={`${isSchedule ? "max-w-none" : "max-w-5xl"} mx-auto px-4 md:px-6 pt-4 md:pt-6 space-y-4`}>
-
-            {!demo && (
-              <TrialBanner
-                trialEndsAt={activeCenter.trial_ends_at}
-                trialStatus={activeCenter.trial_status}
-              />
-            )}
             {showWelcome && (
               <div className="rounded-2xl bg-[#FAF6E8] border border-[#C8B88A]/30 p-5 flex items-start justify-between gap-4">
                 <div>
@@ -320,6 +313,14 @@ export default function B2BCenterApp() {
             )}
           </div>
           <Outlet context={{ centerId: activeCenter.id, demo }} />
+          {!demo && (
+            <div className={`${isSchedule ? "max-w-none" : "max-w-5xl"} mx-auto px-4 md:px-6 py-6`}>
+              <TrialBanner
+                trialEndsAt={activeCenter.trial_ends_at}
+                trialStatus={activeCenter.trial_status}
+              />
+            </div>
+          )}
         </main>
       </div>
     </div>

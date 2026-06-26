@@ -135,7 +135,9 @@ function PhotoGallery({ photos }: { photos: Array<{ path: string; session_date?:
   );
 }
 
+export default function TherapyNotesPage() {
   const { centerId, demo } = useOutletContext<Ctx>();
+
   const [clients, setClients] = useState<any[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");
   const [clientSearch, setClientSearch] = useState("");

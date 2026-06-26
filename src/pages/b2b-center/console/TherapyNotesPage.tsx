@@ -687,7 +687,11 @@ function HistoryViewer({ clientName, report, onClose, onShare, tpl }: any) {
               <div className="text-sm whitespace-pre-wrap text-neutral-800">{s.value}</div>
             </div>
           ))}
+          {Array.isArray(d?.photos) && d.photos.length > 0 && (
+            <PhotoGallery photos={d.photos} />
+          )}
         </div>
+
         <div className="flex items-center justify-end gap-2 mt-6 pt-4 border-t border-neutral-100">
           <button onClick={() => downloadPDF(clientName, report.week_key, d, tpl)} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">
             <Download className="w-4 h-4" /> PDF

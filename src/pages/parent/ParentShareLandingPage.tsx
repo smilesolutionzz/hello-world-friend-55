@@ -18,7 +18,6 @@ export default function ParentShareLandingPage() {
     [rawToken],
   );
   const navigate = useNavigate();
-  const navigate = useNavigate();
 
   const [stage, setStage] = useState<Stage>("loading");
   const [meta, setMeta] = useState<{ phone_last4: string; child_name: string | null; resource_type: string } | null>(null);

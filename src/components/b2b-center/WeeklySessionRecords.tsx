@@ -1,7 +1,100 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Save, Loader2, Sparkles } from "lucide-react";
+import { Save, Loader2, Sparkles, ImagePlus, X } from "lucide-react";
+
+const PHOTO_BUCKET = "center-session-uploads";
+
+type SessionPhoto = { path: string; uploaded_at?: string };
+
+function SessionPhotoStrip({
+  centerId, clientId, sessionId, photos, onChange,
+}: {
+  centerId: string; clientId: string; sessionId: string;
+  photos: SessionPhoto[]; onChange: (next: SessionPhoto[]) => void;
+}) {
+  const [urls, setUrls] = useState<Record<string, string>>({});
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const paths = photos.map((p) => p.path).filter(Boolean);
+    if (!paths.length) { setUrls({}); return; }
+    let cancelled = false;
+    (async () => {
+      const out: Record<string, string> = {};
+      await Promise.all(paths.map(async (p) => {
+        const { data } = await supabase.storage.from(PHOTO_BUCKET).createSignedUrl(p, 3600);
+        if (data?.signedUrl) out[p] = data.signedUrl;
+      }));
+      if (!cancelled) setUrls(out);
+    })();
+    return () => { cancelled = true; };
+  }, [photos.map((p) => p.path).join("|")]);
+
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || !files.length) return;
+    setUploading(true);
+    try {
+      const next = [...photos];
+      for (const f of Array.from(files)) {
+        const ext = (f.name.split(".").pop() || "jpg").toLowerCase().slice(0, 5);
+        const path = `${centerId}/${clientId}/sessions/${sessionId}/${crypto.randomUUID()}.${ext}`;
+        const { error } = await supabase.storage.from(PHOTO_BUCKET).upload(path, f, {
+          contentType: f.type || "image/jpeg", upsert: false,
+        });
+        if (error) throw error;
+        next.push({ path, uploaded_at: new Date().toISOString() });
+      }
+      onChange(next);
+      toast({ title: `사진 ${files.length}장 업로드 완료` });
+    } catch (e: any) {
+      toast({ title: "업로드 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+  const removePhoto = async (path: string) => {
+    if (!confirm("이 사진을 삭제할까요?")) return;
+    await supabase.storage.from(PHOTO_BUCKET).remove([path]);
+    onChange(photos.filter((p) => p.path !== path));
+  };
+
+  return (
+    <div className="mb-3">
+      <div className="flex items-center gap-2 mb-2">
+        <label className="text-[11px] text-neutral-500">회기 사진 ({photos.length})</label>
+        <input ref={fileRef} type="file" accept="image/*" multiple className="hidden"
+          onChange={(e) => handleFiles(e.target.files)} />
+        <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
+          className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-neutral-200 text-[11px] hover:bg-neutral-50 disabled:opacity-50">
+          {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <ImagePlus className="w-3 h-3" />}
+          사진 추가
+        </button>
+        <span className="text-[10px] text-neutral-400">발행 시 보호자 주간노트에 함께 보여요</span>
+      </div>
+      {photos.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {photos.map((p) => (
+            <div key={p.path} className="relative group w-20 h-20 rounded-lg overflow-hidden border border-neutral-200 bg-neutral-100">
+              {urls[p.path] ? (
+                <img src={urls[p.path]} alt="회기 사진" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-[10px] text-neutral-400">…</div>
+              )}
+              <button type="button" onClick={() => removePhoto(p.path)}
+                className="absolute top-0.5 right-0.5 bg-black/60 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition">
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 type Props = {
   centerId: string;

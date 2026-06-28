@@ -32,6 +32,7 @@ const CheckFlow = lazy(() => import("./pages/lite/CheckFlow"));
 const CheckDone = lazy(() => import("./pages/lite/CheckDone"));
 const TherapistSubscriptionTeaser = lazy(() => import("./pages/lite/TherapistSubscriptionTeaser"));
 const TherapistMySchedule = lazy(() => import("./pages/TherapistMySchedule"));
+const TherapistInviteRedirect = lazy(() => import("./pages/TherapistInviteRedirect"));
 const TherapistMyNotes = lazy(() => import("./pages/TherapistMyNotes"));
 const TherapistMyClients = lazy(() => import("./pages/TherapistMyClients"));
 const FindCenter = lazy(() => import("./pages/lite/FindCenter"));
@@ -297,6 +298,7 @@ const App = () => {
           <Route path="/check/done" element={<CheckDone />} />
           <Route path="/therapist-subscription" element={<TherapistSubscriptionTeaser />} />
           <Route path="/therapist/my-schedule" element={<TherapistMySchedule />} />
+          <Route path="/t" element={<TherapistInviteRedirect />} />
           <Route path="/therapist/my-notes" element={<TherapistMyNotes />} />
           <Route path="/therapist/my-clients" element={<TherapistMyClients />} />
           <Route path="/therapist/my-clients/:id" element={<TherapistMyClients />} />

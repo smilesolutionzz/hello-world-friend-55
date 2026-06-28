@@ -141,12 +141,16 @@ export default function SchedulePage() {
     const dates: string[] = [createAt.date];
     const rec = form.recurrence;
     let recurrenceKey: string | null = null;
-    if (rec && rec.mode !== "none" && rec.until) {
-      const end = new Date(`${rec.until}T00:00:00`);
+    if (rec && rec.mode !== "none") {
+      // 평생 반복(forever)이면 종료일을 baseDate + 5년으로 자동 설정
+      const forever = rec.forever || !rec.until;
+      const endDate = forever
+        ? (() => { const e = new Date(baseDate); e.setFullYear(e.getFullYear() + 5); return e; })()
+        : new Date(`${rec.until}T00:00:00`);
       const stepDays = rec.mode === "daily" ? 1 : rec.mode === "biweekly" ? 14 : 7;
       const cur = new Date(baseDate);
       cur.setDate(cur.getDate() + stepDays);
-      while (cur <= end) {
+      while (cur <= endDate) {
         const y = cur.getFullYear(); const m = String(cur.getMonth() + 1).padStart(2, "0"); const d = String(cur.getDate()).padStart(2, "0");
         dates.push(`${y}-${m}-${d}`);
         cur.setDate(cur.getDate() + stepDays);

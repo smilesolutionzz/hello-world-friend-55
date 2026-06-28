@@ -99,10 +99,15 @@ Deno.serve(async (req) => {
       .single();
     const centerName = org?.name ?? "기관";
 
-    const origin = (origin_url && typeof origin_url === "string")
-      ? origin_url.replace(/\/$/, "")
-      : "https://aihpro.app";
+    // Always use production domain for SMS links — preview URLs (lovable.app /
+    // lovableproject.com) require Lovable login and break the therapist flow.
+    const rawOrigin = (origin_url && typeof origin_url === "string") ? origin_url : "";
+    const isPreviewHost = /lovable(project)?\.app|lovable\.dev/i.test(rawOrigin);
+    const origin = (!rawOrigin || isPreviewHost)
+      ? "https://aihpro.app"
+      : rawOrigin.replace(/\/$/, "");
     const claimUrl = `${origin}/therapist/my-schedule?code=${encodeURIComponent(code!)}`;
+
 
     const body =
       `[AIHPRO] ${centerName} 합류 초대\n` +

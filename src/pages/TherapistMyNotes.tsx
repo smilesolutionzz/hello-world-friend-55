@@ -40,7 +40,13 @@ export default function TherapistMyNotes() {
   const [sessionsThisWeek, setSessionsThisWeek] = useState<any[]>([]);
   const [generating, setGenerating] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState<null | { id: string; type: "therapy_note" | "parent_report" }>(null);
+  const [tab, setTab] = useState<"weekly" | "monthly">("weekly");
+  const [monthKey, setMonthKey] = useState<string>(() => new Date().toISOString().slice(0, 7));
+  const [monthlyReport, setMonthlyReport] = useState<any>(null);
+  const [monthlyLoading, setMonthlyLoading] = useState(false);
+  const [monthlyGenerating, setMonthlyGenerating] = useState(false);
+  const [monthlyHistory, setMonthlyHistory] = useState<any[]>([]);
 
   async function bootstrap() {
     setLoading(true);

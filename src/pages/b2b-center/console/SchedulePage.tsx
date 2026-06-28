@@ -1116,16 +1116,39 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
                   ))}
                 </div>
                 {recurrenceMode !== "none" && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-neutral-500 shrink-0">종료일</span>
-                    <input
-                      type="date"
-                      value={recurrenceUntil}
-                      min={at.date}
-                      onChange={(e) => setRecurrenceUntil(e.target.value)}
-                      className="flex-1 px-2.5 py-1.5 rounded-lg border border-neutral-200 text-xs focus:outline-none focus:border-neutral-400"
-                    />
-                    <span className="text-[11px] text-[#C8B88A] font-semibold tabular-nums shrink-0">총 {recurrenceCount}회</span>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setRecurrenceForever(true)}
+                        className={`px-2.5 py-1 rounded-full text-[11px] border transition ${recurrenceForever ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-200 hover:border-neutral-400 text-neutral-700"}`}
+                      >
+                        평생 반복
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setRecurrenceForever(false)}
+                        className={`px-2.5 py-1 rounded-full text-[11px] border transition ${!recurrenceForever ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-200 hover:border-neutral-400 text-neutral-700"}`}
+                      >
+                        종료일 지정
+                      </button>
+                      <span className="ml-auto text-[11px] text-[#C8B88A] font-semibold tabular-nums shrink-0">총 {recurrenceCount}회</span>
+                    </div>
+                    {!recurrenceForever && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] text-neutral-500 shrink-0">종료일</span>
+                        <input
+                          type="date"
+                          value={recurrenceUntil}
+                          min={at.date}
+                          onChange={(e) => setRecurrenceUntil(e.target.value)}
+                          className="flex-1 px-2.5 py-1.5 rounded-lg border border-neutral-200 text-xs focus:outline-none focus:border-neutral-400"
+                        />
+                      </div>
+                    )}
+                    {recurrenceForever && (
+                      <p className="text-[10px] text-neutral-400">5년치 일정이 미리 생성되고, 삭제 시 과거·미래 전체가 시간표에서 사라져요.</p>
+                    )}
                   </div>
                 )}
               </div>

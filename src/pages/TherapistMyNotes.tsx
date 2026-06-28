@@ -528,20 +528,54 @@ function subjectExample(program: string | undefined, field: FieldKey): string {
   return table[kind][field];
 }
 
-function RecordField({ field, program, value, onSave, onExpand }: { field: FieldKey; program?: string; value: string; onSave: (v: string) => void; onExpand: (v: string) => void }) {
+function RecordField({ field, program, value, onSave, onExpand }: { field: FieldKey; program?: string; value: string; onSave: (v: string) => void; onExpand: (v: string) => void | Promise<void> }) {
   const [v, setV] = useState(value);
+  const [expanding, setExpanding] = useState(false);
   useEffect(() => { setV(value); }, [value]);
   const label = FIELD_LABEL[field];
   const example = subjectExample(program, field);
+
+  async function handleExpand() {
+    if (!v.trim() || expanding) return;
+    setExpanding(true);
+    try { await onExpand(v); } finally { setExpanding(false); }
+  }
+
   return (
     <div className="mb-2">
       <div className="flex items-center justify-between mb-1">
         <label className="text-[11px] text-neutral-500">{label}</label>
-        <button type="button" onClick={() => onExpand(v)} disabled={!v.trim()} className="text-[10px] text-blue-600 inline-flex items-center gap-0.5 disabled:opacity-30"><Sparkles className="w-2.5 h-2.5" /> AI 확장</button>
+        <button
+          type="button"
+          onClick={handleExpand}
+          disabled={!v.trim() || expanding}
+          aria-busy={expanding}
+          className="text-[10px] inline-flex items-center gap-1 px-2 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {expanding ? (
+            <><Loader2 className="w-2.5 h-2.5 animate-spin" /> AI 작성중…</>
+          ) : (
+            <><Sparkles className="w-2.5 h-2.5" /> AI 확장</>
+          )}
+        </button>
       </div>
-      <textarea value={v} onChange={(e) => setV(e.target.value)} onBlur={() => onSave(v)}
-        placeholder={`${example} — 키워드만 적고 AI 확장`}
-        className="w-full text-xs border border-neutral-200 rounded-lg px-2 py-1.5 min-h-[48px] resize-y" />
+      <div className="relative">
+        <textarea
+          value={v}
+          onChange={(e) => setV(e.target.value)}
+          onBlur={() => onSave(v)}
+          disabled={expanding}
+          placeholder={`${example} — 키워드만 적고 AI 확장`}
+          className={`w-full text-xs border rounded-lg px-2 py-1.5 min-h-[48px] resize-y transition ${expanding ? "border-blue-300 bg-blue-50/40" : "border-neutral-200"}`}
+        />
+        {expanding && (
+          <div className="absolute inset-0 rounded-lg pointer-events-none flex items-center justify-center bg-white/40 backdrop-blur-[1px]">
+            <div className="flex items-center gap-1.5 text-[11px] text-blue-700 bg-white px-2.5 py-1 rounded-full border border-blue-200 shadow-sm">
+              <Loader2 className="w-3 h-3 animate-spin" /> AI가 문장으로 다듬는 중…
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

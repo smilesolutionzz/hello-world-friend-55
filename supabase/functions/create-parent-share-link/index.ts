@@ -24,12 +24,11 @@ function normalizePhone(input: string): string | null {
   return null;
 }
 
-function generateToken(len = 24): string {
-  // Hex only (0-9a-f). Avoid '-' and '_' because Korean SMS clients (LMS) often
-  // break URL auto-linkify at underscores, causing the tapped link to drop the
-  // token. Pasting the same URL into KakaoTalk works because Kakao parses the
-  // full string. Hex tokens are safely auto-linked by every SMS client.
-  const bytes = new Uint8Array(len);
+function generateToken(byteLen = 10): string {
+  // Hex only (0-9a-f), 20 chars (80 bits entropy) — short enough that the full
+  // URL fits in a single Korean SMS segment (UCS-2 = 70 chars/segment).
+  // Avoid '-'/'_' because Korean SMS clients break auto-linkify at underscores.
+  const bytes = new Uint8Array(byteLen);
   crypto.getRandomValues(bytes);
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
@@ -179,11 +178,12 @@ Deno.serve(async (req) => {
       // or immediately followed by Korean text, some clients include trailing
       // bytes or strip query chars, producing a broken link on tap (but the
       // raw text copies fine, which matches the reported symptom).
-      const message =
-        `[AIHPRO] 자녀 리포트가 도착했어요.\n` +
-        `전화번호 인증 후 열람하실 수 있습니다.\n` +
-        `\n` +
-        `${shareUrl}`;
+      // Keep the entire message under ONE Korean SMS segment (UCS-2 = 70 chars).
+      // Twilio + KR carriers split longer messages into separate SMS, which
+      // routinely breaks the URL across segments (reported symptom: link cut
+      // off mid-token). With a 20-char hex token the URL is 52 chars; the
+      // short header below keeps total length around 64 chars → 1 segment.
+      const message = `[AIHPRO] 리포트 도착\n${shareUrl}`;
       const twResp = await fetch(
         `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
         {

@@ -101,11 +101,10 @@ Deno.serve(async (req) => {
 
     // Always use production domain for SMS links — preview URLs (lovable.app /
     // lovableproject.com) require Lovable login and break the therapist flow.
-    const rawOrigin = (origin_url && typeof origin_url === "string") ? origin_url : "";
-    const isPreviewHost = /lovable(project)?\.app|lovable\.dev/i.test(rawOrigin);
-    const origin = (!rawOrigin || isPreviewHost)
-      ? "https://aihpro.app"
-      : rawOrigin.replace(/\/$/, "");
+    // Always force production domain — preview/sandbox hosts (lovable.app,
+    // lovableproject.com, lovable.dev, *.lovable.*) all require a Lovable
+    // login that therapists don't have.
+    const origin = "https://aihpro.app";
     const claimUrl = `${origin}/therapist/my-schedule?code=${encodeURIComponent(code!)}`;
 
 

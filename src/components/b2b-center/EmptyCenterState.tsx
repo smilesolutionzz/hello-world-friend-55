@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Loader2, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { createCenter, setActiveCenterId, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 
 export default function EmptyCenterState({ onCreated }: { onCreated: (c: CenterOrg) => void }) {
@@ -10,6 +11,7 @@ export default function EmptyCenterState({ onCreated }: { onCreated: (c: CenterO
   const [name, setName] = useState("");
   const [creating, setCreating] = useState(false);
   const [inviteToken, setInviteToken] = useState("");
+  const [joining, setJoining] = useState(false);
 
   async function quickCreate() {
     const n = name.trim();
@@ -27,10 +29,34 @@ export default function EmptyCenterState({ onCreated }: { onCreated: (c: CenterO
     }
   }
 
-  function acceptInvite() {
-    const t = inviteToken.trim();
-    if (!t) return;
-    navigate(`/b2b-center/invite/${t}`);
+  async function acceptInvite() {
+    const raw = inviteToken.trim();
+    if (!raw) return;
+    // Extract code from URL if pasted
+    const codeMatch = raw.match(/code=([A-Za-z0-9]+)/);
+    const candidate = (codeMatch ? codeMatch[1] : raw).trim();
+    // Therapist invite code = 6 alphanumeric chars
+    if (/^[A-Za-z0-9]{6}$/.test(candidate)) {
+      setJoining(true);
+      try {
+        const { error } = await supabase.rpc("redeem_therapist_invite_code", { _code: candidate.toUpperCase() });
+        if (error) throw error;
+        toast({ title: "기관 합류 완료", description: "내 일정으로 이동합니다." });
+        navigate("/therapist/my-schedule");
+      } catch (e: any) {
+        const m = e?.message ?? "";
+        const msg = m.includes("CODE_NOT_FOUND") ? "유효하지 않은 코드입니다. 기관장에게 다시 받아주세요."
+          : m.includes("CODE_EXPIRED") ? "코드가 만료되었어요. 재발급을 요청해주세요."
+          : m.includes("CODE_ALREADY_USED") ? "이미 다른 계정에 연결된 코드입니다."
+          : m || "합류에 실패했어요.";
+        toast({ title: "합류 실패", description: msg, variant: "destructive" });
+      } finally { setJoining(false); }
+      return;
+    }
+    // Fallback: long token = center_invites flow
+    const tokenMatch = raw.match(/invite\/([A-Za-z0-9_-]+)/);
+    const token = tokenMatch ? tokenMatch[1] : raw;
+    navigate(`/b2b-center/invite/${token}`);
   }
 
   return (

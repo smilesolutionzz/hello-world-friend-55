@@ -19,13 +19,35 @@ const PALETTE = [
   "#06B6D4", "#F59E0B", "#10B981", "#EF4444", "#8B5CF6", "#0EA5E9",
 ];
 
-type Permission = "schedule" | "billing" | "clients" | "reports" | "admin";
-const PERMISSION_LIST: { key: Permission; label: string; hint: string }[] = [
-  { key: "schedule", label: "일정 관리", hint: "일정 생성·수정·완료/취소 처리" },
-  { key: "billing", label: "수납 관리", hint: "결제·환불·미수금 관리" },
-  { key: "clients", label: "이용자 관리", hint: "아동/보호자 정보 열람·수정" },
-  { key: "reports", label: "리포트 작성", hint: "상담·평가·치료 리포트 작성" },
-  { key: "admin", label: "기관 관리자", hint: "선생님/프로그램/권한 설정 (최고권한)" },
+type Permission =
+  | "schedule"
+  | "clients"
+  | "therapy_notes"
+  | "parent_reports"
+  | "billing"
+  | "whitelabel"
+  | "admin";
+
+const DEFAULT_THERAPIST_PERMS: Permission[] = [
+  "schedule",
+  "clients",
+  "therapy_notes",
+  "parent_reports",
+];
+
+const PERMISSION_LIST: {
+  key: Permission;
+  label: string;
+  hint: string;
+  defaultOn?: boolean;
+}[] = [
+  { key: "schedule", label: "일정 관리", hint: "본인 담당 회기만 조회·완료·취소", defaultOn: true },
+  { key: "clients", label: "이용자 관리", hint: "본인 담당 아동·보호자 정보 열람·수정", defaultOn: true },
+  { key: "therapy_notes", label: "치료 노트 (주간)", hint: "본인 담당 아동 회기기록·주간노트 작성·발송", defaultOn: true },
+  { key: "parent_reports", label: "부모 월간 리포트", hint: "본인 담당 트랙 월간 리포트 생성·발송", defaultOn: true },
+  { key: "billing", label: "수납 관리", hint: "결제·환불·미수금·바우처 청구 (전체)" },
+  { key: "whitelabel", label: "화이트라벨 설정", hint: "기관 브랜딩·리포트 템플릿 편집" },
+  { key: "admin", label: "기관 관리자", hint: "선생님 초대·프로그램·권한 설정 (최고권한)" },
 ];
 
 const STATUS_OPTIONS = [
@@ -468,18 +490,32 @@ function PermissionsDialog({ row, onClose, onSaved }: { row: any; onClose: () =>
         <DialogHeader>
           <DialogTitle>{row.name} 권한 설정</DialogTitle>
         </DialogHeader>
-        <p className="text-xs text-neutral-500 -mt-2 mb-1">계정이 연결된 선생님에게만 적용돼요.</p>
+        <div className="-mt-2 mb-2 space-y-1">
+          <p className="text-xs text-neutral-500">계정이 연결된 선생님에게만 적용돼요.</p>
+          <p className="text-[11px] text-neutral-400">
+            초대코드로 자동 연결되면 <span className="text-neutral-600 font-medium">일정·이용자·치료노트·월간리포트</span>가
+            <span className="text-neutral-600 font-medium"> 본인 담당분만</span> 자동 허용돼요.
+          </p>
+        </div>
         <div className="space-y-2.5">
           {PERMISSION_LIST.map((p) => (
             <label key={p.key} className="flex items-start gap-3 p-3 rounded-xl border border-neutral-200 hover:border-neutral-300 cursor-pointer">
               <Checkbox checked={perms.includes(p.key)} onCheckedChange={() => toggle(p.key)} className="mt-0.5" />
-              <div>
-                <div className="text-sm font-medium">{p.label}</div>
+              <div className="flex-1">
+                <div className="text-sm font-medium flex items-center gap-2">
+                  {p.label}
+                  {p.defaultOn && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      기본
+                    </span>
+                  )}
+                </div>
                 <div className="text-xs text-neutral-500 mt-0.5">{p.hint}</div>
               </div>
             </label>
           ))}
         </div>
+
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>취소</Button>
           <Button onClick={save} disabled={saving}>{saving ? "저장 중…" : "저장"}</Button>

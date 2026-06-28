@@ -105,16 +105,13 @@ Deno.serve(async (req) => {
     // lovableproject.com, lovable.dev, *.lovable.*) all require a Lovable
     // login that therapists don't have.
     const origin = "https://aihpro.app";
-    const claimUrl = `${origin}/therapist/my-schedule?code=${encodeURIComponent(code!)}`;
+    // Short path /t?c=CODE redirects to /therapist/my-schedule?code=CODE on the client.
+    // Keeps the entire SMS body under 1 Korean SMS segment (UCS-2 = 70 chars) so
+    // KR carriers don't split the message and break the URL across segments.
+    const claimUrl = `${origin}/t?c=${encodeURIComponent(code!)}`;
 
-
-    const body =
-      `[AIHPRO] ${centerName} 합류 초대\n` +
-      `${therapist.name}님, 본인 휴대폰 번호로 회원가입(또는 로그인) 후\n` +
-      `아래 코드를 입력해 계정을 연결하세요.\n` +
-      `코드: ${code}\n` +
-      `(코드 30일간 유효 · 가입 후 자동 입력됩니다)\n\n` +
-      claimUrl;
+    // Compact body: header + code + URL on its own trailing line. ~50 chars total.
+    const body = `[AIHPRO] ${centerName} 합류코드 ${code}\n${claimUrl}`;
 
 
     if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_FROM_NUMBER) {

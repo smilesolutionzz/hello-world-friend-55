@@ -38,6 +38,7 @@ export default function TherapistMyNotes() {
   const [weekKey, setWeekKey] = useState<string>(isoWeek(new Date()));
   const [report, setReport] = useState<any>(null);
   const [sessionsThisWeek, setSessionsThisWeek] = useState<any[]>([]);
+  const [programs, setPrograms] = useState<Record<string, string>>({});
   const [generating, setGenerating] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [shareOpen, setShareOpen] = useState<null | { id: string; type: "therapy_note" | "parent_report" }>(null);
@@ -61,15 +62,25 @@ export default function TherapistMyNotes() {
 
     if (tlist.length === 0) { setLoading(false); return; }
 
-    // 본인 담당 아동: 본인 세션의 distinct clients
-    const { data: sess } = await supabase
-      .from("center_sessions")
-      .select("client_id, center_clients:client_id(id, name, guardian_phone)")
-      .in("therapist_id", tlist.map((t) => t.id));
+    const centerIds = Array.from(new Set(tlist.map((t) => t.center_id)));
+    // 본인 담당 아동 + 센터 프로그램 목록
+    const [{ data: sess }, { data: progs }] = await Promise.all([
+      supabase
+        .from("center_sessions")
+        .select("client_id, center_clients:client_id(id, name, guardian_phone)")
+        .in("therapist_id", tlist.map((t) => t.id)),
+      supabase
+        .from("center_programs")
+        .select("id, name")
+        .in("center_id", centerIds),
+    ]);
     const seen = new Map<string, Client>();
     (sess ?? []).forEach((s: any) => { if (s.center_clients) seen.set(s.center_clients.id, s.center_clients); });
     const list = Array.from(seen.values()).sort((a, b) => a.name.localeCompare(b.name));
     setClients(list);
+    const pmap: Record<string, string> = {};
+    (progs ?? []).forEach((p: any) => { pmap[p.id] = p.name; });
+    setPrograms(pmap);
     if (list.length > 0 && !selClient) setSelClient(list[0].id);
     setLoading(false);
   }
@@ -133,10 +144,22 @@ export default function TherapistMyNotes() {
 
   async function aiExpand(field: "consult" | "record" | "special", text: string, sessionId: string) {
     try {
-      const { data, error } = await supabase.functions.invoke("expand-session-record", { body: { field, text } });
+      const s = sessionsThisWeek.find((x) => x.id === sessionId);
+      const programName = s?.program_id ? programs[s.program_id] : undefined;
+      const client = clients.find((c) => c.id === selClient);
+      const { data, error } = await supabase.functions.invoke("expand-session-record", {
+        body: {
+          field, text,
+          context: {
+            program: programName,
+            childName: client?.name,
+            date: s?.session_date,
+            time: s?.start_time?.slice(0, 5),
+          },
+        },
+      });
       if (error) throw error;
       const expanded = data?.expanded ?? text;
-      const s = sessionsThisWeek.find((x) => x.id === sessionId);
       if (!s) return;
       const newMeta = { ...(s.meta ?? {}), records: { ...(s.meta?.records ?? {}), [field]: expanded } };
       await supabase.from("center_sessions").update({ meta: newMeta }).eq("id", sessionId);
@@ -270,16 +293,23 @@ export default function TherapistMyNotes() {
                   <p className="text-xs text-neutral-400">이번 주에 본인 담당 회기가 없습니다.</p>
                 ) : (
                   <div className="space-y-3">
-                    {sessionsThisWeek.map((s) => (
-                      <div key={s.id} className="border border-neutral-200 rounded-xl p-3">
-                        <p className="text-xs font-medium mb-2">{s.session_date} {s.start_time?.slice(0,5)}–{s.end_time?.slice(0,5)} <span className="text-neutral-400 ml-1">[{s.status}]</span></p>
-                        {(["consult","record","special"] as const).map((f) => (
-                          <RecordField key={f} field={f} value={s.meta?.records?.[f] ?? ""}
-                            onSave={(v) => saveRecord(s.id, { [f]: v })}
-                            onExpand={(v) => aiExpand(f, v, s.id)} />
-                        ))}
-                      </div>
-                    ))}
+                    {sessionsThisWeek.map((s) => {
+                      const programName = s.program_id ? programs[s.program_id] : undefined;
+                      return (
+                        <div key={s.id} className="border border-neutral-200 rounded-xl p-3">
+                          <p className="text-xs font-medium mb-2">
+                            {s.session_date} {s.start_time?.slice(0,5)}–{s.end_time?.slice(0,5)}
+                            {programName && <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-600">{programName}</span>}
+                            <span className="text-neutral-400 ml-1">[{s.status}]</span>
+                          </p>
+                          {(["consult","record","special"] as const).map((f) => (
+                            <RecordField key={f} field={f} program={programName} value={s.meta?.records?.[f] ?? ""}
+                              onSave={(v) => saveRecord(s.id, { [f]: v })}
+                              onExpand={(v) => aiExpand(f, v, s.id)} />
+                          ))}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </section>
@@ -432,10 +462,77 @@ export default function TherapistMyNotes() {
   );
 }
 
-function RecordField({ field, value, onSave, onExpand }: { field: "consult"|"record"|"special"; value: string; onSave: (v: string) => void; onExpand: (v: string) => void }) {
+type FieldKey = "consult" | "record" | "special";
+
+const FIELD_LABEL: Record<FieldKey, string> = {
+  consult: "활동내용",
+  record: "회기 관찰",
+  special: "특이사항",
+};
+
+// 과목(프로그램)별 키워드 예시 — 치료사가 한 줄만 적어도 감 잡기 쉽게
+function subjectExample(program: string | undefined, field: FieldKey): string {
+  const p = (program ?? "").toLowerCase();
+  const kind: "art" | "pe" | "speech" | "sensory" | "cognitive" | "psy" | "ot" | "default" =
+    /미술|아트|그림/.test(p) ? "art"
+    : /체육|운동|pe|신체/.test(p) ? "pe"
+    : /언어|말|발음|스피치/.test(p) ? "speech"
+    : /감각|sensory/.test(p) ? "sensory"
+    : /인지|학습|cognitive/.test(p) ? "cognitive"
+    : /심리|정서|놀이/.test(p) ? "psy"
+    : /작업|ot/.test(p) ? "ot"
+    : "default";
+
+  const table: Record<typeof kind, Record<FieldKey, string>> = {
+    art: {
+      consult: "예) 색칠 활동, 점토 만들기 10분",
+      record: "예) 색 선택 적극적, 손끝 협응 향상",
+      special: "예) 마무리 정리 거부 약간 있었음",
+    },
+    pe: {
+      consult: "예) 공 던지기 5세트, 균형 잡기",
+      record: "예) 좌우 균형 안정, 지구력 향상",
+      special: "예) 시작 전 워밍업에서 산만",
+    },
+    speech: {
+      consult: "예) ㅅ/ㅈ 발음 카드 20개, 짧은 문장 만들기",
+      record: "예) ㅅ 발음 정확도 상승, 자발 발화 증가",
+      special: "예) 컨디션 저하로 후반부 집중 떨어짐",
+    },
+    sensory: {
+      consult: "예) 촉각 자극 활동, 진동판 3분",
+      record: "예) 거친 촉감 수용 폭 넓어짐",
+      special: "예) 큰 소리에 일시적 회피",
+    },
+    cognitive: {
+      consult: "예) 패턴 카드 8개, 분류 과제 2종",
+      record: "예) 분류 기준 스스로 설명, 정확도 향상",
+      special: "예) 새 과제에서 좌절 표현",
+    },
+    psy: {
+      consult: "예) 감정카드 놀이, 역할극 1회",
+      record: "예) 감정 단어 표현 자연스러움 증가",
+      special: "예) 부모 분리 시 잠깐 눈물",
+    },
+    ot: {
+      consult: "예) 소근육 가위질, 단추 끼우기 10개",
+      record: "예) 양손 협응 안정, 속도 향상",
+      special: "예) 손목 피로 호소",
+    },
+    default: {
+      consult: "예) 공던지기 5회, 그림카드 분류",
+      record: "예) 집중 유지 향상, 지시 수용 잘함",
+      special: "예) 마무리에서 짧은 거부 반응",
+    },
+  };
+  return table[kind][field];
+}
+
+function RecordField({ field, program, value, onSave, onExpand }: { field: FieldKey; program?: string; value: string; onSave: (v: string) => void; onExpand: (v: string) => void }) {
   const [v, setV] = useState(value);
   useEffect(() => { setV(value); }, [value]);
-  const label = field === "consult" ? "활동내용" : field === "record" ? "주관평가" : "특이사항";
+  const label = FIELD_LABEL[field];
+  const example = subjectExample(program, field);
   return (
     <div className="mb-2">
       <div className="flex items-center justify-between mb-1">
@@ -443,8 +540,9 @@ function RecordField({ field, value, onSave, onExpand }: { field: "consult"|"rec
         <button type="button" onClick={() => onExpand(v)} disabled={!v.trim()} className="text-[10px] text-blue-600 inline-flex items-center gap-0.5 disabled:opacity-30"><Sparkles className="w-2.5 h-2.5" /> AI 확장</button>
       </div>
       <textarea value={v} onChange={(e) => setV(e.target.value)} onBlur={() => onSave(v)}
-        placeholder={`${label} 키워드 한 줄도 OK — AI 확장으로 문장화`}
+        placeholder={`${example} — 키워드만 적고 AI 확장`}
         className="w-full text-xs border border-neutral-200 rounded-lg px-2 py-1.5 min-h-[48px] resize-y" />
     </div>
   );
 }
+

@@ -155,6 +155,53 @@ export default function TherapistMyNotes() {
     await supabase.from("center_sessions").update({ meta: newMeta }).eq("id", sessionId);
   }
 
+  async function loadMonthly() {
+    if (!selClient) return;
+    setMonthlyLoading(true);
+    const [y, m] = monthKey.split("-").map(Number);
+    const start = `${monthKey}-01`;
+    const endDate = new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10);
+    const [{ data: cur }, { data: hist }] = await Promise.all([
+      supabase.from("center_parent_reports")
+        .select("*")
+        .eq("client_id", selClient).eq("period_type", "monthly")
+        .gte("period_start", start).lte("period_end", endDate)
+        .order("published_at", { ascending: false }).limit(1).maybeSingle(),
+      supabase.from("center_parent_reports")
+        .select("id, title, period_start, period_end, status, published_at")
+        .eq("client_id", selClient).eq("period_type", "monthly")
+        .order("period_end", { ascending: false }).limit(12),
+    ]);
+    setMonthlyReport(cur);
+    setMonthlyHistory(hist ?? []);
+    setMonthlyLoading(false);
+  }
+  useEffect(() => { if (tab === "monthly") loadMonthly(); /* eslint-disable-next-line */ }, [tab, selClient, monthKey]);
+
+  async function generateMonthly() {
+    if (!therapist || !selClient) return;
+    setMonthlyGenerating(true);
+    try {
+      const { error } = await supabase.functions.invoke("generate-monthly-parent-report", {
+        body: { centerId: therapist.center_id, clientId: selClient, period: monthKey, force: true },
+      });
+      if (error) throw error;
+      toast({ title: "월간 리포트가 생성되었어요" });
+      await loadMonthly();
+    } catch (e: any) {
+      toast({ title: "생성 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally { setMonthlyGenerating(false); }
+  }
+
+  async function publishMonthly(id: string) {
+    const { error } = await supabase.from("center_parent_reports").update({
+      status: "published", published_at: new Date().toISOString(),
+    }).eq("id", id);
+    if (error) { toast({ title: "발행 실패", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "발행 완료" });
+    loadMonthly();
+  }
+
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-neutral-400" /></div>;
   if (therapists.length === 0) return (
     <div className="min-h-screen flex items-center justify-center p-4">

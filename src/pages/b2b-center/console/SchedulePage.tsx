@@ -746,7 +746,14 @@ export default function SchedulePage() {
           demo={!!demo}
           centerId={centerId}
           onClose={() => setImportOpen(false)}
-          onImported={() => setImportRefresh((x) => x + 1)}
+          onImported={(info) => {
+            setImportRefresh((x) => x + 1);
+            if (info?.minDate) {
+              const d = new Date(`${info.minDate}T00:00:00`);
+              if (!isNaN(d.getTime())) setCursor(d);
+            }
+            setReloadKey((k) => k + 1);
+          }}
           onMergeDemo={(extra) => {
             const cMap = new Map(clients.map((c: any) => [c.name, c.id]));
             const tMap = new Map(therapists.map((t: any) => [t.name, t.id]));

@@ -178,11 +178,12 @@ Deno.serve(async (req) => {
       // or immediately followed by Korean text, some clients include trailing
       // bytes or strip query chars, producing a broken link on tap (but the
       // raw text copies fine, which matches the reported symptom).
-      const message =
-        `[AIHPRO] 자녀 리포트가 도착했어요.\n` +
-        `전화번호 인증 후 열람하실 수 있습니다.\n` +
-        `\n` +
-        `${shareUrl}`;
+      // Keep the entire message under ONE Korean SMS segment (UCS-2 = 70 chars).
+      // Twilio + KR carriers split longer messages into separate SMS, which
+      // routinely breaks the URL across segments (reported symptom: link cut
+      // off mid-token). With a 20-char hex token the URL is 52 chars; the
+      // short header below keeps total length around 64 chars → 1 segment.
+      const message = `[AIHPRO] 리포트 도착\n${shareUrl}`;
       const twResp = await fetch(
         `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
         {

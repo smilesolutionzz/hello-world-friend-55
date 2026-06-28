@@ -99,19 +99,13 @@ Deno.serve(async (req) => {
       .single();
     const centerName = org?.name ?? "기관";
 
-    // Always use production domain for SMS links — preview URLs (lovable.app /
-    // lovableproject.com) require Lovable login and break the therapist flow.
-    // Always force production domain — preview/sandbox hosts (lovable.app,
-    // lovableproject.com, lovable.dev, *.lovable.*) all require a Lovable
-    // login that therapists don't have.
-    const origin = "https://aihpro.app";
-    // Short path /t?c=CODE redirects to /therapist/my-schedule?code=CODE on the client.
-    // Keeps the entire SMS body under 1 Korean SMS segment (UCS-2 = 70 chars) so
-    // KR carriers don't split the message and break the URL across segments.
-    const claimUrl = `${origin}/t?c=${encodeURIComponent(code!)}`;
-
-    // Compact body: header + code + URL on its own trailing line. ~50 chars total.
-    const body = `[AIHPRO] ${centerName} 합류코드 ${code}\n${claimUrl}`;
+    // Link-free SMS: KR carriers split long messages and break URLs across
+    // segments, so we send the code only. Therapist signs up on aihpro.app
+    // (or logs in) and enters the 6-digit code on the console.
+    // Stays well under 1 KR SMS segment (UCS-2 = 70 chars).
+    const body =
+      `[AIHPRO] ${centerName} 합류코드 ${code}\n` +
+      `aihpro.app 가입/로그인 후 코드 입력`;
 
 
     if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_FROM_NUMBER) {

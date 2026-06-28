@@ -1169,7 +1169,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
               start_time: startTime,
               end_time: endTime,
               note,
-              recurrence: isEdit ? undefined : { mode: recurrenceMode, until: recurrenceUntil },
+              recurrence: isEdit ? undefined : { mode: recurrenceMode, until: recurrenceUntil, forever: recurrenceForever },
             })}
             disabled={!canSubmit}
             className="flex-1 px-4 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50"

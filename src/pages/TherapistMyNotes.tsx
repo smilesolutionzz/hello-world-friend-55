@@ -235,7 +235,13 @@ export default function TherapistMyNotes() {
                   </button>
                 )}
                 {report?.status === "published" && (
-                  <span className="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">발행됨</span>
+                  <>
+                    <span className="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">발행됨</span>
+                    <button onClick={() => setShareOpen(true)}
+                      className="text-xs px-3 py-1.5 rounded-full bg-blue-600 text-white inline-flex items-center gap-1">
+                      <Share2 className="w-3 h-3" /> 보호자에게 문자 전송
+                    </button>
+                  </>
                 )}
               </div>
             </div>

@@ -134,7 +134,7 @@ export default function SchedulePage() {
     }
   }
 
-  async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string; recurrence?: { mode: "none" | "weekly" | "biweekly" | "daily"; until?: string } }) {
+  async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string; recurrence?: { mode: "none" | "weekly" | "biweekly" | "daily"; until?: string; forever?: boolean } }) {
     if (!createAt) return;
     // 반복 일정 → 날짜 목록 생성
     const baseDate = new Date(`${createAt.date}T00:00:00`);

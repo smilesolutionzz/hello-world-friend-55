@@ -989,15 +989,17 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
     setEndTime(addMin(startTime, d));
   }
 
-  // 반복 횟수 계산 (미리보기)
+  // 반복 횟수 계산 (미리보기) — 평생일 때는 5년치
   const recurrenceCount = useMemo(() => {
-    if (recurrenceMode === "none" || !recurrenceUntil) return 1;
+    if (recurrenceMode === "none") return 1;
     const base = new Date(`${at.date}T00:00:00`);
-    const end = new Date(`${recurrenceUntil}T00:00:00`);
+    const end = recurrenceForever
+      ? (() => { const e = new Date(base); e.setFullYear(e.getFullYear() + 5); return e; })()
+      : new Date(`${recurrenceUntil}T00:00:00`);
     if (end < base) return 1;
     const step = recurrenceMode === "daily" ? 1 : recurrenceMode === "biweekly" ? 14 : 7;
     return Math.floor((end.getTime() - base.getTime()) / (86400000 * step)) + 1;
-  }, [recurrenceMode, recurrenceUntil, at.date]);
+  }, [recurrenceMode, recurrenceForever, recurrenceUntil, at.date]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-start justify-center p-4 overflow-y-auto" onClick={onClose}>

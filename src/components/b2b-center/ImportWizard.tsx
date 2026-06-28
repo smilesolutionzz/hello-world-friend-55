@@ -17,7 +17,7 @@ type Props = {
   centerId: string;
   onClose: () => void;
   onMergeDemo: (rows: any[]) => void;
-  onImported?: () => void;
+  onImported?: (info?: { minDate?: string; maxDate?: string; count?: number }) => void;
 };
 
 type Step = "upload" | "clientsOnly" | "map" | "options" | "preview" | "applying" | "done";
@@ -106,8 +106,17 @@ export default function ImportWizard({ demo, centerId, onClose, onMergeDemo, onI
         setResult(summary);
       }
       setStep("done");
-      onImported?.();
-      toast({ title: "엑셀 반영 완료", description: "일정에 반영되었어요." });
+      const sessRows = remapped.sheets.find((s) => s.entity === "sessions")?.rows ?? [];
+      const dates = sessRows.map((r: any) => r.session_date).filter(Boolean).sort();
+      const minDate = dates[0];
+      const maxDate = dates[dates.length - 1];
+      onImported?.({ minDate, maxDate, count: sessRows.length });
+      toast({
+        title: "엑셀 반영 완료",
+        description: dates.length
+          ? `${sessRows.length}건 (${minDate} ~ ${maxDate}) — 첫 일정 주간으로 이동했어요.`
+          : "일정에 반영되었어요.",
+      });
     } catch (e: any) {
       setErrMsg(e?.message ?? String(e));
       setStep("preview");

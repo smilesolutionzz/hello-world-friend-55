@@ -293,16 +293,23 @@ export default function TherapistMyNotes() {
                   <p className="text-xs text-neutral-400">이번 주에 본인 담당 회기가 없습니다.</p>
                 ) : (
                   <div className="space-y-3">
-                    {sessionsThisWeek.map((s) => (
-                      <div key={s.id} className="border border-neutral-200 rounded-xl p-3">
-                        <p className="text-xs font-medium mb-2">{s.session_date} {s.start_time?.slice(0,5)}–{s.end_time?.slice(0,5)} <span className="text-neutral-400 ml-1">[{s.status}]</span></p>
-                        {(["consult","record","special"] as const).map((f) => (
-                          <RecordField key={f} field={f} value={s.meta?.records?.[f] ?? ""}
-                            onSave={(v) => saveRecord(s.id, { [f]: v })}
-                            onExpand={(v) => aiExpand(f, v, s.id)} />
-                        ))}
-                      </div>
-                    ))}
+                    {sessionsThisWeek.map((s) => {
+                      const programName = s.program_id ? programs[s.program_id] : undefined;
+                      return (
+                        <div key={s.id} className="border border-neutral-200 rounded-xl p-3">
+                          <p className="text-xs font-medium mb-2">
+                            {s.session_date} {s.start_time?.slice(0,5)}–{s.end_time?.slice(0,5)}
+                            {programName && <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-600">{programName}</span>}
+                            <span className="text-neutral-400 ml-1">[{s.status}]</span>
+                          </p>
+                          {(["consult","record","special"] as const).map((f) => (
+                            <RecordField key={f} field={f} program={programName} value={s.meta?.records?.[f] ?? ""}
+                              onSave={(v) => saveRecord(s.id, { [f]: v })}
+                              onExpand={(v) => aiExpand(f, v, s.id)} />
+                          ))}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </section>

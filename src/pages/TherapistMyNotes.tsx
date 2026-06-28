@@ -40,6 +40,7 @@ export default function TherapistMyNotes() {
   const [sessionsThisWeek, setSessionsThisWeek] = useState<any[]>([]);
   const [generating, setGenerating] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   async function bootstrap() {
     setLoading(true);

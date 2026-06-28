@@ -144,10 +144,22 @@ export default function TherapistMyNotes() {
 
   async function aiExpand(field: "consult" | "record" | "special", text: string, sessionId: string) {
     try {
-      const { data, error } = await supabase.functions.invoke("expand-session-record", { body: { field, text } });
+      const s = sessionsThisWeek.find((x) => x.id === sessionId);
+      const programName = s?.program_id ? programs[s.program_id] : undefined;
+      const client = clients.find((c) => c.id === selClient);
+      const { data, error } = await supabase.functions.invoke("expand-session-record", {
+        body: {
+          field, text,
+          context: {
+            program: programName,
+            childName: client?.name,
+            date: s?.session_date,
+            time: s?.start_time?.slice(0, 5),
+          },
+        },
+      });
       if (error) throw error;
       const expanded = data?.expanded ?? text;
-      const s = sessionsThisWeek.find((x) => x.id === sessionId);
       if (!s) return;
       const newMeta = { ...(s.meta ?? {}), records: { ...(s.meta?.records ?? {}), [field]: expanded } };
       await supabase.from("center_sessions").update({ meta: newMeta }).eq("id", sessionId);

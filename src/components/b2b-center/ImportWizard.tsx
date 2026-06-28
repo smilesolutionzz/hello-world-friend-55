@@ -17,7 +17,7 @@ type Props = {
   centerId: string;
   onClose: () => void;
   onMergeDemo: (rows: any[]) => void;
-  onImported?: () => void;
+  onImported?: (info?: { minDate?: string; maxDate?: string; count?: number }) => void;
 };
 
 type Step = "upload" | "clientsOnly" | "map" | "options" | "preview" | "applying" | "done";

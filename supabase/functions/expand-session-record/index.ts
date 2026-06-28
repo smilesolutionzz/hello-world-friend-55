@@ -1,6 +1,6 @@
-// Expand a therapist's short keywords into a structured session record.
-// Body: { keywords: string, context?: { childName?, program?, therapist?, date?, time? } }
-// Returns: { activity: string, evaluation: string, special: string }
+// Expand a therapist's short keywords for a single field into a natural sentence.
+// Body: { field: "consult" | "record" | "special", text: string, context?: { program?, childName?, date?, time? } }
+// Returns: { expanded: string }
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -11,45 +11,58 @@ const cors = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const FIELD_LABEL: Record<string, string> = {
+  consult: "활동내용",
+  record: "회기 관찰",
+  special: "특이사항",
+};
+
+const FIELD_GUIDE: Record<string, string> = {
+  consult: "이번 회기에 진행한 활동/과제를 시간 흐름대로 1~3문장으로 간단히 정리. 객관 사실 위주.",
+  record: "치료사 시각에서 아동의 수행·반응·진전도·정서를 1~3문장으로 서술. 과장·진단 표현 금지.",
+  special: "컨디션·거부/협조 양상·다음 회기 이어갈 점 등 메모 포인트 1~2문장. 없으면 빈 문자열.",
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
   try {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY missing");
     const body = await req.json();
-    const keywords: string = String(body?.keywords ?? "").trim();
-    if (!keywords) {
-      return new Response(JSON.stringify({ error: "keywords required" }), {
-        status: 400,
-        headers: { ...cors, "Content-Type": "application/json" },
+    const field: string = String(body?.field ?? "").trim();
+    const text: string = String(body?.text ?? "").trim();
+    if (!field || !FIELD_LABEL[field]) {
+      return new Response(JSON.stringify({ error: "invalid field" }), {
+        status: 400, headers: { ...cors, "Content-Type": "application/json" },
+      });
+    }
+    if (!text) {
+      return new Response(JSON.stringify({ error: "text required" }), {
+        status: 400, headers: { ...cors, "Content-Type": "application/json" },
       });
     }
     const ctx = body?.context ?? {};
+    const label = FIELD_LABEL[field];
+    const guide = FIELD_GUIDE[field];
 
-    const prompt = `당신은 발달·치료 센터의 치료사를 돕는 회기 기록 보조 AI입니다.
-치료사가 회기 직후 짧게 적은 키워드/메모를 바탕으로 표준 치료 회기 기록 3개 필드를 자연스럽게 확장해 작성하세요.
+    const prompt = `당신은 발달·치료 센터 치료사의 회기 기록을 다듬는 보조 AI입니다.
+치료사가 적은 짧은 키워드/메모를 자연스러운 한국어 문장으로 확장하세요.
 
 [회기 정보]
+- 프로그램(과목): ${ctx.program ?? "—"}
 - 아동: ${ctx.childName ?? "—"}
-- 프로그램: ${ctx.program ?? "—"}
-- 치료사: ${ctx.therapist ?? "—"}
 - 일시: ${ctx.date ?? "—"} ${ctx.time ?? ""}
 
+[대상 필드] ${label}
+[작성 지침]
+${guide}
+- 진단명·의학용어 금지(자폐/ADHD 등)
+- 과장·평가어 자제, 사실·관찰 중심
+- 치료사 1인칭/3인칭 자연스럽게
+- 줄바꿈 없이 1개의 문단으로 반환
+- 결과 텍스트만 반환 (따옴표·접두어·JSON 금지)
+
 [치료사 키워드/메모]
-${keywords}
-
-[작성 규칙]
-- 진단명·의학용어 금지 (예: 자폐, ADHD 등)
-- 치료사 시점의 1~3문장 서술. 객관 사실 위주, 과장·평가어 자제
-- 비어있는 정보는 추측하지 말고 자연스럽게 생략
-- JSON 외 다른 텍스트 출력 금지
-
-[필드 정의]
-- activity(활동내용): 이번 회기에 진행한 활동/과제를 시간 흐름대로 간단히 정리
-- evaluation(주관평가): 치료사 시각의 아동 수행·반응·진전도에 대한 짧은 코멘트
-- special(특이사항): 컨디션, 거부/협조 양상, 다음 회기에 이어갈 점 등 메모할만한 포인트. 없으면 ""
-
-JSON 형식:
-{"activity":"...","evaluation":"...","special":"..."}`;
+${text}`;
 
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -60,40 +73,36 @@ JSON 형식:
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: "치료사 회기 기록을 한국어 JSON으로 확장합니다. JSON 외 출력 금지." },
+          { role: "system", content: "치료사 회기 기록 키워드를 자연스러운 한국어 한 문단으로 확장합니다. 설명/따옴표/JSON 없이 본문만 반환." },
           { role: "user", content: prompt },
         ],
-        response_format: { type: "json_object" },
       }),
     });
 
     if (!aiRes.ok) {
       const t = await aiRes.text();
+      console.error("[expand-session-record] ai failed", aiRes.status, t);
       return new Response(JSON.stringify({ error: "ai_failed", detail: t }), {
-        status: 502,
-        headers: { ...cors, "Content-Type": "application/json" },
+        status: 502, headers: { ...cors, "Content-Type": "application/json" },
       });
     }
     const aiJson = await aiRes.json();
-    let out: any = {};
-    try {
-      out = JSON.parse(aiJson.choices?.[0]?.message?.content ?? "{}");
-    } catch {
-      out = {};
+    const raw = String(aiJson.choices?.[0]?.message?.content ?? "").trim();
+    // 안전망: JSON 형태로 잘못 응답하더라도 텍스트로 정리
+    let expanded = raw.replace(/^["'`]+|["'`]+$/g, "").trim();
+    if (expanded.startsWith("{")) {
+      try {
+        const j = JSON.parse(expanded);
+        expanded = String(j[field] ?? j.expanded ?? j.text ?? expanded);
+      } catch { /* keep raw */ }
     }
-    return new Response(
-      JSON.stringify({
-        activity: String(out.activity ?? "").trim(),
-        evaluation: String(out.evaluation ?? "").trim(),
-        special: String(out.special ?? "").trim(),
-      }),
-      { headers: { ...cors, "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ expanded }), {
+      headers: { ...cors, "Content-Type": "application/json" },
+    });
   } catch (e: any) {
     console.error("[expand-session-record]", e);
     return new Response(JSON.stringify({ error: e?.message ?? String(e) }), {
-      status: 500,
-      headers: { ...cors, "Content-Type": "application/json" },
+      status: 500, headers: { ...cors, "Content-Type": "application/json" },
     });
   }
 });

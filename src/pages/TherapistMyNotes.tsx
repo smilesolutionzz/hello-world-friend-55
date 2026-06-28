@@ -58,7 +58,7 @@ export default function TherapistMyNotes() {
     // 본인 담당 아동: 본인 세션의 distinct clients
     const { data: sess } = await supabase
       .from("center_sessions")
-      .select("client_id, center_clients:client_id(id, name)")
+      .select("client_id, center_clients:client_id(id, name, guardian_phone)")
       .in("therapist_id", tlist.map((t) => t.id));
     const seen = new Map<string, Client>();
     (sess ?? []).forEach((s: any) => { if (s.center_clients) seen.set(s.center_clients.id, s.center_clients); });

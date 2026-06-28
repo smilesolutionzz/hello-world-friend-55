@@ -3,10 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, Send, FileText, ChevronLeft, Calendar } from "lucide-react";
+import { Loader2, Sparkles, Send, FileText, ChevronLeft, Calendar, Share2 } from "lucide-react";
+import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
 
 type Therapist = { id: string; center_id: string; name: string };
-type Client = { id: string; name: string };
+type Client = { id: string; name: string; guardian_phone?: string | null };
 
 function isoWeek(d: Date): string {
   const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));

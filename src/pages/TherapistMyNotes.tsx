@@ -38,6 +38,7 @@ export default function TherapistMyNotes() {
   const [weekKey, setWeekKey] = useState<string>(isoWeek(new Date()));
   const [report, setReport] = useState<any>(null);
   const [sessionsThisWeek, setSessionsThisWeek] = useState<any[]>([]);
+  const [programs, setPrograms] = useState<Record<string, string>>({});
   const [generating, setGenerating] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [shareOpen, setShareOpen] = useState<null | { id: string; type: "therapy_note" | "parent_report" }>(null);

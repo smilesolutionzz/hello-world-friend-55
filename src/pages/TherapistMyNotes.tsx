@@ -3,10 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, Send, FileText, ChevronLeft, Calendar } from "lucide-react";
+import { Loader2, Sparkles, Send, FileText, ChevronLeft, Calendar, Share2 } from "lucide-react";
+import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
 
 type Therapist = { id: string; center_id: string; name: string };
-type Client = { id: string; name: string };
+type Client = { id: string; name: string; guardian_phone?: string | null };
 
 function isoWeek(d: Date): string {
   const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -39,6 +40,7 @@ export default function TherapistMyNotes() {
   const [sessionsThisWeek, setSessionsThisWeek] = useState<any[]>([]);
   const [generating, setGenerating] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   async function bootstrap() {
     setLoading(true);
@@ -56,7 +58,7 @@ export default function TherapistMyNotes() {
     // 본인 담당 아동: 본인 세션의 distinct clients
     const { data: sess } = await supabase
       .from("center_sessions")
-      .select("client_id, center_clients:client_id(id, name)")
+      .select("client_id, center_clients:client_id(id, name, guardian_phone)")
       .in("therapist_id", tlist.map((t) => t.id));
     const seen = new Map<string, Client>();
     (sess ?? []).forEach((s: any) => { if (s.center_clients) seen.set(s.center_clients.id, s.center_clients); });
@@ -233,7 +235,13 @@ export default function TherapistMyNotes() {
                   </button>
                 )}
                 {report?.status === "published" && (
-                  <span className="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">발행됨</span>
+                  <>
+                    <span className="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">발행됨</span>
+                    <button onClick={() => setShareOpen(true)}
+                      className="text-xs px-3 py-1.5 rounded-full bg-blue-600 text-white inline-flex items-center gap-1">
+                      <Share2 className="w-3 h-3" /> 보호자에게 문자 전송
+                    </button>
+                  </>
                 )}
               </div>
             </div>
@@ -261,6 +269,18 @@ export default function TherapistMyNotes() {
           </section>
         </main>
       </div>
+      {report && therapist && (
+        <ShareWithParentDialog
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+          resourceType="therapy_note"
+          resourceId={report.id}
+          childId={selClient}
+          centerId={therapist.center_id}
+          defaultPhone={clients.find((c) => c.id === selClient)?.guardian_phone ?? ""}
+          childName={clients.find((c) => c.id === selClient)?.name}
+        />
+      )}
     </div>
   );
 }

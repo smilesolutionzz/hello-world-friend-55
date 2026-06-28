@@ -503,6 +503,7 @@ function InviteCodeCell({ therapistId, code, expiresAt, linked, onIssued }: {
   onIssued: (code: string, expiresAt: string) => void;
 }) {
   const [busy, setBusy] = useState(false);
+  const [sending, setSending] = useState(false);
   const expired = expiresAt && new Date(expiresAt) < new Date();
 
   async function issue() {
@@ -521,15 +522,43 @@ function InviteCodeCell({ therapistId, code, expiresAt, linked, onIssued }: {
     try { await navigator.clipboard.writeText(code); toast.success("코드가 복사되었어요"); } catch {}
   }
 
+  async function sendSms() {
+    setSending(true);
+    const { data, error } = await supabase.functions.invoke("send-therapist-invite-sms", {
+      body: { therapist_id: therapistId, origin_url: window.location.origin },
+    });
+    setSending(false);
+    if (error || (data && (data as any).error)) {
+      const msg = (data as any)?.error || error?.message || "전송 실패";
+      toast.error("문자 전송 실패: " + msg);
+      return;
+    }
+    const d = data as any;
+    if (d?.code && !code) {
+      const exp = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
+      onIssued(d.code, exp);
+    }
+    if (d?.sms_sent) toast.success(`문자 전송 완료 (****${d.to_last4})`);
+    else toast.warning("코드는 발급됐지만 SMS 미발송 (Twilio 미설정)");
+  }
+
   if (linked) return <span className="text-xs text-neutral-400">연결 완료</span>;
 
   if (!code) {
-    return <Button size="sm" variant="outline" disabled={busy} onClick={issue} className="h-7 text-xs rounded-full">{busy ? "발급 중…" : "코드 발급"}</Button>;
+    return (
+      <div className="flex items-center gap-1">
+        <Button size="sm" variant="outline" disabled={busy} onClick={issue} className="h-7 text-xs rounded-full">{busy ? "발급 중…" : "코드 발급"}</Button>
+        <Button size="sm" variant="ghost" disabled={sending} onClick={sendSms} className="h-7 text-xs rounded-full" title="문자로 코드 발송">{sending ? "전송 중…" : "📱 문자"}</Button>
+      </div>
+    );
   }
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 flex-wrap">
       <button onClick={copy} className={`font-mono text-xs px-2 py-1 rounded border ${expired ? "border-rose-200 bg-rose-50 text-rose-600 line-through" : "border-neutral-200 bg-neutral-50 hover:bg-neutral-100"}`} title="클릭해서 복사">
         {code}
+      </button>
+      <button onClick={sendSms} disabled={sending} className="text-[10px] px-1.5 py-0.5 rounded border border-neutral-200 hover:border-neutral-400 hover:bg-neutral-50" title="치료사 휴대폰으로 코드 전송">
+        {sending ? "전송 중…" : "📱 문자전송"}
       </button>
       <button onClick={issue} disabled={busy} className="text-[10px] text-neutral-500 hover:text-neutral-900 underline">{busy ? "..." : "재발급"}</button>
     </div>

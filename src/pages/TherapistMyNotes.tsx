@@ -462,10 +462,77 @@ export default function TherapistMyNotes() {
   );
 }
 
-function RecordField({ field, value, onSave, onExpand }: { field: "consult"|"record"|"special"; value: string; onSave: (v: string) => void; onExpand: (v: string) => void }) {
+type FieldKey = "consult" | "record" | "special";
+
+const FIELD_LABEL: Record<FieldKey, string> = {
+  consult: "활동내용",
+  record: "회기 관찰",
+  special: "특이사항",
+};
+
+// 과목(프로그램)별 키워드 예시 — 치료사가 한 줄만 적어도 감 잡기 쉽게
+function subjectExample(program: string | undefined, field: FieldKey): string {
+  const p = (program ?? "").toLowerCase();
+  const kind: "art" | "pe" | "speech" | "sensory" | "cognitive" | "psy" | "ot" | "default" =
+    /미술|아트|그림/.test(p) ? "art"
+    : /체육|운동|pe|신체/.test(p) ? "pe"
+    : /언어|말|발음|스피치/.test(p) ? "speech"
+    : /감각|sensory/.test(p) ? "sensory"
+    : /인지|학습|cognitive/.test(p) ? "cognitive"
+    : /심리|정서|놀이/.test(p) ? "psy"
+    : /작업|ot/.test(p) ? "ot"
+    : "default";
+
+  const table: Record<typeof kind, Record<FieldKey, string>> = {
+    art: {
+      consult: "예) 색칠 활동, 점토 만들기 10분",
+      record: "예) 색 선택 적극적, 손끝 협응 향상",
+      special: "예) 마무리 정리 거부 약간 있었음",
+    },
+    pe: {
+      consult: "예) 공 던지기 5세트, 균형 잡기",
+      record: "예) 좌우 균형 안정, 지구력 향상",
+      special: "예) 시작 전 워밍업에서 산만",
+    },
+    speech: {
+      consult: "예) ㅅ/ㅈ 발음 카드 20개, 짧은 문장 만들기",
+      record: "예) ㅅ 발음 정확도 상승, 자발 발화 증가",
+      special: "예) 컨디션 저하로 후반부 집중 떨어짐",
+    },
+    sensory: {
+      consult: "예) 촉각 자극 활동, 진동판 3분",
+      record: "예) 거친 촉감 수용 폭 넓어짐",
+      special: "예) 큰 소리에 일시적 회피",
+    },
+    cognitive: {
+      consult: "예) 패턴 카드 8개, 분류 과제 2종",
+      record: "예) 분류 기준 스스로 설명, 정확도 향상",
+      special: "예) 새 과제에서 좌절 표현",
+    },
+    psy: {
+      consult: "예) 감정카드 놀이, 역할극 1회",
+      record: "예) 감정 단어 표현 자연스러움 증가",
+      special: "예) 부모 분리 시 잠깐 눈물",
+    },
+    ot: {
+      consult: "예) 소근육 가위질, 단추 끼우기 10개",
+      record: "예) 양손 협응 안정, 속도 향상",
+      special: "예) 손목 피로 호소",
+    },
+    default: {
+      consult: "예) 공던지기 5회, 그림카드 분류",
+      record: "예) 집중 유지 향상, 지시 수용 잘함",
+      special: "예) 마무리에서 짧은 거부 반응",
+    },
+  };
+  return table[kind][field];
+}
+
+function RecordField({ field, program, value, onSave, onExpand }: { field: FieldKey; program?: string; value: string; onSave: (v: string) => void; onExpand: (v: string) => void }) {
   const [v, setV] = useState(value);
   useEffect(() => { setV(value); }, [value]);
-  const label = field === "consult" ? "활동내용" : field === "record" ? "주관평가" : "특이사항";
+  const label = FIELD_LABEL[field];
+  const example = subjectExample(program, field);
   return (
     <div className="mb-2">
       <div className="flex items-center justify-between mb-1">
@@ -473,8 +540,9 @@ function RecordField({ field, value, onSave, onExpand }: { field: "consult"|"rec
         <button type="button" onClick={() => onExpand(v)} disabled={!v.trim()} className="text-[10px] text-blue-600 inline-flex items-center gap-0.5 disabled:opacity-30"><Sparkles className="w-2.5 h-2.5" /> AI 확장</button>
       </div>
       <textarea value={v} onChange={(e) => setV(e.target.value)} onBlur={() => onSave(v)}
-        placeholder={`${label} 키워드 한 줄도 OK — AI 확장으로 문장화`}
+        placeholder={`${example} — 키워드만 적고 AI 확장`}
         className="w-full text-xs border border-neutral-200 rounded-lg px-2 py-1.5 min-h-[48px] resize-y" />
     </div>
   );
 }
+

@@ -134,19 +134,23 @@ export default function SchedulePage() {
     }
   }
 
-  async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string; recurrence?: { mode: "none" | "weekly" | "biweekly" | "daily"; until?: string } }) {
+  async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string; recurrence?: { mode: "none" | "weekly" | "biweekly" | "daily"; until?: string; forever?: boolean } }) {
     if (!createAt) return;
     // 반복 일정 → 날짜 목록 생성
     const baseDate = new Date(`${createAt.date}T00:00:00`);
     const dates: string[] = [createAt.date];
     const rec = form.recurrence;
     let recurrenceKey: string | null = null;
-    if (rec && rec.mode !== "none" && rec.until) {
-      const end = new Date(`${rec.until}T00:00:00`);
+    if (rec && rec.mode !== "none") {
+      // 평생 반복(forever)이면 종료일을 baseDate + 5년으로 자동 설정
+      const forever = rec.forever || !rec.until;
+      const endDate = forever
+        ? (() => { const e = new Date(baseDate); e.setFullYear(e.getFullYear() + 5); return e; })()
+        : new Date(`${rec.until}T00:00:00`);
       const stepDays = rec.mode === "daily" ? 1 : rec.mode === "biweekly" ? 14 : 7;
       const cur = new Date(baseDate);
       cur.setDate(cur.getDate() + stepDays);
-      while (cur <= end) {
+      while (cur <= endDate) {
         const y = cur.getFullYear(); const m = String(cur.getMonth() + 1).padStart(2, "0"); const d = String(cur.getDate()).padStart(2, "0");
         dates.push(`${y}-${m}-${d}`);
         cur.setDate(cur.getDate() + stepDays);
@@ -252,31 +256,27 @@ export default function SchedulePage() {
   async function handleDelete(s: any) {
     const hasRecur = !!s.recurrence_key;
     const msg = hasRecur
-      ? "이 일정과 이후의 모든 반복 일정을 함께 삭제할까요?"
+      ? "이 반복 일정 전체(과거·미래 포함)를 시간표에서 영구 삭제할까요?"
       : "이 일정을 삭제할까요?";
     if (!window.confirm(msg)) return;
     if (demo) {
       setSessions((prev) => prev.filter((x) =>
-        hasRecur
-          ? !(x.recurrence_key === s.recurrence_key && x.session_date >= s.session_date)
-          : x.id !== s.id
+        hasRecur ? x.recurrence_key !== s.recurrence_key : x.id !== s.id
       ));
       notifyDemoNoSave(hasRecur ? "반복 일정 삭제는" : "일정 삭제는");
     } else {
       let q = supabase.from("center_sessions").delete().eq("center_id", centerId);
       if (hasRecur) {
-        q = q.eq("recurrence_key", s.recurrence_key).gte("session_date", s.session_date);
+        q = q.eq("recurrence_key", s.recurrence_key);
       } else {
         q = q.eq("id", s.id);
       }
       const { error } = await q;
       if (error) { toast({ title: "삭제 실패", description: error.message, variant: "destructive" }); return; }
       setSessions((prev) => prev.filter((x) =>
-        hasRecur
-          ? !(x.recurrence_key === s.recurrence_key && x.session_date >= s.session_date)
-          : x.id !== s.id
+        hasRecur ? x.recurrence_key !== s.recurrence_key : x.id !== s.id
       ));
-      toast({ title: hasRecur ? "반복 일정이 삭제됐어요" : "일정이 삭제됐어요" });
+      toast({ title: hasRecur ? "반복 일정이 모두 삭제됐어요" : "일정이 삭제됐어요" });
     }
     setSelected(null);
   }
@@ -962,6 +962,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
   const [duration, setDuration] = useState<number>(() => diffMin(initialStart, initialEnd) || 40);
   const [note, setNote] = useState(initial?.note ?? "");
   const [recurrenceMode, setRecurrenceMode] = useState<"none" | "weekly" | "biweekly" | "daily">("none");
+  const [recurrenceForever, setRecurrenceForever] = useState<boolean>(true);
   const [recurrenceUntil, setRecurrenceUntil] = useState<string>(() => {
     const d = new Date(`${at.date}T00:00:00`); d.setMonth(d.getMonth() + 1);
     const y = d.getFullYear(); const m = String(d.getMonth() + 1).padStart(2, "0"); const dd = String(d.getDate()).padStart(2, "0");
@@ -988,15 +989,17 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
     setEndTime(addMin(startTime, d));
   }
 
-  // 반복 횟수 계산 (미리보기)
+  // 반복 횟수 계산 (미리보기) — 평생일 때는 5년치
   const recurrenceCount = useMemo(() => {
-    if (recurrenceMode === "none" || !recurrenceUntil) return 1;
+    if (recurrenceMode === "none") return 1;
     const base = new Date(`${at.date}T00:00:00`);
-    const end = new Date(`${recurrenceUntil}T00:00:00`);
+    const end = recurrenceForever
+      ? (() => { const e = new Date(base); e.setFullYear(e.getFullYear() + 5); return e; })()
+      : new Date(`${recurrenceUntil}T00:00:00`);
     if (end < base) return 1;
     const step = recurrenceMode === "daily" ? 1 : recurrenceMode === "biweekly" ? 14 : 7;
     return Math.floor((end.getTime() - base.getTime()) / (86400000 * step)) + 1;
-  }, [recurrenceMode, recurrenceUntil, at.date]);
+  }, [recurrenceMode, recurrenceForever, recurrenceUntil, at.date]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-start justify-center p-4 overflow-y-auto" onClick={onClose}>
@@ -1113,16 +1116,39 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
                   ))}
                 </div>
                 {recurrenceMode !== "none" && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-neutral-500 shrink-0">종료일</span>
-                    <input
-                      type="date"
-                      value={recurrenceUntil}
-                      min={at.date}
-                      onChange={(e) => setRecurrenceUntil(e.target.value)}
-                      className="flex-1 px-2.5 py-1.5 rounded-lg border border-neutral-200 text-xs focus:outline-none focus:border-neutral-400"
-                    />
-                    <span className="text-[11px] text-[#C8B88A] font-semibold tabular-nums shrink-0">총 {recurrenceCount}회</span>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setRecurrenceForever(true)}
+                        className={`px-2.5 py-1 rounded-full text-[11px] border transition ${recurrenceForever ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-200 hover:border-neutral-400 text-neutral-700"}`}
+                      >
+                        평생 반복
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setRecurrenceForever(false)}
+                        className={`px-2.5 py-1 rounded-full text-[11px] border transition ${!recurrenceForever ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-200 hover:border-neutral-400 text-neutral-700"}`}
+                      >
+                        종료일 지정
+                      </button>
+                      <span className="ml-auto text-[11px] text-[#C8B88A] font-semibold tabular-nums shrink-0">총 {recurrenceCount}회</span>
+                    </div>
+                    {!recurrenceForever && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] text-neutral-500 shrink-0">종료일</span>
+                        <input
+                          type="date"
+                          value={recurrenceUntil}
+                          min={at.date}
+                          onChange={(e) => setRecurrenceUntil(e.target.value)}
+                          className="flex-1 px-2.5 py-1.5 rounded-lg border border-neutral-200 text-xs focus:outline-none focus:border-neutral-400"
+                        />
+                      </div>
+                    )}
+                    {recurrenceForever && (
+                      <p className="text-[10px] text-neutral-400">5년치 일정이 미리 생성되고, 삭제 시 과거·미래 전체가 시간표에서 사라져요.</p>
+                    )}
                   </div>
                 )}
               </div>
@@ -1143,7 +1169,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
               start_time: startTime,
               end_time: endTime,
               note,
-              recurrence: isEdit ? undefined : { mode: recurrenceMode, until: recurrenceUntil },
+              recurrence: isEdit ? undefined : { mode: recurrenceMode, until: recurrenceUntil, forever: recurrenceForever },
             })}
             disabled={!canSubmit}
             className="flex-1 px-4 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50"

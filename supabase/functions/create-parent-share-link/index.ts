@@ -24,12 +24,11 @@ function normalizePhone(input: string): string | null {
   return null;
 }
 
-function generateToken(len = 24): string {
-  // Hex only (0-9a-f). Avoid '-' and '_' because Korean SMS clients (LMS) often
-  // break URL auto-linkify at underscores, causing the tapped link to drop the
-  // token. Pasting the same URL into KakaoTalk works because Kakao parses the
-  // full string. Hex tokens are safely auto-linked by every SMS client.
-  const bytes = new Uint8Array(len);
+function generateToken(byteLen = 10): string {
+  // Hex only (0-9a-f), 20 chars (80 bits entropy) — short enough that the full
+  // URL fits in a single Korean SMS segment (UCS-2 = 70 chars/segment).
+  // Avoid '-'/'_' because Korean SMS clients break auto-linkify at underscores.
+  const bytes = new Uint8Array(byteLen);
   crypto.getRandomValues(bytes);
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }

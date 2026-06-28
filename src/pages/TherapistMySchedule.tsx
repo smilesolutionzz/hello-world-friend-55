@@ -61,6 +61,15 @@ export default function TherapistMySchedule() {
 
   useEffect(() => { reload(); }, []);
 
+  // Auto-fill code from URL (?code=XXXXXX) when arriving from SMS link
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const c = sp.get("code");
+    if (c && /^[A-Za-z0-9]{6}$/.test(c.trim())) {
+      setClaimCode(c.trim().toUpperCase());
+    }
+  }, []);
+
   async function handleClaim(e: React.FormEvent) {
     e.preventDefault();
     if (!claimCode.trim()) return;

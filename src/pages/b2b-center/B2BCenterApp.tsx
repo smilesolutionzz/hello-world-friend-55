@@ -41,7 +41,7 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string; betaVis
   { to: "storefront", label: "스토어 (프로그램·교구)", icon: Store, group: "인텔리전스", betaVisible: false },
   // 관리자
   { to: "admin/organization", label: "기관 정보 및 옵션", icon: Building2, group: "관리자", betaVisible: false },
-  { to: "admin/therapists", label: "선생님 관리", icon: UserCog, group: "관리자", betaVisible: false },
+  { to: "admin/therapists", label: "선생님 관리 · 초대", icon: UserCog, group: "관리자", betaVisible: true },
   { to: "admin/programs", label: "프로그램 관리", icon: BookOpen, group: "관리자", betaVisible: false },
   // 데이터 연동
   { to: "data/voucher-excel", label: "전자바우처 엑셀 등록", icon: FileSpreadsheet, group: "데이터 연동", betaVisible: false },

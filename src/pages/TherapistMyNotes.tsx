@@ -269,6 +269,18 @@ export default function TherapistMyNotes() {
           </section>
         </main>
       </div>
+      {report && therapist && (
+        <ShareWithParentDialog
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+          resourceType="therapy_note"
+          resourceId={report.id}
+          childId={selClient}
+          centerId={therapist.center_id}
+          defaultPhone={clients.find((c) => c.id === selClient)?.guardian_phone ?? ""}
+          childName={clients.find((c) => c.id === selClient)?.name}
+        />
+      )}
     </div>
   );
 }

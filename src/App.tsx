@@ -297,6 +297,7 @@ const App = () => {
           <Route path="/check/done" element={<CheckDone />} />
           <Route path="/therapist-subscription" element={<TherapistSubscriptionTeaser />} />
           <Route path="/therapist/my-schedule" element={<TherapistMySchedule />} />
+          <Route path="/t" element={<TherapistInviteRedirect />} />
           <Route path="/therapist/my-notes" element={<TherapistMyNotes />} />
           <Route path="/therapist/my-clients" element={<TherapistMyClients />} />
           <Route path="/therapist/my-clients/:id" element={<TherapistMyClients />} />

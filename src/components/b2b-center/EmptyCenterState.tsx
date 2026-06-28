@@ -100,17 +100,21 @@ export default function EmptyCenterState({ onCreated }: { onCreated: (c: CenterO
             <input
               value={inviteToken}
               onChange={(e) => setInviteToken(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && acceptInvite()}
-              placeholder="초대 링크 또는 토큰"
-              className="flex-1 px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 bg-white"
+              onKeyDown={(e) => e.key === "Enter" && !joining && acceptInvite()}
+              placeholder="6자리 코드 또는 초대 링크"
+              className="flex-1 px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 bg-white font-mono uppercase tracking-wider"
             />
             <button
               onClick={acceptInvite}
-              className="px-4 py-2 rounded-lg border border-neutral-300 text-sm font-medium hover:bg-white whitespace-nowrap"
+              disabled={joining}
+              className="px-4 py-2 rounded-lg border border-neutral-300 text-sm font-medium hover:bg-white whitespace-nowrap disabled:opacity-50"
             >
-              합류
+              {joining ? "합류 중…" : "합류"}
             </button>
           </div>
+          <p className="text-[11px] text-neutral-500 mt-2 break-keep">
+            기관장이 보내준 문자의 6자리 코드를 입력하면 본인 일정·아동·주간노트 화면으로 이동해요.
+          </p>
         </div>
 
         <div className="mt-8 text-center">

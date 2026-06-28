@@ -528,8 +528,46 @@ function InviteCodeCell({ therapistId, code, expiresAt, linked, onIssued }: {
       body: { therapist_id: therapistId, origin_url: window.location.origin },
     });
     setSending(false);
+
+    // Extract real error message from FunctionsHttpError response body
+    let serverMsg: string | null = (data as any)?.error ?? null;
+    if (!serverMsg && error) {
+      try {
+        const ctx: any = (error as any).context;
+        if (ctx && typeof ctx.json === "function") {
+          const body = await ctx.json();
+          serverMsg = body?.error ?? null;
+        } else if (ctx && typeof ctx.text === "function") {
+          const text = await ctx.text();
+          try { serverMsg = JSON.parse(text)?.error ?? text; } catch { serverMsg = text; }
+        }
+      } catch {}
+    }
+
     if (error || (data && (data as any).error)) {
-      const msg = (data as any)?.error || error?.message || "전송 실패";
+      const msg = serverMsg || error?.message || "전송 실패";
+      // Inline recovery for the most common cause: missing phone number
+      if (/전화번호/.test(msg)) {
+        const input = window.prompt(
+          "치료사 휴대폰 번호가 등록되어 있지 않거나 형식이 올바르지 않아요.\n번호를 입력하면 저장 후 다시 전송할게요. (예: 01012345678)",
+          ""
+        );
+        if (input) {
+          const digits = input.replace(/[^\d]/g, "");
+          if (!/^010\d{7,8}$/.test(digits)) {
+            toast.error("형식이 올바르지 않아요 (010으로 시작하는 10~11자리)");
+            return;
+          }
+          const { error: upErr } = await supabase
+            .from("center_therapists")
+            .update({ phone: digits })
+            .eq("id", therapistId);
+          if (upErr) { toast.error("번호 저장 실패: " + upErr.message); return; }
+          toast.success("번호 저장 완료 — 다시 전송합니다");
+          return sendSms();
+        }
+        return;
+      }
       toast.error("문자 전송 실패: " + msg);
       return;
     }

@@ -490,18 +490,32 @@ function PermissionsDialog({ row, onClose, onSaved }: { row: any; onClose: () =>
         <DialogHeader>
           <DialogTitle>{row.name} 권한 설정</DialogTitle>
         </DialogHeader>
-        <p className="text-xs text-neutral-500 -mt-2 mb-1">계정이 연결된 선생님에게만 적용돼요.</p>
+        <div className="-mt-2 mb-2 space-y-1">
+          <p className="text-xs text-neutral-500">계정이 연결된 선생님에게만 적용돼요.</p>
+          <p className="text-[11px] text-neutral-400">
+            초대코드로 자동 연결되면 <span className="text-neutral-600 font-medium">일정·이용자·치료노트·월간리포트</span>가
+            <span className="text-neutral-600 font-medium"> 본인 담당분만</span> 자동 허용돼요.
+          </p>
+        </div>
         <div className="space-y-2.5">
           {PERMISSION_LIST.map((p) => (
             <label key={p.key} className="flex items-start gap-3 p-3 rounded-xl border border-neutral-200 hover:border-neutral-300 cursor-pointer">
               <Checkbox checked={perms.includes(p.key)} onCheckedChange={() => toggle(p.key)} className="mt-0.5" />
-              <div>
-                <div className="text-sm font-medium">{p.label}</div>
+              <div className="flex-1">
+                <div className="text-sm font-medium flex items-center gap-2">
+                  {p.label}
+                  {p.defaultOn && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      기본
+                    </span>
+                  )}
+                </div>
                 <div className="text-xs text-neutral-500 mt-0.5">{p.hint}</div>
               </div>
             </label>
           ))}
         </div>
+
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>취소</Button>
           <Button onClick={save} disabled={saving}>{saving ? "저장 중…" : "저장"}</Button>

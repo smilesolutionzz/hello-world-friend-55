@@ -233,7 +233,7 @@ export default function B2BCenterApp() {
               </button>
             </div>
           </div>
-          <nav className="flex-1 overflow-y-auto p-3 space-y-4">
+          <nav className="flex-1 overflow-y-auto p-3 space-y-4 pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-3">
             {Object.entries(grouped).map(([group, items]) => {
               const isIntel = group === "인텔리전스";
               return (

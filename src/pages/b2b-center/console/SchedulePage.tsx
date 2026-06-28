@@ -962,6 +962,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
   const [duration, setDuration] = useState<number>(() => diffMin(initialStart, initialEnd) || 40);
   const [note, setNote] = useState(initial?.note ?? "");
   const [recurrenceMode, setRecurrenceMode] = useState<"none" | "weekly" | "biweekly" | "daily">("none");
+  const [recurrenceForever, setRecurrenceForever] = useState<boolean>(true);
   const [recurrenceUntil, setRecurrenceUntil] = useState<string>(() => {
     const d = new Date(`${at.date}T00:00:00`); d.setMonth(d.getMonth() + 1);
     const y = d.getFullYear(); const m = String(d.getMonth() + 1).padStart(2, "0"); const dd = String(d.getDate()).padStart(2, "0");

@@ -44,7 +44,17 @@ export default function TherapistMySchedule() {
   async function reload() {
     setLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { nav("/auth"); return; }
+    if (!user) {
+      // Preserve invite code through login/signup
+      const sp = new URLSearchParams(window.location.search);
+      const c = sp.get("code");
+      const target = c
+        ? `/therapist/my-schedule?code=${encodeURIComponent(c)}`
+        : "/therapist/my-schedule";
+      try { localStorage.setItem("auth_redirect_after", target); } catch {}
+      nav(`/auth?redirect=${encodeURIComponent(target)}`);
+      return;
+    }
 
     const [{ data: t }, { data: s }, { data: c }, { data: p }] = await Promise.all([
       supabase.from("center_therapists").select("*").eq("linked_user_id", user.id),
@@ -60,6 +70,7 @@ export default function TherapistMySchedule() {
   }
 
   useEffect(() => { reload(); }, []);
+
 
   // Auto-fill code from URL (?code=XXXXXX) when arriving from SMS link
   useEffect(() => {

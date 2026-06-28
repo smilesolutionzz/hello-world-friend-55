@@ -241,93 +241,187 @@ export default function TherapistMyNotes() {
         </aside>
 
         <main className="space-y-4">
-          <div className="bg-white rounded-2xl border border-neutral-200 p-4 flex items-center gap-3 flex-wrap">
-            <Calendar className="w-4 h-4 text-neutral-500" />
-            <input type="week" value={weekKey.replace("-W", "-W")}
-              onChange={(e) => setWeekKey(e.target.value)}
-              className="text-sm border border-neutral-200 rounded-lg px-2 py-1" />
-            <span className="text-xs text-neutral-500">{weekRange(weekKey).start} ~ {weekRange(weekKey).end}</span>
-            <span className="text-xs text-neutral-400 ml-auto">본인 세션 {sessionsThisWeek.length}건</span>
+          <div className="bg-white rounded-2xl border border-neutral-200 p-1 inline-flex gap-1">
+            <button onClick={() => setTab("weekly")}
+              className={`text-xs px-3 py-1.5 rounded-xl ${tab === "weekly" ? "bg-neutral-900 text-white" : "text-neutral-500"}`}>
+              주간 노트
+            </button>
+            <button onClick={() => setTab("monthly")}
+              className={`text-xs px-3 py-1.5 rounded-xl ${tab === "monthly" ? "bg-neutral-900 text-white" : "text-neutral-500"}`}>
+              월간 리포트
+            </button>
           </div>
 
-          {/* 세션별 기록 입력 */}
-          <section className="bg-white rounded-2xl border border-neutral-200 p-4">
-            <h2 className="text-sm font-semibold mb-3">이번 주 회기기록</h2>
-            {sessionsThisWeek.length === 0 ? (
-              <p className="text-xs text-neutral-400">이번 주에 본인 담당 회기가 없습니다.</p>
-            ) : (
-              <div className="space-y-3">
-                {sessionsThisWeek.map((s) => (
-                  <div key={s.id} className="border border-neutral-200 rounded-xl p-3">
-                    <p className="text-xs font-medium mb-2">{s.session_date} {s.start_time?.slice(0,5)}–{s.end_time?.slice(0,5)} <span className="text-neutral-400 ml-1">[{s.status}]</span></p>
-                    {(["consult","record","special"] as const).map((f) => (
-                      <RecordField key={f} field={f} value={s.meta?.records?.[f] ?? ""}
-                        onSave={(v) => saveRecord(s.id, { [f]: v })}
-                        onExpand={(v) => aiExpand(f, v, s.id)} />
+          {tab === "weekly" && (
+            <>
+              <div className="bg-white rounded-2xl border border-neutral-200 p-4 flex items-center gap-3 flex-wrap">
+                <Calendar className="w-4 h-4 text-neutral-500" />
+                <input type="week" value={weekKey.replace("-W", "-W")}
+                  onChange={(e) => setWeekKey(e.target.value)}
+                  className="text-sm border border-neutral-200 rounded-lg px-2 py-1" />
+                <span className="text-xs text-neutral-500">{weekRange(weekKey).start} ~ {weekRange(weekKey).end}</span>
+                <span className="text-xs text-neutral-400 ml-auto">본인 세션 {sessionsThisWeek.length}건</span>
+              </div>
+
+              {/* 세션별 기록 입력 */}
+              <section className="bg-white rounded-2xl border border-neutral-200 p-4">
+                <h2 className="text-sm font-semibold mb-3">이번 주 회기기록</h2>
+                {sessionsThisWeek.length === 0 ? (
+                  <p className="text-xs text-neutral-400">이번 주에 본인 담당 회기가 없습니다.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {sessionsThisWeek.map((s) => (
+                      <div key={s.id} className="border border-neutral-200 rounded-xl p-3">
+                        <p className="text-xs font-medium mb-2">{s.session_date} {s.start_time?.slice(0,5)}–{s.end_time?.slice(0,5)} <span className="text-neutral-400 ml-1">[{s.status}]</span></p>
+                        {(["consult","record","special"] as const).map((f) => (
+                          <RecordField key={f} field={f} value={s.meta?.records?.[f] ?? ""}
+                            onSave={(v) => saveRecord(s.id, { [f]: v })}
+                            onExpand={(v) => aiExpand(f, v, s.id)} />
+                        ))}
+                      </div>
                     ))}
                   </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          {/* 주간 노트 초안 */}
-          <section className="bg-white rounded-2xl border border-neutral-200 p-4">
-            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-              <h2 className="text-sm font-semibold flex items-center gap-2"><FileText className="w-4 h-4" /> 보호자용 주간 노트</h2>
-              <div className="flex items-center gap-2">
-                <button onClick={generate} disabled={generating || !selClient}
-                  className="text-xs px-3 py-1.5 rounded-full bg-neutral-900 text-white inline-flex items-center gap-1 disabled:opacity-50">
-                  {generating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                  {report ? "초안 재생성" : "AI 초안 생성"}
-                </button>
-                {report && report.status !== "published" && (
-                  <button onClick={publish} disabled={publishing}
-                    className="text-xs px-3 py-1.5 rounded-full bg-emerald-600 text-white inline-flex items-center gap-1 disabled:opacity-50">
-                    {publishing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />} 보호자에게 발행
-                  </button>
                 )}
-                {report?.status === "published" && (
-                  <>
-                    <span className="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">발행됨</span>
-                    <button onClick={() => setShareOpen(true)}
-                      className="text-xs px-3 py-1.5 rounded-full bg-blue-600 text-white inline-flex items-center gap-1">
-                      <Share2 className="w-3 h-3" /> 보호자에게 문자 전송
+              </section>
+
+              {/* 주간 노트 초안 */}
+              <section className="bg-white rounded-2xl border border-neutral-200 p-4">
+                <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                  <h2 className="text-sm font-semibold flex items-center gap-2"><FileText className="w-4 h-4" /> 보호자용 주간 노트</h2>
+                  <div className="flex items-center gap-2">
+                    <button onClick={generate} disabled={generating || !selClient}
+                      className="text-xs px-3 py-1.5 rounded-full bg-neutral-900 text-white inline-flex items-center gap-1 disabled:opacity-50">
+                      {generating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                      {report ? "초안 재생성" : "AI 초안 생성"}
                     </button>
-                  </>
+                    {report && report.status !== "published" && (
+                      <button onClick={publish} disabled={publishing}
+                        className="text-xs px-3 py-1.5 rounded-full bg-emerald-600 text-white inline-flex items-center gap-1 disabled:opacity-50">
+                        {publishing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />} 보호자에게 발행
+                      </button>
+                    )}
+                    {report?.status === "published" && (
+                      <>
+                        <span className="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">발행됨</span>
+                        <button onClick={() => setShareOpen({ id: report.id, type: "therapy_note" })}
+                          className="text-xs px-3 py-1.5 rounded-full bg-blue-600 text-white inline-flex items-center gap-1">
+                          <Share2 className="w-3 h-3" /> 보호자에게 문자 전송
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {!report && <p className="text-xs text-neutral-400">아직 초안이 없습니다. 위의 회기기록을 작성한 뒤 "AI 초안 생성"을 눌러주세요.</p>}
+
+                {draft && (
+                  <div className="space-y-3">
+                    <div><label className="text-[10px] text-neutral-500">제목</label><div className="text-base font-medium">{draft.title ?? "—"}</div></div>
+                    <div><label className="text-[10px] text-neutral-500">인사말</label><p className="text-sm text-neutral-700 break-keep">{draft.greeting}</p></div>
+                    {draft.highlights?.length > 0 && <div><label className="text-[10px] text-neutral-500">이번 주 하이라이트</label><ul className="text-sm list-disc pl-5 space-y-0.5">{draft.highlights.map((h: string, i: number) => <li key={i}>{h}</li>)}</ul></div>}
+                    <div><label className="text-[10px] text-neutral-500">활동 요약</label><p className="text-sm text-neutral-700 break-keep">{draft.activities_summary}</p></div>
+                    {draft.growth?.length > 0 && <div><label className="text-[10px] text-neutral-500">관찰된 성장</label><ul className="text-sm list-disc pl-5 space-y-0.5">{draft.growth.map((h: string, i: number) => <li key={i}>{h}</li>)}</ul></div>}
+                    {draft.home_tips?.length > 0 && <div><label className="text-[10px] text-neutral-500">가정 활동 제안</label><ul className="text-sm list-disc pl-5 space-y-0.5">{draft.home_tips.map((h: string, i: number) => <li key={i}>{h}</li>)}</ul></div>}
+                    <div><label className="text-[10px] text-neutral-500">다음 주 집중 방향</label><p className="text-sm text-neutral-700 break-keep">{draft.next_week_focus}</p></div>
+
+                    <details className="mt-2">
+                      <summary className="text-xs text-neutral-500 cursor-pointer">직접 HTML로 편집 (선택)</summary>
+                      <textarea defaultValue={report?.edited_html ?? ""}
+                        onBlur={(e) => saveEdits(e.target.value)}
+                        className="mt-2 w-full min-h-[120px] text-xs font-mono p-2 border border-neutral-200 rounded-lg" />
+                    </details>
+                  </div>
                 )}
+              </section>
+            </>
+          )}
+
+          {tab === "monthly" && (
+            <>
+              <div className="bg-white rounded-2xl border border-neutral-200 p-4 flex items-center gap-3 flex-wrap">
+                <Calendar className="w-4 h-4 text-neutral-500" />
+                <input type="month" value={monthKey}
+                  onChange={(e) => setMonthKey(e.target.value)}
+                  className="text-sm border border-neutral-200 rounded-lg px-2 py-1" />
+                <button onClick={generateMonthly} disabled={monthlyGenerating || !selClient}
+                  className="ml-auto text-xs px-3 py-1.5 rounded-full bg-neutral-900 text-white inline-flex items-center gap-1 disabled:opacity-50">
+                  {monthlyGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                  {monthlyReport ? "재생성" : "월간 리포트 생성"}
+                </button>
               </div>
-            </div>
 
-            {!report && <p className="text-xs text-neutral-400">아직 초안이 없습니다. 위의 회기기록을 작성한 뒤 "AI 초안 생성"을 눌러주세요.</p>}
+              <section className="bg-white rounded-2xl border border-neutral-200 p-4">
+                <h2 className="text-sm font-semibold mb-3 flex items-center gap-2"><FileText className="w-4 h-4" /> {monthKey} 월간 리포트</h2>
+                {monthlyLoading ? (
+                  <p className="text-xs text-neutral-400">불러오는 중…</p>
+                ) : !monthlyReport ? (
+                  <p className="text-xs text-neutral-400">해당 월의 리포트가 없습니다. 우측 상단 "월간 리포트 생성"을 눌러주세요. 본인 담당 트랙만 포함됩니다.</p>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div>
+                        <p className="text-base font-medium">{monthlyReport.title ?? "—"}</p>
+                        <p className="text-[11px] text-neutral-400">{monthlyReport.period_start} ~ {monthlyReport.period_end}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {monthlyReport.status !== "published" ? (
+                          <button onClick={() => publishMonthly(monthlyReport.id)}
+                            className="text-xs px-3 py-1.5 rounded-full bg-emerald-600 text-white inline-flex items-center gap-1">
+                            <Send className="w-3 h-3" /> 발행
+                          </button>
+                        ) : (
+                          <>
+                            <span className="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">발행됨</span>
+                            <button onClick={() => setShareOpen({ id: monthlyReport.id, type: "parent_report" })}
+                              className="text-xs px-3 py-1.5 rounded-full bg-blue-600 text-white inline-flex items-center gap-1">
+                              <Share2 className="w-3 h-3" /> 보호자에게 문자 전송
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    {monthlyReport.edited_html ? (
+                      <div className="prose prose-sm max-w-none border border-neutral-100 rounded-xl p-3" dangerouslySetInnerHTML={{ __html: monthlyReport.edited_html }} />
+                    ) : monthlyReport.ai_draft_json ? (
+                      <pre className="text-xs whitespace-pre-wrap text-neutral-700 bg-neutral-50 p-3 rounded-xl">{JSON.stringify(monthlyReport.ai_draft_json, null, 2)}</pre>
+                    ) : null}
+                  </div>
+                )}
+              </section>
 
-            {draft && (
-              <div className="space-y-3">
-                <div><label className="text-[10px] text-neutral-500">제목</label><div className="text-base font-medium">{draft.title ?? "—"}</div></div>
-                <div><label className="text-[10px] text-neutral-500">인사말</label><p className="text-sm text-neutral-700 break-keep">{draft.greeting}</p></div>
-                {draft.highlights?.length > 0 && <div><label className="text-[10px] text-neutral-500">이번 주 하이라이트</label><ul className="text-sm list-disc pl-5 space-y-0.5">{draft.highlights.map((h: string, i: number) => <li key={i}>{h}</li>)}</ul></div>}
-                <div><label className="text-[10px] text-neutral-500">활동 요약</label><p className="text-sm text-neutral-700 break-keep">{draft.activities_summary}</p></div>
-                {draft.growth?.length > 0 && <div><label className="text-[10px] text-neutral-500">관찰된 성장</label><ul className="text-sm list-disc pl-5 space-y-0.5">{draft.growth.map((h: string, i: number) => <li key={i}>{h}</li>)}</ul></div>}
-                {draft.home_tips?.length > 0 && <div><label className="text-[10px] text-neutral-500">가정 활동 제안</label><ul className="text-sm list-disc pl-5 space-y-0.5">{draft.home_tips.map((h: string, i: number) => <li key={i}>{h}</li>)}</ul></div>}
-                <div><label className="text-[10px] text-neutral-500">다음 주 집중 방향</label><p className="text-sm text-neutral-700 break-keep">{draft.next_week_focus}</p></div>
-
-                <details className="mt-2">
-                  <summary className="text-xs text-neutral-500 cursor-pointer">직접 HTML로 편집 (선택)</summary>
-                  <textarea defaultValue={report?.edited_html ?? ""}
-                    onBlur={(e) => saveEdits(e.target.value)}
-                    className="mt-2 w-full min-h-[120px] text-xs font-mono p-2 border border-neutral-200 rounded-lg" />
-                </details>
-              </div>
-            )}
-          </section>
+              <section className="bg-white rounded-2xl border border-neutral-200 p-4">
+                <h2 className="text-sm font-semibold mb-3">발행 히스토리 (최근 12개월)</h2>
+                {monthlyHistory.length === 0 ? (
+                  <p className="text-xs text-neutral-400">아직 발행된 월간 리포트가 없습니다.</p>
+                ) : (
+                  <ul className="divide-y divide-neutral-100">
+                    {monthlyHistory.map((h) => (
+                      <li key={h.id} className="py-2 flex items-center justify-between flex-wrap gap-2">
+                        <div>
+                          <p className="text-sm">{h.title ?? `${h.period_start} ~ ${h.period_end}`}</p>
+                          <p className="text-[11px] text-neutral-400">{h.period_start} ~ {h.period_end} · {h.status === "published" ? `발행 ${h.published_at?.slice(0,10) ?? ""}` : "초안"}</p>
+                        </div>
+                        {h.status === "published" && (
+                          <button onClick={() => setShareOpen({ id: h.id, type: "parent_report" })}
+                            className="text-xs px-3 py-1 rounded-full border border-neutral-200 inline-flex items-center gap-1">
+                            <Share2 className="w-3 h-3" /> 재전송
+                          </button>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            </>
+          )}
         </main>
       </div>
-      {report && therapist && (
+      {shareOpen && therapist && (
         <ShareWithParentDialog
-          open={shareOpen}
-          onClose={() => setShareOpen(false)}
-          resourceType="therapy_note"
-          resourceId={report.id}
+          open={!!shareOpen}
+          onClose={() => setShareOpen(null)}
+          resourceType={shareOpen.type}
+          resourceId={shareOpen.id}
           childId={selClient}
           centerId={therapist.center_id}
           defaultPhone={clients.find((c) => c.id === selClient)?.guardian_phone ?? ""}

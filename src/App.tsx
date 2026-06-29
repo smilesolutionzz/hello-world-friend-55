@@ -661,6 +661,8 @@ const App = () => {
             <Route path="setup" element={<CenterOnboardingWizardPage />} />
             <Route path="storefront" element={<CenterStorefrontPage />} />
             <Route path="admin/beta-tracker" element={<CenterBetaTrackerPage />} />
+            <Route path="marketing/landing" element={<LandingBuilderPage />} />
+            <Route path="marketing/leads" element={<LeadsInboxPage />} />
           </Route>
           <Route path="/center/:slug" element={<CenterStorefrontPublic />} />
           <Route path="/parent/center" element={<ParentCenterPage />} />

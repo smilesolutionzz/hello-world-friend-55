@@ -593,7 +593,13 @@ export default function LandingBuilderPage() {
               <div key={i} className="grid grid-cols-[80px_1fr] gap-3 mt-3 items-start">
                 <div className="relative">
                   <div className="aspect-square rounded-xl bg-neutral-100 overflow-hidden flex items-center justify-center border border-neutral-200">
-                    {p.image_url ? <img src={p.image_url} alt="" className="w-full h-full object-cover" /> : <ImageIcon className="w-5 h-5 text-neutral-300" />}
+                    {programAiIdx === i ? (
+                      <Loader2 className="w-5 h-5 text-neutral-400 animate-spin" />
+                    ) : p.image_url ? (
+                      <img src={p.image_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <ImageIcon className="w-5 h-5 text-neutral-300" />
+                    )}
                   </div>
                   <UploadInline onFile={(f) => pickProgramImage(i, f)} />
                 </div>
@@ -610,6 +616,21 @@ export default function LandingBuilderPage() {
                               arr[i] = { ...p, desc: e.target.value };
                               setConfig({ ...config, programs: arr });
                             }} />
+                  <div className="flex justify-end">
+                    <Button
+                      type="button" variant="outline" size="sm"
+                      className="rounded-lg h-7 px-2 text-[11px]"
+                      disabled={programAiIdx !== null || !p.title?.trim()}
+                      onClick={() => aiGenerateProgramImage(i)}
+                    >
+                      {programAiIdx === i ? (
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      ) : (
+                        <Wand2 className="w-3 h-3 mr-1" />
+                      )}
+                      {p.image_url ? "AI 이미지 재생성" : "AI 이미지 생성"}
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}

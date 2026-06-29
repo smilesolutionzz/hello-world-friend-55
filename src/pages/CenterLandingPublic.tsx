@@ -38,24 +38,18 @@ const SOLUTION_ICONS: Record<SolutionItem["icon"], React.ComponentType<{ classNa
 const GOLD = "#C8B88A";
 const GOLD_SOFT = "#EFE7D2";
 
-export default function CenterLandingPublic() {
+export default function CenterLandingPublic({ previewRow }: { previewRow?: LandingRow } = {}) {
   const { slug } = useParams<{ slug: string }>();
   const { toast } = useToast();
-  const [row, setRow] = useState<LandingRow | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [row, setRow] = useState<LandingRow | null>(previewRow ?? null);
+  const [loading, setLoading] = useState(!previewRow);
   const [form, setForm] = useState({ parent_name: "", phone: "", concern: "" });
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    // Builder live-preview mode: read from window without RPC
-    const previewRow = (typeof window !== "undefined" ? (window as any).__LANDING_PREVIEW__ : null) as LandingRow | null;
-    if (previewRow && previewRow.center_id) {
-      setRow(previewRow);
-      setLoading(false);
-      return;
-    }
+    if (previewRow) { setRow(previewRow); setLoading(false); return; }
     if (!slug) { setLoading(false); return; }
     (async () => {
       const { data, error } = await supabase.rpc("get_center_landing_by_slug", { _slug: slug });
@@ -64,7 +58,7 @@ export default function CenterLandingPublic() {
       }
       setLoading(false);
     })();
-  }, [slug]);
+  }, [slug, previewRow]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-white"><Loader2 className="animate-spin" /></div>;

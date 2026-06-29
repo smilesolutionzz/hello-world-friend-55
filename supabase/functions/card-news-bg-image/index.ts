@@ -41,12 +41,24 @@ serve(async (req) => {
         "Very soft, blurred, dreamy and quiet — low contrast, milky pastel washes, large empty negative space, almost out-of-focus.",
       readable:
         "Extremely low-contrast, washed-out, near-monochrome background with very large empty negative space across the entire image so large Korean text placed on top remains highly readable. Avoid busy patterns.",
+      "photo-doc":
+        "Real photograph, documentary editorial style, high-end black and white, subtle film grain, shallow depth of field, candid lifestyle moment — e.g. a quiet studio interior, hands, a window with soft light, plants, books, a coffee cup, a yoga mat in an empty space. Cinematic, magazine cover quality. Faces should NOT be clearly visible (use back, hands, silhouette, or off-frame composition). Leave one calm low-detail area for text overlay.",
+      "photo-warm":
+        "Real photograph, warm lifestyle editorial scene, natural golden window light, soft film tones, shallow depth of field, real textures (wood, linen, paper, ceramic, plants, sunlight). Subjects can include hands, a back-view person, an empty cozy interior, a desk, a window — but NEVER show clearly identifiable faces, NEVER show children. Magazine quality, calm and human. Leave one calm low-detail area for text overlay.",
     };
     const modeText = modeHint[mode] ?? modeHint["readable"];
+    const isPhoto = mode === "photo-doc" || mode === "photo-warm";
 
     const safeContext = `${headline}\n${body}`.slice(0, 300);
 
-    const prompt = `A calm, warm, abstract editorial background image for a social media card about a Korean ${center_type || "developmental / psychological care"} center.
+    const prompt = isPhoto
+      ? `A real, photorealistic editorial background photograph for a social media card about a Korean ${center_type || "developmental / psychological care"} center.
+Style mood: ${tone}.
+Rendering mode: ${modeText}
+Strict rules: no text, no letters, no logos, no clearly identifiable human faces, no children, no medical equipment, no clinical or hospital imagery, no fear, no darkness, no blood, no needles, no brand marks. Hands, backs, silhouettes and empty interiors are allowed. Must look like a real photo, NOT illustration, NOT 3D render.
+Square 1:1. Leave one calm low-detail area suitable as background under large Korean typography.
+Reference context (mood only, do not depict literally): "${safeContext.replace(/"/g, "'")}".`
+      : `A calm, warm, abstract editorial background image for a social media card about a Korean ${center_type || "developmental / psychological care"} center.
 Style mood: ${tone}.
 Rendering mode: ${modeText}
 Strict rules: no text, no letters, no logos, no people, no faces, no children, no medical equipment, no clinical or hospital imagery, no fear, no darkness, no blood, no needles.

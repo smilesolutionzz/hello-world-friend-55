@@ -442,7 +442,7 @@ export default function CardNewsStudioPage() {
   }
 
   // AI 배경 — 모드 + 3가지 옵션 + 다중 카드 일괄 적용
-  type BgMode = "sharp" | "soft" | "readable";
+  type BgMode = "sharp" | "soft" | "readable" | "photo-doc" | "photo-warm";
   const [bgMode, setBgMode] = useState<BgMode>("readable");
   const [bgGenIndex, setBgGenIndex] = useState<number | null>(null);
   const [bgPickerOpen, setBgPickerOpen] = useState(false);
@@ -908,6 +908,8 @@ export default function CardNewsStudioPage() {
                   { k: "sharp", label: "더 선명하게" },
                   { k: "soft", label: "더 은은하게" },
                   { k: "readable", label: "텍스트 가독성 우선" },
+                  { k: "photo-doc", label: "실사·다큐 B&W" },
+                  { k: "photo-warm", label: "실사·따뜻한 일상" },
                 ] as { k: BgMode; label: string }[]).map((m) => (
                   <button
                     key={m.k}
@@ -1089,7 +1091,7 @@ export default function CardNewsStudioPage() {
           <DialogHeader>
             <DialogTitle>AI 배경 이미지 선택</DialogTitle>
             <DialogDescription>
-              {`${({ sharp: "더 선명하게", soft: "더 은은하게", readable: "텍스트 가독성 우선" } as Record<BgMode, string>)[bgMode]} 모드로 3가지 옵션을 만들었어요. 마음에 드는 1장을 고르고, 적용할 카드를 선택하세요.`}
+              {`${({ sharp: "더 선명하게", soft: "더 은은하게", readable: "텍스트 가독성 우선", "photo-doc": "실사·다큐 B&W", "photo-warm": "실사·따뜻한 일상" } as Record<BgMode, string>)[bgMode]} 모드로 3가지 옵션을 만들었어요. 마음에 드는 1장을 고르고, 적용할 카드를 선택하세요.`}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">

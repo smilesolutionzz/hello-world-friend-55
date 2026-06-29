@@ -310,6 +310,18 @@ export default function CardNewsStudioPage() {
   const [savingDraft, setSavingDraft] = useState(false);
   const [currentDraftId, setCurrentDraftId] = useState<string | null>(null);
 
+  // 생성 내역 필터/검색
+  const [draftSearch, setDraftSearch] = useState("");
+  const [draftMonth, setDraftMonth] = useState<string>("all"); // YYYY-MM or "all"
+  const [draftStyle, setDraftStyle] = useState<string>("all");
+
+  // 숏폼 베타 신청 상태
+  const [shortsOpen, setShortsOpen] = useState(false);
+  const [shortsNote, setShortsNote] = useState("");
+  const [shortsContact, setShortsContact] = useState("");
+  const [shortsSubmitting, setShortsSubmitting] = useState(false);
+  const [shortsRequested, setShortsRequested] = useState(false);
+
   // 로드: 발행된 노트 + 브랜딩 + 저장된 카드뉴스 내역
   useEffect(() => {
     if (!centerId) return;

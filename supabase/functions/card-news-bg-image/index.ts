@@ -41,8 +41,13 @@ serve(async (req) => {
         "Very soft, blurred, dreamy and quiet — low contrast, milky pastel washes, large empty negative space, almost out-of-focus.",
       readable:
         "Extremely low-contrast, washed-out, near-monochrome background with very large empty negative space across the entire image so large Korean text placed on top remains highly readable. Avoid busy patterns.",
+      "photo-doc":
+        "Real photograph, documentary editorial style, high-end black and white, subtle film grain, shallow depth of field, candid lifestyle moment — e.g. a quiet studio interior, hands, a window with soft light, plants, books, a coffee cup, a yoga mat in an empty space. Cinematic, magazine cover quality. Faces should NOT be clearly visible (use back, hands, silhouette, or off-frame composition). Leave one calm low-detail area for text overlay.",
+      "photo-warm":
+        "Real photograph, warm lifestyle editorial scene, natural golden window light, soft film tones, shallow depth of field, real textures (wood, linen, paper, ceramic, plants, sunlight). Subjects can include hands, a back-view person, an empty cozy interior, a desk, a window — but NEVER show clearly identifiable faces, NEVER show children. Magazine quality, calm and human. Leave one calm low-detail area for text overlay.",
     };
     const modeText = modeHint[mode] ?? modeHint["readable"];
+    const isPhoto = mode === "photo-doc" || mode === "photo-warm";
 
     const safeContext = `${headline}\n${body}`.slice(0, 300);
 

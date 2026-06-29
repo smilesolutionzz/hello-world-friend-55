@@ -122,21 +122,21 @@ export default function WhitelabelReportPreviewPage() {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-semibold">부모 리포트 — 화이트라벨 미리보기</h1>
-          <p className="text-xs text-neutral-500 mt-1">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <div className="min-w-0">
+          <h1 className="text-xl md:text-2xl font-semibold break-keep">부모 리포트 — 화이트라벨 미리보기</h1>
+          <p className="text-xs text-neutral-500 mt-1 break-keep leading-relaxed">
             기관 로고·명의·강조색을 설정해 우리 기관 명의의 PDF 샘플을 즉시 만들어보세요.
             저장하면 <b>다음 발행되는 부모 월간 리포트부터 자동 적용</b>됩니다.
             실제 발행은 <b>부모 월간 리포트</b> 페이지에서 진행합니다.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-row flex-wrap items-center gap-2 md:shrink-0">
           <button
             onClick={saveBranding}
             disabled={busy || demo}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8B88A] text-white text-xs whitespace-nowrap disabled:opacity-50"
+            className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-[#C8B88A] text-white text-xs whitespace-nowrap disabled:opacity-50"
             title="이 설정을 기관 브랜딩으로 저장 — 부모 월간 리포트에 자동 적용됩니다"
           >
             <Save className="w-3.5 h-3.5" />
@@ -145,7 +145,7 @@ export default function WhitelabelReportPreviewPage() {
           <button
             onClick={downloadPDF}
             disabled={busy}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-xs whitespace-nowrap disabled:opacity-50"
+            className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-xs whitespace-nowrap disabled:opacity-50"
           >
             <Download className="w-3.5 h-3.5 text-[#C8B88A]" />
             {busy ? "처리 중…" : "PDF 다운로드"}

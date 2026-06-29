@@ -51,7 +51,14 @@ serve(async (req) => {
 
     const safeContext = `${headline}\n${body}`.slice(0, 300);
 
-    const prompt = `A calm, warm, abstract editorial background image for a social media card about a Korean ${center_type || "developmental / psychological care"} center.
+    const prompt = isPhoto
+      ? `A real, photorealistic editorial background photograph for a social media card about a Korean ${center_type || "developmental / psychological care"} center.
+Style mood: ${tone}.
+Rendering mode: ${modeText}
+Strict rules: no text, no letters, no logos, no clearly identifiable human faces, no children, no medical equipment, no clinical or hospital imagery, no fear, no darkness, no blood, no needles, no brand marks. Hands, backs, silhouettes and empty interiors are allowed. Must look like a real photo, NOT illustration, NOT 3D render.
+Square 1:1. Leave one calm low-detail area suitable as background under large Korean typography.
+Reference context (mood only, do not depict literally): "${safeContext.replace(/"/g, "'")}".`
+      : `A calm, warm, abstract editorial background image for a social media card about a Korean ${center_type || "developmental / psychological care"} center.
 Style mood: ${tone}.
 Rendering mode: ${modeText}
 Strict rules: no text, no letters, no logos, no people, no faces, no children, no medical equipment, no clinical or hospital imagery, no fear, no darkness, no blood, no needles.

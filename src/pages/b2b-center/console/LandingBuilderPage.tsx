@@ -365,7 +365,30 @@ export default function LandingBuilderPage() {
               <Input value={config.specialties.join(", ")}
                      onChange={(e) => setConfig({ ...config, specialties: e.target.value.split(",").map((x) => x.trim()).filter(Boolean) })} />
             </Field>
+            <Field label="공개 페이지에 표시할 섹션">
+              <div className="grid grid-cols-2 gap-1.5 rounded-xl bg-neutral-50 border border-neutral-200 p-3">
+                {(Object.keys(LANDING_SECTION_LABELS) as LandingSectionKey[]).map((k) => {
+                  const checked = (config.sections?.[k] ?? true) !== false;
+                  return (
+                    <label key={k} className="flex items-center gap-2 text-sm text-neutral-700 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={(e) => setConfig({
+                          ...config,
+                          sections: { ...(config.sections ?? {}), [k]: e.target.checked },
+                        })}
+                        className="w-4 h-4 rounded border-neutral-300 accent-neutral-900"
+                      />
+                      {LANDING_SECTION_LABELS[k]}
+                    </label>
+                  );
+                })}
+              </div>
+              <p className="text-[11px] text-neutral-400">체크를 해제하면 공개 랜딩에서 해당 섹션이 숨겨집니다. 내용은 그대로 보관돼요.</p>
+            </Field>
           </Block>
+
 
           <Block title="이미지 업로드">
             <p className="text-[11px] text-neutral-500 leading-relaxed">

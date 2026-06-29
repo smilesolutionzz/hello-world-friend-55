@@ -34,6 +34,7 @@ const TherapistSubscriptionTeaser = lazy(() => import("./pages/lite/TherapistSub
 const TherapistMySchedule = lazy(() => import("./pages/TherapistMySchedule"));
 const TherapistInviteRedirect = lazy(() => import("./pages/TherapistInviteRedirect"));
 const TherapistMyNotes = lazy(() => import("./pages/TherapistMyNotes"));
+const MktStudioDemo = lazy(() => import("./pages/internal/MktStudioDemo"));
 const TherapistMyClients = lazy(() => import("./pages/TherapistMyClients"));
 const FindCenter = lazy(() => import("./pages/lite/FindCenter"));
 const PublicCenter = lazy(() => import("./pages/PublicCenter"));
@@ -290,6 +291,7 @@ const App = () => {
           {/* ===== Core Routes ===== */}
           <Route path="/" element={<Navigate to="/b2b-center" replace />} />
           <Route path="/c2c" element={<Index />} />
+          <Route path="/internal/mkt-studio-demo" element={<MktStudioDemo />} />
           <Route path="/home" element={<MobileHome />} />
           <Route path="/whats-new" element={<WhatsNew />} />
           <Route path="/store" element={<Store />} />

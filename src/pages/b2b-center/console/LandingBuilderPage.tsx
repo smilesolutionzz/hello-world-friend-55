@@ -161,7 +161,7 @@ export default function LandingBuilderPage() {
     return <div className="p-8 text-sm text-neutral-500">먼저 활성 기관을 선택해주세요.</div>;
   }
 
-  const preview = resolveLandingCopy(org.name, { ...config, template });
+  void resolveLandingCopy; // preserved for reference; preview now uses inline editable fields
   const theme = themeStyles[TEMPLATE_META[template].theme];
 
   return (

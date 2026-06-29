@@ -49,21 +49,49 @@ serve(async (req) => {
     const modeText = modeHint[mode] ?? modeHint["readable"];
     const isPhoto = mode === "photo-doc" || mode === "photo-warm";
 
-    const safeContext = `${headline}\n${body}`.slice(0, 300);
+    const safeContext = `${headline}\n${body}`.slice(0, 500);
+
+    // 실사 모드: 콘텐츠 내용을 그대로 시각화하기 위해 먼저 Gemini로
+    // "사진으로 찍을 장면"을 영어 한 문장으로 추출. (사람 얼굴/아동 금지 규칙 포함)
+    let sceneBrief = "";
+    if (isPhoto) {
+      try {
+        const sceneRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You translate Korean card-news copy into a SINGLE concrete photographic scene description in English (max 45 words). The scene MUST visually represent the actual topic of the copy (not a generic studio). Choose tangible objects, places, hands, light, textures that literally depict the content. NEVER include children, NEVER include clearly identifiable human faces (only hands, backs, silhouettes, or empty scenes are allowed). No text, no logos, no clinical/medical imagery. Output only the scene description, nothing else.",
+              },
+              { role: "user", content: `Headline: ${headline}\nBody: ${body}` },
+            ],
+          }),
+        });
+        if (sceneRes.ok) {
+          const sj = await sceneRes.json();
+          sceneBrief = String(sj?.choices?.[0]?.message?.content ?? "").trim().replace(/^["']|["']$/g, "");
+        }
+      } catch (_) { /* fallback to generic */ }
+    }
 
     const prompt = isPhoto
-      ? `A real, photorealistic editorial background photograph for a social media card about a Korean ${center_type || "developmental / psychological care"} center.
+      ? `Real photorealistic editorial photograph for a Korean ${center_type || "developmental / psychological care"} center social card.
+Subject of the photo (MUST be literally depicted, this is the most important instruction): ${sceneBrief || safeContext}
 Style mood: ${tone}.
 Rendering mode: ${modeText}
-Strict rules: no text, no letters, no logos, no clearly identifiable human faces, no children, no medical equipment, no clinical or hospital imagery, no fear, no darkness, no blood, no needles, no brand marks. Hands, backs, silhouettes and empty interiors are allowed. Must look like a real photo, NOT illustration, NOT 3D render.
-Square 1:1. Leave one calm low-detail area suitable as background under large Korean typography.
-Reference context (mood only, do not depict literally): "${safeContext.replace(/"/g, "'")}".`
+Strict rules: no text, no letters, no logos, no clearly identifiable human faces, no children, no medical equipment, no clinical or hospital imagery, no fear, no darkness, no blood, no needles, no brand marks. Hands, backs, silhouettes and empty scenes are allowed. Must look like a real photo, NOT illustration, NOT 3D render.
+Square 1:1. Leave one calm low-detail area suitable as background under large Korean typography.`
       : `A calm, warm, abstract editorial background image for a social media card about a Korean ${center_type || "developmental / psychological care"} center.
 Style mood: ${tone}.
 Rendering mode: ${modeText}
 Strict rules: no text, no letters, no logos, no people, no faces, no children, no medical equipment, no clinical or hospital imagery, no fear, no darkness, no blood, no needles.
 Square 1:1. Suitable as a background under large Korean typography.
 Reference context (mood only, do not depict literally): "${safeContext.replace(/"/g, "'")}".`;
+
 
     const n = Math.max(1, Math.min(3, Number(variations) || 3));
 

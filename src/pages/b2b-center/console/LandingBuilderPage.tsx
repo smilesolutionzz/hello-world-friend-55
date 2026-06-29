@@ -374,10 +374,21 @@ export default function LandingBuilderPage() {
                       <input
                         type="checkbox"
                         checked={checked}
-                        onChange={(e) => setConfig({
-                          ...config,
-                          sections: { ...(config.sections ?? {}), [k]: e.target.checked },
-                        })}
+                        onChange={async (e) => {
+                          const nextSections = { ...(config.sections ?? {}), [k]: e.target.checked };
+                          const nextConfig = { ...config, sections: nextSections };
+                          setConfig(nextConfig);
+                          // 공개 페이지에도 즉시 반영되도록 자동 저장 (공개 상태는 유지)
+                          if (centerId) {
+                            const { error } = await supabase
+                              .from("center_organizations")
+                              .update({ landing_config: { ...nextConfig, template } as any })
+                              .eq("id", centerId);
+                            if (error) {
+                              toast({ title: "자동 저장 실패", description: error.message, variant: "destructive" });
+                            }
+                          }
+                        }}
                         className="w-4 h-4 rounded border-neutral-300 accent-neutral-900"
                       />
                       {LANDING_SECTION_LABELS[k]}
@@ -385,7 +396,7 @@ export default function LandingBuilderPage() {
                   );
                 })}
               </div>
-              <p className="text-[11px] text-neutral-400">체크를 해제하면 공개 랜딩에서 해당 섹션이 숨겨집니다. 내용은 그대로 보관돼요.</p>
+              <p className="text-[11px] text-neutral-400">체크 즉시 라이브 프리뷰와 공개 랜딩(`/lp/슬러그`)에 함께 반영됩니다. 내용은 그대로 보관돼요.</p>
             </Field>
           </Block>
 

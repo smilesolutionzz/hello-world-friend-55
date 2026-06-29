@@ -238,16 +238,24 @@ export default function CenterLandingPublic({ previewRow }: { previewRow?: Landi
           <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
             <SectionHeader eyebrow="WHY US" title={trustTitle} />
 
-            {trust.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-12">
-                {trust.slice(0, 4).map((t, i) => (
-                  <div key={i} className="bg-white rounded-2xl border border-neutral-100 px-5 py-6 text-center">
-                    <div className="text-[11px] tracking-[0.18em] text-neutral-400">{t.label}</div>
-                    <div className="mt-2 text-lg font-semibold" style={{ color: "#3a3424" }}>{t.value}</div>
-                  </div>
-                ))}
-              </div>
-            )}
+            {trust.length > 0 && (() => {
+              const items = trust.slice(0, 4);
+              const colClass =
+                items.length >= 4 ? "sm:grid-cols-4"
+                : items.length === 3 ? "sm:grid-cols-3"
+                : items.length === 2 ? "sm:grid-cols-2"
+                : "sm:grid-cols-1";
+              return (
+                <div className={`grid grid-cols-2 ${colClass} gap-3 mt-12 items-stretch`}>
+                  {items.map((t, i) => (
+                    <div key={i} className="h-full flex flex-col justify-center bg-white rounded-2xl border border-neutral-100 px-5 py-6 text-center min-h-[128px]">
+                      <div className="text-[11px] tracking-[0.18em] text-neutral-400 break-keep">{t.label}</div>
+                      <div className="mt-2 text-base sm:text-lg font-semibold leading-snug break-keep" style={{ color: "#3a3424" }}>{t.value}</div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
 
             {config.strengths?.length > 0 && (
               <ul className="mt-10 grid md:grid-cols-1 gap-3 max-w-3xl mx-auto">

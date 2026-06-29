@@ -1,93 +1,124 @@
-
 ## 목표
-치료사가 가입 후 스스로 (1) 센터에 합류하고, (2) 본인 담당 아동의 주간 노트를 쓰고, (3) 본인 담당 아동 프로필의 일부 필드를 수정할 수 있게 합니다.
+
+**"코딩 없이, 2주 안에 베타 기관 5곳에서 ₩39,000/월 선결제 LOI 3건 확보."**
+
+YC 기준 미달인 #5(유료고객)·#6(성장)·#12(유닛이코노믹스)를 채우는 가장 빠른 길은 **만들기 전에 파는 것**입니다. 이 플랜은 코드 변경 최소 + 영업 자산 최대 산출 구조입니다.
 
 ---
 
-## 01. 초대코드 기반 센터 매칭
+## 01 · 산출물 5종 (코드베이스 내부에 정리)
 
-기존 이메일 매칭(`claim_therapist_account`)은 가입 이메일 오타·다른 메일 사용 시 끊깁니다. 6자리 코드로 교체합니다.
+```text
+docs/sales/2026-07-mkt-studio/
+├─ 01_one-pager.md          영업용 1페이저 (인쇄/PDF용)
+├─ 02_demo-script.md        15분 시연 시나리오 (질문/반론 대응 포함)
+├─ 03_loi-template.md       선결제 의향서 양식 (₩39,000/월 · 베타 50% 할인)
+├─ 04_unit-economics.md     센터당 변동비 계산 (SMS/AI/스토리지)
+└─ 05_objection-handbook.md 자주 나올 반론 10개 + 답변
+```
 
-**스키마**
-- `center_therapists`에 `invite_code text unique`, `invite_code_expires_at timestamptz`, `invite_redeemed_at timestamptz` 추가
-- 관리자가 치료사 등록/편집 시 코드 자동 생성(6자, 영대문자+숫자, 30일 유효)
-
-**RPC**
-- `redeem_therapist_invite_code(_code text)` — security definer
-  - 로그인 사용자 필요, 코드 검증·만료 체크, `center_therapists.user_id = auth.uid()` set, `invite_redeemed_at` 기록
-  - 이미 다른 user가 redeem 했으면 거부
-
-**UI**
-- `/b2b-center/app/admin/therapists` 행마다 "초대코드 복사" 버튼 + "재발급"
-- `/therapist/claim`(신규) — 로그인 후 6자리 코드 입력 → 성공 시 `/therapist/my-schedule`
-- 기존 이메일 자동 claim 로직은 호환용으로 남김(있으면 활용, 없으면 코드 입력 유도)
+별도 페이지 1개만 신규 추가:
+- `/internal/mkt-studio-demo` — Figma 대신 **인터랙티브 HTML 목업** (3번 핵심 화면 3개: 랜딩생성기·SMS캠페인·카드뉴스). 클릭만 작동하는 더미, DB 연결 없음. 영업 미팅에서 노트북으로 시연.
 
 ---
 
-## 02. 치료사 본인 주간노트 작성
+## 02 · 3번 핵심 화면 목업 3종 (정적, 더미 데이터)
 
-**RLS 추가** (`center_parent_reports`)
-- "Therapists can insert/update weekly reports for own clients": 본인 `therapist_id` 가 담당한 세션을 가진 `client_id`에 한해 insert/update 허용, `period_type='weekly'` 한정
-- 발행(`status='published'`)도 본인 작성 row만 허용
+### A. 랜딩페이지 자동생성기
+- 입력: 센터명·전문분야·전화번호
+- 출력(가짜): 미리 디자인된 3가지 템플릿 중 1개 슬라이드 전환
+- 시연 메시지: "30초 안에 우리 센터 전용 홍보페이지가 생깁니다"
 
-**UI 신설** `/therapist/my-notes`
-- 본인 담당 아동 목록(이미 ByTherapistPage 로직 재사용)
-- 아동 선택 → 주차 선택(이번 주/지난 주) → 해당 주 본인 세션의 `meta.records` 자동 수집
-- "AI 초안 생성" → 기존 `generate-weekly-therapy-note` 호출(인풋: 본인 세션 ID만)
-- 편집기 + AI 확장(`expand-session-record` 재사용) + 발행 버튼
-- 발행 시 `period_type='weekly'`, `source_upload_ids`에 세션 ID 저장 → 월간 리포트 트랙 분리에 자동 연동
+### B. SMS 마케팅 캠페인
+- 세그먼트 선택: 전체 보호자 / 6개월 미방문 / 신규 상담문의
+- 본문 입력 + 70자 카운터(이미 검증된 로직 재활용)
+- 발송 시뮬레이션: "127명에게 발송 예정 · 예상 비용 ₩3,810"
 
-**엣지 함수 보강**
-- `generate-weekly-therapy-note`: 호출자가 치료사면 본인 세션만 필터하도록 `auth.uid()` → `center_therapists.user_id` 매핑 후 `therapist_id` 자동 제한
+### C. 치료노트 → 카드뉴스
+- 더미 치료노트 1건 선택
+- "익명화 + 카드 생성" 클릭 → 3장짜리 미리 그려둔 카드 PNG 표시
+- 다운로드 버튼 (실제로 미리 만든 PNG 내려받기)
 
----
-
-## 03. 본인 담당 아동 프로필 일부 수정
-
-치료사에게 노출할 수 있는 안전한 필드만 허용:
-- 수정 가능: `notes`(치료 메모), `guardian_phone`, 비상 연락처, 알러지/주의사항 같은 free-text 필드
-- 수정 불가: `name`, `birth_date`, `linked_user_id`, 결제·바우처 관련 컬럼 — 관리자 전용
-
-**RLS**
-- 기존 "Therapists can view clients of own sessions" SELECT 정책 유지
-- 신규 "Therapists can update limited fields on own clients" UPDATE 정책 + 트리거로 보호 필드 변경 시 raise
-  - `prevent_therapist_protected_field_changes()` BEFORE UPDATE 트리거: `auth.uid()` 가 치료사 role 이고 보호 필드 OLD≠NEW 면 exception
-
-**UI**
-- `/therapist/my-clients/:id`(신규) — 프로필 카드 + 수정 가능 필드만 노출, 잠긴 필드는 readonly + "관리자에게 요청" 안내
+> **모두 더미/하드코딩. 백엔드·AI 호출 없음.** Lovable에서 1~2일 안에 완성 가능.
 
 ---
 
-## 영향 받는 파일
+## 03 · 영업 자산 핵심 메시지
 
-**마이그레이션 1건**
-- `center_therapists`에 초대코드 컬럼·인덱스
-- `redeem_therapist_invite_code` RPC
-- `center_parent_reports` 치료사 INSERT/UPDATE 정책
-- `center_clients` 치료사 제한 UPDATE 정책 + 보호 필드 트리거
+### 1-pager 헤드라인 (3안 중 미팅에서 선택)
+1. "센터장님의 마케팅, 저녁 시간을 돌려드립니다"
+2. "치료 데이터가 새로운 보호자를 데려옵니다"
+3. "케어플 + 미리캔버스 + 채널톡, 월 ₩39,000"
 
-**프론트**
-- 신규: `src/pages/TherapistClaim.tsx`, `src/pages/TherapistMyNotes.tsx`, `src/pages/TherapistMyClientDetail.tsx`
-- 수정: 라우터(App), `src/pages/b2b-center/console/TherapistsPage` 코드 표시, `TherapistMySchedule` 헤더에 "주간노트" 탭 링크
+### LOI 양식 핵심 조항
+- 베타 얼리버드: **첫 3개월 ₩19,500/월 (50% 할인)**
+- 정식 가격: ₩39,000/월
+- 해지: 언제든 가능 (락인 없음)
+- 결제 시점: **3번 기능 정식 출시일 (예정: 2026-09-01)**
+- 서명 = 출시일 자동 청구 동의 (선결제 의향만, 카드 등록 X)
 
-**엣지**
-- `supabase/functions/generate-weekly-therapy-note/index.ts`: 치료사 호출 분기
+### 유닛 이코노믹스 가설 (검증 필요)
+```
+센터당 월 변동비 (추정):
+- SMS 500건 × ₩22         = ₩11,000
+- AI 카피 생성 50회         = ₩2,500
+- 카드뉴스 생성 30회        = ₩4,500
+- 스토리지/대역폭           = ₩1,500
+─────────────────────────────────
+합계                       = ₩19,500
+Gross Margin               = 50% (₩39,000 - ₩19,500)
+```
+→ 이 가설이 맞으면 LTV/CAC 3:1 달성 가능. 실측은 베타 1개월 후.
 
 ---
 
-## 기술 메모
-- 코드 생성: `crypto.randomUUID()` 베이스로 base32 6자, 충돌 시 재시도
-- 트리거에서 role 확인은 `has_role(auth.uid(), 'therapist')` 가 아니라 `center_members.role='therapist'` 기준 (B2B는 별도 role 체계)
-- 월간 리포트는 이미 트랙 분리 완료 → 치료사가 본인 트랙만 발행해도 자동으로 해당 트랙만 부모 월간에 포함
+## 04 · 2주 실행 일정
+
+| 일자 | 작업 | 담당 |
+|---|---|---|
+| Day 1-2 | 1-pager + LOI 양식 작성, 데모 시나리오 정리 | 이수석 + 에이전트 |
+| Day 3-4 | `/internal/mkt-studio-demo` 더미 화면 3종 구축 | 에이전트 |
+| Day 5 | 베타 기관 5곳 미팅 일정 확정 | 이수석 |
+| Day 6-10 | 시연 미팅 5건 (1일 1건) + LOI 받기 | 이수석 |
+| Day 11-12 | 반론 핸드북 업데이트, 가격/조건 조정 | 이수석 |
+| Day 13-14 | 결과 회고 → Go/No-Go 결정 | 공동대표 |
 
 ---
 
-## 진행 순서
-1. 마이그레이션 1건(스키마+RLS+RPC)
-2. 관리자 페이지에 초대코드 UI
-3. `/therapist/claim` 페이지 + 라우팅
-4. `/therapist/my-notes` 페이지
-5. `/therapist/my-clients/:id` 페이지
-6. 엣지 함수 분기 추가
+## 05 · Go/No-Go 판정 기준 (Day 14)
 
-작업 분량이 큽니다(파일 7-8개). 이대로 진행하면 한 번에 다 만들어 드릴까요, 아니면 1·2(매칭 먼저) → 3(노트) → 4(프로필 수정) 순으로 단계 분할할까요?
+| 결과 | 의미 | 다음 액션 |
+|---|---|---|
+| **LOI 3건 이상** | PMF 신호 강함 | 즉시 3번 P1 코딩 착수 (랜딩 생성기부터) |
+| **LOI 1-2건** | 가설 일부 검증 | 가격·세그먼트 재조정 후 5곳 추가 영업 |
+| **LOI 0건** | 가설 실패 | 4번 가격 모델로 피벗 (₩9,900 단일 티어) |
+
+---
+
+## 06 · 변경하지 않는 것
+
+- 기존 4번(행정 자동화) 모든 기능 — 손대지 않음
+- 하단바·사이드바·라우팅 — 손대지 않음
+- DB 스키마 — 손대지 않음 (LOI는 Notion/구글폼으로 수집)
+- 결제 시스템 — 손대지 않음 (LOI는 의향서, 카드 등록 X)
+
+---
+
+## 기술 노트 (개발자용)
+
+- 신규 라우트: `/internal/mkt-studio-demo` — `App.tsx`에 추가, 비인증 접근 허용
+- 컴포넌트: `src/pages/internal/MktStudioDemo.tsx` + 3개 하위 섹션
+- 더미 카드뉴스 이미지: `src/assets/mkt-demo/` 에 미리 디자인된 PNG 3장 (imagegen으로 생성)
+- 미리캔버스 톤(흰색 + #C8B88A 골드)으로 통일, 기존 디자인 시스템 토큰 사용
+- 영업 자산 .md는 PDF 출력용 — 인쇄 시 잘리지 않게 H1·H2만 사용
+
+---
+
+## 승인 후 즉시 시작 작업 순서
+
+1. `docs/sales/2026-07-mkt-studio/` 5개 파일 작성
+2. `/internal/mkt-studio-demo` 라우트 + 데모 화면 3종 구축
+3. 카드뉴스 더미 PNG 3장 imagegen
+4. 이수석에게 베타 기관 5곳 컨택 리스트 요청
+
+각 단계 완료마다 보고 후 다음 단계로.

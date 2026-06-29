@@ -2897,6 +2897,9 @@ export type Database = {
           created_at: string
           id: string
           is_beta_partner: boolean
+          landing_config: Json
+          landing_published: boolean
+          landing_slug: string | null
           name: string
           owner_id: string
           phone: string | null
@@ -2917,6 +2920,9 @@ export type Database = {
           created_at?: string
           id?: string
           is_beta_partner?: boolean
+          landing_config?: Json
+          landing_published?: boolean
+          landing_slug?: string | null
           name: string
           owner_id: string
           phone?: string | null
@@ -2937,6 +2943,9 @@ export type Database = {
           created_at?: string
           id?: string
           is_beta_partner?: boolean
+          landing_config?: Json
+          landing_published?: boolean
+          landing_slug?: string | null
           name?: string
           owner_id?: string
           phone?: string | null
@@ -9530,6 +9539,7 @@ export type Database = {
           id: string
           parent_name: string | null
           phone: string | null
+          source: string
           status: string
           updated_at: string
         }
@@ -9541,6 +9551,7 @@ export type Database = {
           id?: string
           parent_name?: string | null
           phone?: string | null
+          source?: string
           status?: string
           updated_at?: string
         }
@@ -9552,6 +9563,7 @@ export type Database = {
           id?: string
           parent_name?: string | null
           phone?: string | null
+          source?: string
           status?: string
           updated_at?: string
         }
@@ -18003,6 +18015,9 @@ export type Database = {
           created_at: string
           id: string
           is_beta_partner: boolean
+          landing_config: Json
+          landing_published: boolean
+          landing_slug: string | null
           name: string
           owner_id: string
           phone: string | null
@@ -18235,6 +18250,9 @@ export type Database = {
           created_at: string
           id: string
           is_beta_partner: boolean
+          landing_config: Json
+          landing_published: boolean
+          landing_slug: string | null
           name: string
           owner_id: string
           phone: string | null
@@ -18300,6 +18318,14 @@ export type Database = {
           event_type: string
           page_path: string
           unique_sessions: number
+        }[]
+      }
+      get_center_landing_by_slug: {
+        Args: { _slug: string }
+        Returns: {
+          center_id: string
+          landing_config: Json
+          name: string
         }[]
       }
       get_center_parent_report_by_token: {

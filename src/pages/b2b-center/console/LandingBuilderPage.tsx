@@ -115,7 +115,16 @@ export default function LandingBuilderPage() {
   }
 
 
-  const publicUrl = useMemo(() => slug ? `${window.location.origin}/lp/${slug}` : "", [slug]);
+  const PUBLIC_ORIGIN = (() => {
+    if (typeof window === "undefined") return "https://aihpro.app";
+    const h = window.location.hostname;
+    // Always use the production custom domain for shareable public links.
+    if (h === "localhost" || h.endsWith(".lovableproject.com") || h.endsWith(".lovable.app") || h.endsWith(".lovable.dev")) {
+      return "https://aihpro.app";
+    }
+    return window.location.origin;
+  })();
+  const publicUrl = useMemo(() => slug ? `${PUBLIC_ORIGIN}/lp/${slug}` : "", [slug, PUBLIC_ORIGIN]);
 
   function pickTemplate(k: LandingTemplateKey) {
     applyConfig(emptyLandingConfig(k));
@@ -203,6 +212,34 @@ export default function LandingBuilderPage() {
       arr[idx] = { ...(arr[idx] ?? { title: "", desc: "" }), image_url: url };
       return { ...c, programs: arr };
     });
+  }
+  const [programAiIdx, setProgramAiIdx] = useState<number | null>(null);
+  async function aiGenerateProgramImage(idx: number) {
+    if (!centerId) return;
+    const p = (config.programs ?? [])[idx];
+    if (!p?.title?.trim()) {
+      toast({ title: "프로그램명을 먼저 입력해주세요", variant: "destructive" });
+      return;
+    }
+    setProgramAiIdx(idx);
+    try {
+      const { data, error } = await supabase.functions.invoke("landing-program-image", {
+        body: { center_id: centerId, title: p.title, desc: p.desc ?? "", template },
+      });
+      if (error) throw error;
+      const j: any = data ?? {};
+      if (j.error || !j.url) throw new Error(j.error || "이미지 생성 실패");
+      setConfig((c) => {
+        const arr = [...(c.programs ?? [])];
+        arr[idx] = { ...(arr[idx] ?? { title: "", desc: "" }), image_url: j.url };
+        return { ...c, programs: arr };
+      });
+      toast({ title: "AI 이미지가 생성되었어요" });
+    } catch (e: any) {
+      toast({ title: "AI 이미지 실패", description: e?.message ?? "다시 시도해주세요", variant: "destructive" });
+    } finally {
+      setProgramAiIdx(null);
+    }
   }
 
   function removeGallery(i: number) {
@@ -556,7 +593,13 @@ export default function LandingBuilderPage() {
               <div key={i} className="grid grid-cols-[80px_1fr] gap-3 mt-3 items-start">
                 <div className="relative">
                   <div className="aspect-square rounded-xl bg-neutral-100 overflow-hidden flex items-center justify-center border border-neutral-200">
-                    {p.image_url ? <img src={p.image_url} alt="" className="w-full h-full object-cover" /> : <ImageIcon className="w-5 h-5 text-neutral-300" />}
+                    {programAiIdx === i ? (
+                      <Loader2 className="w-5 h-5 text-neutral-400 animate-spin" />
+                    ) : p.image_url ? (
+                      <img src={p.image_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <ImageIcon className="w-5 h-5 text-neutral-300" />
+                    )}
                   </div>
                   <UploadInline onFile={(f) => pickProgramImage(i, f)} />
                 </div>
@@ -573,6 +616,21 @@ export default function LandingBuilderPage() {
                               arr[i] = { ...p, desc: e.target.value };
                               setConfig({ ...config, programs: arr });
                             }} />
+                  <div className="flex justify-end">
+                    <Button
+                      type="button" variant="outline" size="sm"
+                      className="rounded-lg h-7 px-2 text-[11px]"
+                      disabled={programAiIdx !== null || !p.title?.trim()}
+                      onClick={() => aiGenerateProgramImage(i)}
+                    >
+                      {programAiIdx === i ? (
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      ) : (
+                        <Wand2 className="w-3 h-3 mr-1" />
+                      )}
+                      {p.image_url ? "AI 이미지 재생성" : "AI 이미지 생성"}
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}

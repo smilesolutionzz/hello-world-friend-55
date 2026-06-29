@@ -39,6 +39,9 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string; betaVis
   { to: "intelligence/parent-reports", label: "부모 월간 리포트", icon: FileText, group: "인텔리전스", betaVisible: true },
   { to: "intelligence/parent-reports/whitelabel", label: "화이트라벨 미리보기", icon: Sparkles, group: "인텔리전스", betaVisible: true },
   { to: "storefront", label: "스토어 (프로그램·교구)", icon: Store, group: "인텔리전스", betaVisible: false },
+  // 마케팅 스튜디오
+  { to: "marketing/landing", label: "랜딩 페이지 만들기", icon: Sparkles, group: "마케팅 스튜디오", betaVisible: true },
+  { to: "marketing/leads", label: "신규 문의함", icon: FileText, group: "마케팅 스튜디오", betaVisible: true },
   // 관리자
   { to: "admin/organization", label: "기관 정보 및 옵션", icon: Building2, group: "관리자", betaVisible: false },
   { to: "admin/therapists", label: "선생님 관리 · 초대", icon: UserCog, group: "관리자", betaVisible: true },

@@ -659,27 +659,93 @@ export default function CardNewsStudioPage() {
             </div>
           </Card>
 
-          {/* 생성 내역 */}
+          {/* 생성 내역 — 월/주별 캘린더 + 검색/필터 */}
           <Card className="p-6 space-y-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <History className="w-4 h-4" />
               <h2 className="font-medium">생성 내역</h2>
-              <span className="text-xs text-muted-foreground">({drafts.length})</span>
+              <span className="text-xs text-muted-foreground">
+                ({filteredDrafts.length}{filteredDrafts.length !== drafts.length ? ` / ${drafts.length}` : ""})
+              </span>
             </div>
+
+            {drafts.length > 0 && (
+              <div className="grid sm:grid-cols-3 gap-2">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    className="h-9 pl-8 text-sm"
+                    placeholder="제목·본문 검색"
+                    value={draftSearch}
+                    onChange={(e) => setDraftSearch(e.target.value)}
+                  />
+                </div>
+                <select
+                  className="h-9 rounded-md border bg-background text-sm px-2"
+                  value={draftMonth}
+                  onChange={(e) => setDraftMonth(e.target.value)}
+                >
+                  <option value="all">전체 월</option>
+                  {draftMonthOptions.map((m) => {
+                    const [y, mm] = m.split("-");
+                    return <option key={m} value={m}>{y}년 {Number(mm)}월</option>;
+                  })}
+                </select>
+                <select
+                  className="h-9 rounded-md border bg-background text-sm px-2"
+                  value={draftStyle}
+                  onChange={(e) => setDraftStyle(e.target.value)}
+                >
+                  <option value="all">전체 스타일</option>
+                  {CARD_STYLES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
+                </select>
+              </div>
+            )}
+
             {drafts.length === 0 ? (
               <p className="text-sm text-muted-foreground">아직 저장된 카드뉴스가 없어요. 편집 화면에서 "내역에 저장"을 누르면 여기로 모입니다.</p>
+            ) : filteredDrafts.length === 0 ? (
+              <p className="text-sm text-muted-foreground">조건에 맞는 카드뉴스가 없어요.</p>
             ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {drafts.map((d) => (
-                  <div key={d.id} className="p-4 rounded-xl border hover:bg-muted/30 transition space-y-2">
-                    <div className="text-sm font-medium line-clamp-1">{d.title ?? "카드뉴스"}</div>
-                    <div className="text-[11px] text-muted-foreground">{new Date(d.updated_at).toLocaleString("ko-KR")} · {d.style_key}</div>
-                    <div className="flex gap-2 pt-1">
-                      <Button size="sm" variant="outline" className="flex-1" onClick={() => loadDraft(d)}>불러오기</Button>
-                      <Button size="sm" variant="ghost" onClick={() => deleteDraft(d.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+              <div className="space-y-5">
+                {Object.keys(groupedDrafts).sort().reverse().map((ym) => {
+                  const [y, mm] = ym.split("-");
+                  const weeks = groupedDrafts[ym];
+                  const weekKeys = Object.keys(weeks).map(Number).sort((a, b) => b - a);
+                  return (
+                    <div key={ym} className="space-y-3">
+                      <div className="flex items-center gap-2 pt-2 border-t">
+                        <CalendarIcon className="w-3.5 h-3.5 text-muted-foreground" />
+                        <div className="text-sm font-medium">{y}년 {Number(mm)}월</div>
+                        <div className="text-[11px] text-muted-foreground">
+                          {Object.values(weeks).reduce((a, b) => a + b.length, 0)}건
+                        </div>
+                      </div>
+                      {weekKeys.map((w) => (
+                        <div key={w} className="space-y-2">
+                          <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{w}주차</div>
+                          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {weeks[w].map((d) => {
+                              const styleLabel = CARD_STYLES.find((s) => s.key === d.style_key)?.label ?? d.style_key ?? "—";
+                              return (
+                                <div key={d.id} className="p-4 rounded-xl border hover:bg-muted/30 transition space-y-2">
+                                  <div className="text-sm font-medium line-clamp-1">{d.title ?? "카드뉴스"}</div>
+                                  <div className="text-[11px] text-muted-foreground">
+                                    {new Date(d.updated_at).toLocaleString("ko-KR")} · {styleLabel}
+                                  </div>
+                                  <div className="flex gap-2 pt-1">
+                                    <Button size="sm" variant="outline" className="flex-1" onClick={() => loadDraft(d)}>불러오기</Button>
+                                    <Button size="sm" variant="ghost" onClick={() => deleteDraft(d.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </Card>

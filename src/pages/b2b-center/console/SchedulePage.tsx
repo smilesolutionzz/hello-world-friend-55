@@ -909,6 +909,7 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, progr
           })}
         </div>
       ))}
+      </div>
     </div>
   );
 }

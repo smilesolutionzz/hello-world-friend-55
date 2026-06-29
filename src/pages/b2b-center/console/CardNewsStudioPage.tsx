@@ -934,7 +934,7 @@ export default function CardNewsStudioPage() {
                 <Button size="sm" variant="outline" onClick={downloadAll}>
                   <Download className="w-4 h-4 mr-2" />전체 PNG
                 </Button>
-                <Button size="sm" onClick={saveDraft} disabled={savingDraft}>
+                <Button size="sm" onClick={() => saveDraft()} disabled={savingDraft}>
                   {savingDraft ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                   {currentDraftId ? "내역 업데이트" : "내역에 저장"}
                 </Button>

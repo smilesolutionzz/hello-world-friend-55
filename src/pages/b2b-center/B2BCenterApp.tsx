@@ -6,7 +6,7 @@ import {
   UserCog, FileText, Upload, Sparkles, ShieldAlert, Compass, FileSpreadsheet,
   Store, Menu, X, PanelLeftClose, PanelLeftOpen, Wallet,
 } from "lucide-react";
-import { listMyCenters, getActiveCenterId, setActiveCenterId, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
+import { listMyCenters, getActiveCenterId, setActiveCenterId, resolveActiveCenter, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -78,7 +78,7 @@ export default function B2BCenterApp() {
       const c = await createCenter(name.trim());
       setCenters((prev) => [...prev, c]);
       setActive(c.id);
-      setActiveCenterId(c.id);
+      setActiveCenterId(c.id, userId);
       toast({ title: "기관이 추가됐어요", description: c.name });
     } catch (e: any) {
       toast({ title: "기관 추가 실패", description: e?.message ?? String(e), variant: "destructive" });
@@ -86,6 +86,7 @@ export default function B2BCenterApp() {
       setAdding(false);
     }
   }
+  const [userId, setUserId] = useState<string | null>(null);
   const [activeId, setActive] = useState<string | null>(getActiveCenterId());
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -119,6 +120,8 @@ export default function B2BCenterApp() {
     }
     supabase.auth.getUser().then(({ data }) => {
       setAuthed(!!data.user);
+      const uid = data.user?.id ?? null;
+      setUserId(uid);
       if (data.user) {
         listMyCenters().then((cs) => {
           setCenters(cs);
@@ -126,7 +129,9 @@ export default function B2BCenterApp() {
             setShowWelcome(true);
             localStorage.setItem(WELCOME_KEY, "1");
           }
-          if (!activeId && cs[0]) { setActive(cs[0].id); setActiveCenterId(cs[0].id); }
+          // 저장된 활성 기관이 멤버십에 있으면 유지, 없으면 1개일 때만 자동 선택, 여러 개면 선택 UI를 띄움
+          const resolved = resolveActiveCenter(cs, uid);
+          setActive(resolved);
         }).finally(() => setLoaded(true));
       } else {
         setLoaded(true);
@@ -157,7 +162,37 @@ export default function B2BCenterApp() {
   }
 
   if (centers.length === 0) {
-    return <EmptyCenterState onCreated={(c) => { setCenters([c]); setActive(c.id); }} />;
+    return <EmptyCenterState onCreated={(c) => { setCenters([c]); setActive(c.id); setActiveCenterId(c.id, userId); }} />;
+  }
+
+  // 활성 기관 미선택 + 멤버십 여러 개 → 선택 모달
+  if (!demo && !activeId && centers.length > 1) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white px-6">
+        <div className="w-full max-w-md space-y-4">
+          <div>
+            <div className="text-[11px] tracking-[0.18em] text-neutral-400">SELECT WORKSPACE</div>
+            <h2 className="text-xl font-semibold mt-1">사용할 기관을 선택하세요</h2>
+            <p className="text-sm text-neutral-500 mt-1">선택한 기관이 이 계정의 활성 기관으로 저장됩니다.</p>
+          </div>
+          <div className="space-y-2">
+            {centers.map((o) => (
+              <button
+                key={o.id}
+                onClick={() => { setActive(o.id); setActiveCenterId(o.id, userId); }}
+                className="w-full flex items-center justify-between gap-3 rounded-2xl border border-neutral-200 px-4 py-3 hover:bg-neutral-50 transition text-left"
+              >
+                <div className="min-w-0">
+                  <div className="font-medium truncate">{o.name}</div>
+                  <div className="text-xs text-neutral-400 truncate">{o.plan || "free"}</div>
+                </div>
+                <span className="text-neutral-400">→</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const baseNav = BETA_MODE ? NAV.filter((n) => n.betaVisible) : NAV;
@@ -211,7 +246,7 @@ export default function B2BCenterApp() {
               <p className="text-xs text-neutral-500 mb-1 mt-1">기관</p>
               <select
                 value={activeId ?? ""}
-                onChange={(e) => { setActive(e.target.value); setActiveCenterId(e.target.value); }}
+                onChange={(e) => { setActive(e.target.value); setActiveCenterId(e.target.value, userId); }}
                 className="w-full text-sm font-medium bg-transparent focus:outline-none mb-2"
                 disabled={demo}
               >

@@ -42,11 +42,47 @@ export async function createCenter(name: string): Promise<CenterOrg> {
   return data as CenterOrg;
 }
 
-/** localStorage 활성 기관 */
+/**
+ * 활성 기관 ID 저장.
+ * - 브라우저별: 기존 키(`b2b_center_active_id`) — 하위 호환.
+ * - 사용자별: `b2b_center_active_id:<userId>` — 같은 브라우저에서 여러 계정을 써도 충돌 X,
+ *   다른 브라우저로 이동해도 같은 계정이면 최근 선택을 복원할 수 있게 별도 트래킹.
+ *   (단, localStorage는 기기 로컬이므로 진짜 크로스-디바이스 복원은 `listMyCenters()` 결과로 1개면 자동 선택하는 가드로 해결)
+ */
 const ACTIVE_KEY = "b2b_center_active_id";
-export function getActiveCenterId(): string | null {
-  return typeof window !== "undefined" ? localStorage.getItem(ACTIVE_KEY) : null;
+const userKey = (uid: string) => `${ACTIVE_KEY}:${uid}`;
+
+export function getActiveCenterId(userId?: string | null): string | null {
+  if (typeof window === "undefined") return null;
+  if (userId) {
+    const scoped = localStorage.getItem(userKey(userId));
+    if (scoped) return scoped;
+  }
+  return localStorage.getItem(ACTIVE_KEY);
 }
-export function setActiveCenterId(id: string) {
-  if (typeof window !== "undefined") localStorage.setItem(ACTIVE_KEY, id);
+
+export function setActiveCenterId(id: string, userId?: string | null) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(ACTIVE_KEY, id);
+  if (userId) localStorage.setItem(userKey(userId), id);
+}
+
+/**
+ * 활성 기관을 결정해서 반환한다.
+ * - 저장된 ID가 멤버십 목록에 있으면 그대로 사용
+ * - 없고 멤버십이 1개면 자동 선택 + 저장
+ * - 여러 개면 null 반환 (호출자가 선택 UI를 띄워야 함)
+ */
+export function resolveActiveCenter(
+  centers: Pick<CenterOrg, "id">[],
+  userId?: string | null,
+): string | null {
+  if (!centers.length) return null;
+  const stored = getActiveCenterId(userId);
+  if (stored && centers.some((c) => c.id === stored)) return stored;
+  if (centers.length === 1) {
+    setActiveCenterId(centers[0].id, userId);
+    return centers[0].id;
+  }
+  return null;
 }

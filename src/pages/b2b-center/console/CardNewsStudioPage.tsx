@@ -899,6 +899,27 @@ export default function CardNewsStudioPage() {
                 ))}
               </div>
             </div>
+
+            <div className="rounded-xl border bg-muted/20 p-3 space-y-2">
+              <Label className="text-xs">AI 배경 모드 — 카드 콘텐츠에 맞게 결과를 조절</Label>
+              <div className="flex flex-wrap gap-2">
+                {([
+                  { k: "sharp", label: "더 선명하게" },
+                  { k: "soft", label: "더 은은하게" },
+                  { k: "readable", label: "텍스트 가독성 우선" },
+                ] as { k: BgMode; label: string }[]).map((m) => (
+                  <button
+                    key={m.k}
+                    type="button"
+                    onClick={() => setBgMode(m.k)}
+                    className={`px-3 py-1.5 rounded-full text-xs border transition ${bgMode === m.k ? "bg-foreground text-background border-foreground" : "bg-background hover:border-foreground/40"}`}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+                <span className="text-[11px] text-muted-foreground self-center ml-1">한 번 생성하면 3가지 옵션이 함께 나와요</span>
+              </div>
+            </div>
           </Card>
 
           {/* 카드뉴스 편집 */}

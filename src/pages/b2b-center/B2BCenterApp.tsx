@@ -78,7 +78,7 @@ export default function B2BCenterApp() {
       const c = await createCenter(name.trim());
       setCenters((prev) => [...prev, c]);
       setActive(c.id);
-      setActiveCenterId(c.id);
+      setActiveCenterId(c.id, userId);
       toast({ title: "기관이 추가됐어요", description: c.name });
     } catch (e: any) {
       toast({ title: "기관 추가 실패", description: e?.message ?? String(e), variant: "destructive" });

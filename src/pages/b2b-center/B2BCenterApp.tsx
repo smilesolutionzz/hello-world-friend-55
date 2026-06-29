@@ -162,7 +162,37 @@ export default function B2BCenterApp() {
   }
 
   if (centers.length === 0) {
-    return <EmptyCenterState onCreated={(c) => { setCenters([c]); setActive(c.id); }} />;
+    return <EmptyCenterState onCreated={(c) => { setCenters([c]); setActive(c.id); setActiveCenterId(c.id, userId); }} />;
+  }
+
+  // 활성 기관 미선택 + 멤버십 여러 개 → 선택 모달
+  if (!demo && !activeId && centers.length > 1) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white px-6">
+        <div className="w-full max-w-md space-y-4">
+          <div>
+            <div className="text-[11px] tracking-[0.18em] text-neutral-400">SELECT WORKSPACE</div>
+            <h2 className="text-xl font-semibold mt-1">사용할 기관을 선택하세요</h2>
+            <p className="text-sm text-neutral-500 mt-1">선택한 기관이 이 계정의 활성 기관으로 저장됩니다.</p>
+          </div>
+          <div className="space-y-2">
+            {centers.map((o) => (
+              <button
+                key={o.id}
+                onClick={() => { setActive(o.id); setActiveCenterId(o.id, userId); }}
+                className="w-full flex items-center justify-between gap-3 rounded-2xl border border-neutral-200 px-4 py-3 hover:bg-neutral-50 transition text-left"
+              >
+                <div className="min-w-0">
+                  <div className="font-medium truncate">{o.name}</div>
+                  <div className="text-xs text-neutral-400 truncate">{o.plan || "free"}</div>
+                </div>
+                <span className="text-neutral-400">→</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const baseNav = BETA_MODE ? NAV.filter((n) => n.betaVisible) : NAV;

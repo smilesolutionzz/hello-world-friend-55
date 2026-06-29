@@ -80,7 +80,7 @@ export default function ActiveCenterGuard({ children }: { children: React.ReactN
         {orgs.map((o) => (
           <button
             key={o.id}
-            onClick={() => { setActiveCenterId(o.id); setCenterId(o.id); }}
+            onClick={() => { setActiveCenterId(o.id, userId); setCenterId(o.id); }}
             className="w-full flex items-center justify-between gap-3 rounded-2xl border border-neutral-200 px-4 py-3 hover:bg-neutral-50 transition text-left"
           >
             <div className="min-w-0">

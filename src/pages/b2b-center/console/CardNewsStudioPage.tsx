@@ -442,7 +442,7 @@ export default function CardNewsStudioPage() {
   }
 
   // AI 배경 — 모드 + 3가지 옵션 + 다중 카드 일괄 적용
-  type BgMode = "sharp" | "soft" | "readable";
+  type BgMode = "sharp" | "soft" | "readable" | "photo-doc" | "photo-warm";
   const [bgMode, setBgMode] = useState<BgMode>("readable");
   const [bgGenIndex, setBgGenIndex] = useState<number | null>(null);
   const [bgPickerOpen, setBgPickerOpen] = useState(false);

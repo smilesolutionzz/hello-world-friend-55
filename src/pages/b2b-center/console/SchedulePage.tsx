@@ -812,9 +812,11 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, progr
       return next;
     });
   };
-  const colTemplate = `60px ${dayList.map((d: Date) => collapsed[fmt(d)] ? "28px" : "minmax(120px, 1fr)").join(" ")}`;
+  const colTemplate = `48px ${dayList.map((d: Date) => collapsed[fmt(d)] ? "24px" : "minmax(96px, 1fr)").join(" ")}`;
+  const minTotalWidth = 48 + dayList.reduce((acc: number, d: Date) => acc + (collapsed[fmt(d)] ? 24 : 96), 0);
   return (
-    <div className="grid" style={{ gridTemplateColumns: colTemplate }}>
+    <div className="overflow-x-auto -mx-2 sm:mx-0">
+      <div className="grid" style={{ gridTemplateColumns: colTemplate, minWidth: `${minTotalWidth}px` }}>
       <div className="bg-neutral-50 border-b border-r border-neutral-200" />
       {dayList.map((d: Date) => {
         const ds = fmt(d);

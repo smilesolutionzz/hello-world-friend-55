@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { getActiveCenterId } from "@/lib/b2bCenter/centerClient";
+import ActiveCenterGuard from "@/components/b2b-center/ActiveCenterGuard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -46,6 +47,10 @@ function slugify(s: string) {
 }
 
 export default function LandingBuilderPage() {
+  return <ActiveCenterGuard><LandingBuilderInner /></ActiveCenterGuard>;
+}
+
+function LandingBuilderInner() {
   const { toast } = useToast();
   const centerId = getActiveCenterId();
   const [org, setOrg] = useState<OrgRow | null>(null);
@@ -306,7 +311,7 @@ export default function LandingBuilderPage() {
   }) : null, [org, config, template]);
 
   if (loading) return <div className="p-8"><Loader2 className="animate-spin" /></div>;
-  if (!centerId || !org) return <div className="p-8 text-sm text-neutral-500">먼저 활성 기관을 선택해주세요.</div>;
+  if (!centerId || !org) return <div className="p-8"><Loader2 className="animate-spin" /></div>;
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">

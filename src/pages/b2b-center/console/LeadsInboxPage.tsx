@@ -4,6 +4,7 @@ import { getActiveCenterId } from "@/lib/b2bCenter/centerClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Inbox, Phone, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ActiveCenterGuard from "@/components/b2b-center/ActiveCenterGuard";
 
 interface Lead {
   id: string;
@@ -23,6 +24,10 @@ const STATUS_OPTS = [
 ];
 
 export default function LeadsInboxPage() {
+  return <ActiveCenterGuard><LeadsInboxInner /></ActiveCenterGuard>;
+}
+
+function LeadsInboxInner() {
   const { toast } = useToast();
   const centerId = getActiveCenterId();
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -76,9 +81,9 @@ export default function LeadsInboxPage() {
     if (error) toast({ title: "상태 변경 실패", description: error.message, variant: "destructive" });
   }
 
-  if (!centerId) {
-    return <div className="p-8 text-sm text-neutral-500">먼저 활성 기관을 선택해주세요.</div>;
-  }
+  // ActiveCenterGuard ensures centerId is set before reaching here.
+
+
 
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-6">

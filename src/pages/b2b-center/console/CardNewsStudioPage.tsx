@@ -1091,7 +1091,7 @@ export default function CardNewsStudioPage() {
           <DialogHeader>
             <DialogTitle>AI 배경 이미지 선택</DialogTitle>
             <DialogDescription>
-              {`${({ sharp: "더 선명하게", soft: "더 은은하게", readable: "텍스트 가독성 우선" } as Record<BgMode, string>)[bgMode]} 모드로 3가지 옵션을 만들었어요. 마음에 드는 1장을 고르고, 적용할 카드를 선택하세요.`}
+              {`${({ sharp: "더 선명하게", soft: "더 은은하게", readable: "텍스트 가독성 우선", "photo-doc": "실사·다큐 B&W", "photo-warm": "실사·따뜻한 일상" } as Record<BgMode, string>)[bgMode]} 모드로 3가지 옵션을 만들었어요. 마음에 드는 1장을 고르고, 적용할 카드를 선택하세요.`}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">

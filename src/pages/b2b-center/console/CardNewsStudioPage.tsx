@@ -1082,6 +1082,81 @@ export default function CardNewsStudioPage() {
         </div>
       )}
 
+      {/* AI 배경 선택 다이얼로그 — 3가지 옵션 + 다중 카드 적용 */}
+      <Dialog open={bgPickerOpen} onOpenChange={setBgPickerOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>AI 배경 이미지 선택</DialogTitle>
+            <DialogDescription>
+              {`${({ sharp: "더 선명하게", soft: "더 은은하게", readable: "텍스트 가독성 우선" } as Record<BgMode, string>)[bgMode]} 모드로 3가지 옵션을 만들었어요. 마음에 드는 1장을 고르고, 적용할 카드를 선택하세요.`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-xs mb-2 block">이미지 선택</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {bgOptions.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setBgChosen(img)}
+                    className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${bgChosen === img ? "border-foreground ring-2 ring-foreground/30" : "border-border hover:border-foreground/40"}`}
+                  >
+                    <img src={img} alt={`옵션 ${idx + 1}`} className="w-full h-full object-cover" />
+                    {bgChosen === img && (
+                      <span className="absolute top-1 right-1 w-5 h-5 rounded-full bg-foreground text-background flex items-center justify-center">
+                        <Check className="w-3 h-3" />
+                      </span>
+                    )}
+                    <span className="absolute bottom-1 left-1 text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-white">옵션 {idx + 1}</span>
+                  </button>
+                ))}
+                {bgOptions.length < 3 && Array.from({ length: 3 - bgOptions.length }).map((_, i) => (
+                  <div key={`ph-${i}`} className="aspect-square rounded-xl border border-dashed bg-muted/20" />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <Label className="text-xs">적용할 카드 ({bgTargets.length}/{result?.cards.length ?? 0}장)</Label>
+                <div className="flex gap-1">
+                  <Button size="sm" variant="ghost" className="h-7 text-xs"
+                    onClick={() => setBgTargets((result?.cards ?? []).map((_, i) => i))}>전체</Button>
+                  <Button size="sm" variant="ghost" className="h-7 text-xs"
+                    onClick={() => setBgTargets([bgSourceIndex])}>이 카드만</Button>
+                  <Button size="sm" variant="ghost" className="h-7 text-xs"
+                    onClick={() => setBgTargets([])}>해제</Button>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {(result?.cards ?? []).map((c, idx) => {
+                  const on = bgTargets.includes(idx);
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setBgTargets((prev) => on ? prev.filter((x) => x !== idx) : [...prev, idx].sort((a,b)=>a-b))}
+                      className={`px-3 py-1.5 rounded-full text-xs border transition ${on ? "bg-foreground text-background border-foreground" : "bg-background hover:border-foreground/40"}`}
+                      title={c.headline}
+                    >
+                      {idx + 1}장 {idx === bgSourceIndex ? "·원본" : ""}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="text-[11px] text-muted-foreground mt-2">적용 후 자동으로 생성 내역에 저장돼요. 나중에 ‘생성 내역’에서 그대로 복원할 수 있어요.</div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setBgPickerOpen(false)}>취소</Button>
+            <Button onClick={applyBgChoice} disabled={!bgChosen || bgTargets.length === 0}>
+              <Check className="w-4 h-4 mr-2" />선택한 카드에 적용
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* 숏폼 베타 신청 다이얼로그 */}
       <Dialog open={shortsOpen} onOpenChange={setShortsOpen}>
         <DialogContent className="max-w-md">

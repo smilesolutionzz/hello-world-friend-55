@@ -81,9 +81,9 @@ function LeadsInboxInner() {
     if (error) toast({ title: "상태 변경 실패", description: error.message, variant: "destructive" });
   }
 
-  if (!centerId) {
-    return <div className="p-8 text-sm text-neutral-500">먼저 활성 기관을 선택해주세요.</div>;
-  }
+  // ActiveCenterGuard ensures centerId is set before reaching here.
+
+
 
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-6">

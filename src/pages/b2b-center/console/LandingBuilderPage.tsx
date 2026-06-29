@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { getActiveCenterId } from "@/lib/b2bCenter/centerClient";
 import { Button } from "@/components/ui/button";
@@ -329,9 +330,9 @@ export default function LandingBuilderPage() {
       </div>
 
       {/* Template picker modal */}
-      {picker && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setPicker(false)}>
-          <div className="bg-white rounded-3xl w-full max-w-5xl max-h-[85vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+      {picker && createPortal(
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-start sm:items-center justify-center p-4 overflow-y-auto" onClick={() => setPicker(false)}>
+          <div className="bg-white rounded-3xl w-full max-w-5xl max-h-[90vh] overflow-y-auto p-6 my-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h2 className="text-lg font-semibold">페이지 템플릿 선택</h2>
@@ -364,7 +365,8 @@ export default function LandingBuilderPage() {
               })}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

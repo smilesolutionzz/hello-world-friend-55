@@ -125,6 +125,33 @@ export default function GroupTherapyNoteComposer({ open, onClose, centerId, week
     } finally { setExpanding(null); }
   };
 
+  const autoGenerateAll = async () => {
+    const seed = activitySeed.trim();
+    if (!seed) { toast({ title: "프로그램/활동명을 먼저 적어주세요" }); return; }
+    setAutoGenerating(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`https://hrcqxjetmzxoephgyjlb.supabase.co/functions/v1/generate-group-common-fields`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${session?.access_token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ activity: seed }),
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.error || j.detail || "전체 생성 실패");
+      setCommon((c) => ({
+        title: j.title || c.title || seed,
+        greeting: j.greeting || c.greeting,
+        activities_summary: j.activities_summary || c.activities_summary,
+        highlights: Array.isArray(j.highlights) && j.highlights.length ? j.highlights.join("\n") : c.highlights,
+        home_tips: Array.isArray(j.home_tips) && j.home_tips.length ? j.home_tips.join("\n") : c.home_tips,
+        next_week_focus: j.next_week_focus || c.next_week_focus,
+      }));
+      toast({ title: "공통 영역 전체 생성 완료", description: "내용을 검토·수정 후 일괄 생성하세요." });
+    } catch (e: any) {
+      toast({ title: "전체 생성 실패", description: e?.message, variant: "destructive" });
+    } finally { setAutoGenerating(false); }
+  };
+
   const submit = async () => {
     if (!groupId) { toast({ title: "그룹을 선택하세요" }); return; }
     const chosen = Array.from(selected);

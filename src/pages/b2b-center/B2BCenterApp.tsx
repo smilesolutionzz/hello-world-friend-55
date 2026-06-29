@@ -246,7 +246,7 @@ export default function B2BCenterApp() {
               <p className="text-xs text-neutral-500 mb-1 mt-1">기관</p>
               <select
                 value={activeId ?? ""}
-                onChange={(e) => { setActive(e.target.value); setActiveCenterId(e.target.value); }}
+                onChange={(e) => { setActive(e.target.value); setActiveCenterId(e.target.value, userId); }}
                 className="w-full text-sm font-medium bg-transparent focus:outline-none mb-2"
                 disabled={demo}
               >

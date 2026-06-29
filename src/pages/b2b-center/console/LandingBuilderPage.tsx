@@ -396,16 +396,40 @@ export default function LandingBuilderPage() {
   );
 }
 
-function renderHighlighted(text: string, highlight: string, theme: "light" | "dark" | "pastel") {
-  if (!highlight) return text;
-  const idx = text.indexOf(highlight);
-  if (idx < 0) return text;
-  const bg = theme === "dark" ? "bg-[#d8ff3a] text-black" : theme === "pastel" ? "bg-[#1c3fa3] text-white" : "bg-[#FFF299] text-neutral-900";
+function EditableText({
+  value,
+  placeholder,
+  onChange,
+  className,
+  as: Tag = "span",
+}: {
+  value: string;
+  placeholder?: string;
+  onChange: (v: string) => void;
+  className?: string;
+  as?: "span" | "p" | "h2" | "div";
+}) {
+  const display = value && value.trim().length > 0 ? value : (placeholder ?? "");
+  const isEmpty = !value || value.trim().length === 0;
   return (
-    <>
-      {text.slice(0, idx)}
-      <mark className={`${bg} px-1.5 rounded`}>{highlight}</mark>
-      {text.slice(idx + highlight.length)}
-    </>
+    <Tag
+      contentEditable
+      suppressContentEditableWarning
+      onBlur={(e) => {
+        const next = (e.currentTarget.textContent ?? "").trim();
+        if (next !== value) onChange(next);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && Tag !== "div") {
+          e.preventDefault();
+          (e.currentTarget as HTMLElement).blur();
+        }
+      }}
+      className={`${className ?? ""} outline-none focus:ring-2 focus:ring-amber-300/60 rounded-md cursor-text ${isEmpty ? "opacity-50 italic" : ""}`}
+      title="클릭해서 편집"
+    >
+      {display}
+    </Tag>
   );
 }
+

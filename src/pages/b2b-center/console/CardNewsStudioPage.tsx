@@ -255,6 +255,32 @@ function CardRender({
   }
 }
 
+// =================== Mini Style Preview ===================
+// 스타일 선택 칩에서 보이는 실제 카드와 동일한 축소 프리뷰.
+// 생성 전/후 모두 동일한 렌더러로 미리보기를 제공한다.
+function MiniStylePreview({
+  style, tokens, sample,
+}: {
+  style: CardNewsStyleKey;
+  tokens: RenderTokens;
+  sample: CardItem;
+}) {
+  // 360px 카드를 100px로 축소 (스케일 0.278). 컨테이너는 정사각 100px.
+  const PREVIEW = 100;
+  const BASE = 360;
+  const scale = PREVIEW / BASE;
+  return (
+    <div className="relative overflow-hidden" style={{ width: PREVIEW, height: PREVIEW }}>
+      <div
+        style={{ width: BASE, height: BASE, transform: `scale(${scale})`, transformOrigin: "top left" }}
+        className="pointer-events-none"
+      >
+        <CardRender card={sample} idx={0} total={1} style={style} tokens={tokens} refCb={() => {}} />
+      </div>
+    </div>
+  );
+}
+
 // =================== Page ===================
 export default function CardNewsStudioPage() {
   const { toast } = useToast();

@@ -494,7 +494,7 @@ export default function CardNewsStudioPage() {
     setBgPickerOpen(false);
     toast({ title: `배경을 ${bgTargets.length}장에 적용했어요` });
     // 자동 저장(초안 업데이트)
-    try { await saveDraft(); } catch {}
+    try { await saveDraft(next); } catch {}
   }
 
 

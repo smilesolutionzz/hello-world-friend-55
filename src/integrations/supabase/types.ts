@@ -2538,6 +2538,69 @@ export type Database = {
           },
         ]
       }
+      center_batch_send_jobs: {
+        Row: {
+          center_id: string
+          created_at: string
+          created_by: string | null
+          failure_count: number
+          group_id: string | null
+          id: string
+          items: Json
+          period_label: string | null
+          resource_type: string
+          send_sms: boolean
+          skipped_count: number
+          success_count: number
+          total_count: number
+        }
+        Insert: {
+          center_id: string
+          created_at?: string
+          created_by?: string | null
+          failure_count?: number
+          group_id?: string | null
+          id?: string
+          items?: Json
+          period_label?: string | null
+          resource_type: string
+          send_sms?: boolean
+          skipped_count?: number
+          success_count?: number
+          total_count?: number
+        }
+        Update: {
+          center_id?: string
+          created_at?: string
+          created_by?: string | null
+          failure_count?: number
+          group_id?: string | null
+          id?: string
+          items?: Json
+          period_label?: string | null
+          resource_type?: string
+          send_sms?: boolean
+          skipped_count?: number
+          success_count?: number
+          total_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_batch_send_jobs_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_batch_send_jobs_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "center_client_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       center_billing_closings: {
         Row: {
           center_id: string
@@ -2573,6 +2636,93 @@ export type Database = {
           total_payment_krw?: number
         }
         Relationships: []
+      }
+      center_client_group_members: {
+        Row: {
+          added_at: string
+          added_by: string | null
+          center_id: string
+          client_id: string
+          group_id: string
+        }
+        Insert: {
+          added_at?: string
+          added_by?: string | null
+          center_id: string
+          client_id: string
+          group_id: string
+        }
+        Update: {
+          added_at?: string
+          added_by?: string | null
+          center_id?: string
+          client_id?: string
+          group_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_client_group_members_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_client_group_members_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "center_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_client_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "center_client_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_client_groups: {
+        Row: {
+          center_id: string
+          color: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          note: string | null
+          updated_at: string
+        }
+        Insert: {
+          center_id: string
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          note?: string | null
+          updated_at?: string
+        }
+        Update: {
+          center_id?: string
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          note?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_client_groups_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       center_client_invites: {
         Row: {

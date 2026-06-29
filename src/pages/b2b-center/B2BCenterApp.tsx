@@ -86,6 +86,7 @@ export default function B2BCenterApp() {
       setAdding(false);
     }
   }
+  const [userId, setUserId] = useState<string | null>(null);
   const [activeId, setActive] = useState<string | null>(getActiveCenterId());
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [loaded, setLoaded] = useState(false);

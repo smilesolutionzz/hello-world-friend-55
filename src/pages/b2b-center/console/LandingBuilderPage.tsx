@@ -311,7 +311,7 @@ function LandingBuilderInner() {
   }) : null, [org, config, template]);
 
   if (loading) return <div className="p-8"><Loader2 className="animate-spin" /></div>;
-  if (!centerId || !org) return <div className="p-8 text-sm text-neutral-500">먼저 활성 기관을 선택해주세요.</div>;
+  if (!centerId || !org) return <div className="p-8"><Loader2 className="animate-spin" /></div>;
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">

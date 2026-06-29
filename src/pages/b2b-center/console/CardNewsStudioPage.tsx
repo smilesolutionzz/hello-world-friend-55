@@ -916,6 +916,19 @@ export default function CardNewsStudioPage() {
                         <input type="file" accept="image/*" className="hidden"
                           onChange={(e) => { const f = e.target.files?.[0]; if (f) pickCardBg(i, f); e.currentTarget.value = ""; }} />
                       </label>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-3 text-xs"
+                        disabled={bgGenIndex !== null}
+                        onClick={() => generateAiBg(i)}
+                      >
+                        {bgGenIndex === i ? (
+                          <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />AI 생성중…</>
+                        ) : (
+                          <><Sparkles className="w-3.5 h-3.5 mr-1" />AI 배경 생성</>
+                        )}
+                      </Button>
                       {c.bg && (
                         <Button size="sm" variant="ghost" onClick={() => updateCard(i, { bg: null })}>
                           <RotateCcw className="w-3.5 h-3.5 mr-1" />배경 제거

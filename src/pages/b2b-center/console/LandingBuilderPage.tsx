@@ -115,7 +115,16 @@ export default function LandingBuilderPage() {
   }
 
 
-  const publicUrl = useMemo(() => slug ? `${window.location.origin}/lp/${slug}` : "", [slug]);
+  const PUBLIC_ORIGIN = (() => {
+    if (typeof window === "undefined") return "https://aihpro.app";
+    const h = window.location.hostname;
+    // Always use the production custom domain for shareable public links.
+    if (h === "localhost" || h.endsWith(".lovableproject.com") || h.endsWith(".lovable.app") || h.endsWith(".lovable.dev")) {
+      return "https://aihpro.app";
+    }
+    return window.location.origin;
+  })();
+  const publicUrl = useMemo(() => slug ? `${PUBLIC_ORIGIN}/lp/${slug}` : "", [slug, PUBLIC_ORIGIN]);
 
   function pickTemplate(k: LandingTemplateKey) {
     applyConfig(emptyLandingConfig(k));

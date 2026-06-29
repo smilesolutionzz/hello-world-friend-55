@@ -84,6 +84,9 @@ export default function CenterLandingPublic({ previewRow }: { previewRow?: Landi
   } = copy;
   const heroImage = config.hero_image_url?.trim() || "";
   const gallery = (config.gallery || []).filter((u) => !!u?.trim());
+  const sec = config.sections ?? {};
+  const show = (k: "concerns"|"solutions"|"trust"|"programs"|"process"|"gallery"|"faqs") => sec[k] !== false;
+
 
   async function submit() {
     const parsed = formSchema.safeParse(form);
@@ -187,7 +190,7 @@ export default function CenterLandingPublic({ previewRow }: { previewRow?: Landi
       </section>
 
       {/* ② 공감 */}
-      {concerns.length > 0 && (
+      {show("concerns") && concerns.length > 0 && (
         <section className="bg-[#f7f6f3] border-y border-neutral-100">
           <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
             <SectionHeader eyebrow="CONCERNS" title={concernsTitle} />
@@ -207,7 +210,7 @@ export default function CenterLandingPublic({ previewRow }: { previewRow?: Landi
       )}
 
       {/* ③ 솔루션 */}
-      {solutions.length > 0 && (
+      {show("solutions") && solutions.length > 0 && (
         <section className="bg-white">
           <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
             <SectionHeader eyebrow="OUR APPROACH" title={solutionsTitle} />
@@ -230,7 +233,7 @@ export default function CenterLandingPublic({ previewRow }: { previewRow?: Landi
       )}
 
       {/* ④ 차별점/신뢰 */}
-      {(trust.length > 0 || config.strengths?.length > 0) && (
+      {show("trust") && (trust.length > 0 || config.strengths?.length > 0) && (
         <section className="bg-[#f7f6f3] border-y border-neutral-100">
           <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
             <SectionHeader eyebrow="WHY US" title={trustTitle} />
@@ -261,7 +264,7 @@ export default function CenterLandingPublic({ previewRow }: { previewRow?: Landi
       )}
 
       {/* ④-2 프로그램 (사진 카드) */}
-      {programs.length > 0 && (
+      {show("programs") && programs.length > 0 && (
         <section className="bg-white">
           <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
             <SectionHeader eyebrow="PROGRAMS" title="주요 프로그램" />
@@ -287,7 +290,7 @@ export default function CenterLandingPublic({ previewRow }: { previewRow?: Landi
       )}
 
       {/* ⑤ 진행 과정 */}
-      {process.length > 0 && (
+      {show("process") && process.length > 0 && (
         <section className="bg-[#f7f6f3] border-y border-neutral-100">
           <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
             <SectionHeader eyebrow="PROCESS" title={processTitle} />
@@ -305,7 +308,7 @@ export default function CenterLandingPublic({ previewRow }: { previewRow?: Landi
       )}
 
       {/* ⑥ 갤러리 (사진 있을 때만) */}
-      {gallery.length > 0 && (
+      {show("gallery") && gallery.length > 0 && (
         <section className="bg-white">
           <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
             <SectionHeader eyebrow="OUR SPACE" title="공간 둘러보기" />
@@ -321,7 +324,7 @@ export default function CenterLandingPublic({ previewRow }: { previewRow?: Landi
       )}
 
       {/* ⑦ FAQ */}
-      {faqs.length > 0 && (
+      {show("faqs") && faqs.length > 0 && (
         <section className="bg-[#f7f6f3] border-y border-neutral-100">
           <div className="max-w-3xl mx-auto px-6 py-16 md:py-24">
             <SectionHeader eyebrow="FAQ" title={faqsTitle} />

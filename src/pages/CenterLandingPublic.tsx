@@ -49,6 +49,13 @@ export default function CenterLandingPublic() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
+    // Builder live-preview mode: read from window without RPC
+    const previewRow = (typeof window !== "undefined" ? (window as any).__LANDING_PREVIEW__ : null) as LandingRow | null;
+    if (previewRow && previewRow.center_id) {
+      setRow(previewRow);
+      setLoading(false);
+      return;
+    }
     if (!slug) { setLoading(false); return; }
     (async () => {
       const { data, error } = await supabase.rpc("get_center_landing_by_slug", { _slug: slug });

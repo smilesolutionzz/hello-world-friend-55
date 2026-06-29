@@ -9,8 +9,10 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import {
   TEMPLATE_META,
+  LANDING_SECTION_LABELS,
   type LandingTemplateKey,
   type LandingConfig,
+  type LandingSectionKey,
   type ProcessStep,
   type FaqItem,
   type SolutionItem,
@@ -18,6 +20,7 @@ import {
   type ProgramItem,
   emptyLandingConfig,
 } from "@/lib/b2bCenter/landingTemplates";
+
 import CenterLandingPublic from "@/pages/CenterLandingPublic";
 import { compressImage, extFromMime } from "@/lib/imageCompress";
 import {

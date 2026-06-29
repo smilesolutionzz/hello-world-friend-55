@@ -79,7 +79,7 @@ export function emptyLandingConfig(template: LandingTemplateKey = "dev_center"):
 
 export function resolveLandingCopy(name: string, config: LandingConfig) {
   const meta = TEMPLATE_META[config.template] ?? TEMPLATE_META.dev_center;
-  const heroTitle = (config.hero_title?.trim() || meta.hero_title).replaceAll("{name}", name);
+  const heroTitle = (config.hero_title?.trim() || meta.hero_title).split("{name}").join(name);
   const heroSub = config.hero_subtitle?.trim() || meta.hero_subtitle;
   const cta = config.cta_label?.trim() || meta.cta_label;
   return { meta, heroTitle, heroSub, cta };

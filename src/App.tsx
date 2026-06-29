@@ -624,6 +624,7 @@ const App = () => {
           <Route path="/app/center/referrals" element={<PartnerCenterReferrals />} />
           <Route path="/app/center/clients" element={<Navigate to="/institution-client-dashboard" replace />} />
           <Route path="/c/:slug" element={<CenterReferralLanding />} />
+          <Route path="/lp/:slug" element={<CenterLandingPublic />} />
           <Route path="/beta" element={<BetaRecruitment />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/about/expert" element={<AboutExpert />} />

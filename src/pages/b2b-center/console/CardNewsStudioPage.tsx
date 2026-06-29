@@ -499,8 +499,9 @@ export default function CardNewsStudioPage() {
 
 
   // =================== Save / Load ===================
-  async function saveDraft() {
-    if (!centerId || !result) return;
+  async function saveDraft(override?: GenResult) {
+    const useResult = override ?? result;
+    if (!centerId || !useResult) return;
     setSavingDraft(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -508,11 +509,11 @@ export default function CardNewsStudioPage() {
       const payload = {
         center_id: centerId,
         owner_id: user.id,
-        title: result.cards?.[0]?.headline?.slice(0, 60) || (selected?.title ?? "카드뉴스"),
+        title: useResult.cards?.[0]?.headline?.slice(0, 60) || (selected?.title ?? "카드뉴스"),
         source_type: selected?.period_type ?? (manualText ? "manual" : null),
         source_report_id: selected?.id ?? null,
         anonymized_text: anonText,
-        result_json: result as any,
+        result_json: useResult as any,
         style_key: styleKey,
         branding: branding as any,
       };

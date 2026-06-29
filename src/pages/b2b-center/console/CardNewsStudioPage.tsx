@@ -510,6 +510,93 @@ export default function CardNewsStudioPage() {
     centerName: centerName || "",
   };
 
+  // 스타일 칩 미리보기에 사용할 샘플 카드
+  const sampleCard: CardItem = useMemo(() => ({
+    tag: "PREVIEW",
+    headline: "오늘의 작은 변화",
+    body: "스타일 미리보기 · 같은 카드가 어떻게 보이는지 확인하세요.",
+    bg: null,
+  }), []);
+
+  // 생성 내역 필터링
+  const filteredDrafts = useMemo(() => {
+    const q = draftSearch.trim().toLowerCase();
+    return drafts.filter((d) => {
+      if (draftMonth !== "all") {
+        const ym = (d.updated_at || d.created_at).slice(0, 7);
+        if (ym !== draftMonth) return false;
+      }
+      if (draftStyle !== "all" && (d.style_key ?? "") !== draftStyle) return false;
+      if (q) {
+        const hay = `${d.title ?? ""} ${d.anonymized_text ?? ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [drafts, draftSearch, draftMonth, draftStyle]);
+
+  // 월 그룹핑 (YYYY-MM → 주차 → 카드 배열)
+  const draftMonthOptions = useMemo(() => {
+    const set = new Set<string>();
+    drafts.forEach((d) => set.add((d.updated_at || d.created_at).slice(0, 7)));
+    return Array.from(set).sort().reverse();
+  }, [drafts]);
+
+  function weekOfMonth(dateStr: string): number {
+    const d = new Date(dateStr);
+    const first = new Date(d.getFullYear(), d.getMonth(), 1);
+    return Math.ceil((d.getDate() + first.getDay()) / 7);
+  }
+
+  const groupedDrafts = useMemo(() => {
+    const groups: Record<string, Record<number, DraftRow[]>> = {};
+    filteredDrafts.forEach((d) => {
+      const ts = d.updated_at || d.created_at;
+      const ym = ts.slice(0, 7);
+      const w = weekOfMonth(ts);
+      if (!groups[ym]) groups[ym] = {};
+      if (!groups[ym][w]) groups[ym][w] = [];
+      groups[ym][w].push(d);
+    });
+    return groups;
+  }, [filteredDrafts]);
+
+  async function submitShortsRequest() {
+    if (!centerId || !result) return;
+    setShortsSubmitting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("로그인이 필요합니다");
+      const snapshot = {
+        cards: result.cards,
+        instagram: result.instagram,
+        short_promo: result.short_promo,
+        hashtags: result.hashtags,
+        center_name: centerName,
+        center_type: centerType,
+      };
+      const { error } = await (supabase as any).from("card_news_shorts_requests").insert({
+        center_id: centerId,
+        owner_id: user.id,
+        draft_id: currentDraftId,
+        source_snapshot: snapshot,
+        style_key: styleKey,
+        note: shortsNote || null,
+        contact: shortsContact || null,
+        status: "pending",
+      });
+      if (error) throw error;
+      setShortsRequested(true);
+      setShortsOpen(false);
+      toast({ title: "베타 신청이 접수됐어요", description: "준비되면 가장 먼저 안내드릴게요." });
+    } catch (e: any) {
+      toast({ title: "신청 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setShortsSubmitting(false);
+    }
+  }
+
+
   return (
     <div className="space-y-8 pb-24">
       <Helmet><title>카드뉴스 만들기 · 마케팅 스튜디오</title></Helmet>

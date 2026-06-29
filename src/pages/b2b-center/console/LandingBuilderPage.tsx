@@ -68,8 +68,9 @@ export default function LandingBuilderPage() {
           ? row.landing_config
           : emptyLandingConfig("dev_center")) as LandingConfig;
         applyConfig(cfg);
-      } else if (!row && !error) {
-        setPicker(true);
+        if (!row.landing_config || Object.keys(row.landing_config).length === 0) {
+          setPicker(true);
+        }
       }
       setLoading(false);
     })();

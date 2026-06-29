@@ -158,6 +158,8 @@ export default function TherapyNotesPage() {
   const [viewingHistory, setViewingHistory] = useState<any>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [weeklyTpl, setWeeklyTpl] = useState<WeeklyTpl>(DEFAULT_TEMPLATE.weekly);
+  const [mode, setMode] = useState<"individual" | "group">("individual");
+  const [groupOpen, setGroupOpen] = useState(false);
 
   // Load per-center weekly template (from center_organizations.branding.template).
   useEffect(() => {

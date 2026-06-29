@@ -4,6 +4,7 @@ import { getActiveCenterId } from "@/lib/b2bCenter/centerClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Inbox, Phone, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ActiveCenterGuard from "@/components/b2b-center/ActiveCenterGuard";
 
 interface Lead {
   id: string;

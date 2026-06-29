@@ -6,7 +6,7 @@ import {
   UserCog, FileText, Upload, Sparkles, ShieldAlert, Compass, FileSpreadsheet,
   Store, Menu, X, PanelLeftClose, PanelLeftOpen, Wallet,
 } from "lucide-react";
-import { listMyCenters, getActiveCenterId, setActiveCenterId, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
+import { listMyCenters, getActiveCenterId, setActiveCenterId, resolveActiveCenter, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";

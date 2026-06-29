@@ -198,6 +198,7 @@ const CenterReferralLanding = lazy(() => import("./pages/CenterReferralLanding")
 const CenterLandingPublic = lazy(() => import("./pages/CenterLandingPublic"));
 const LandingBuilderPage = lazy(() => import("./pages/b2b-center/console/LandingBuilderPage"));
 const LeadsInboxPage = lazy(() => import("./pages/b2b-center/console/LeadsInboxPage"));
+const CardNewsStudioPage = lazy(() => import("./pages/b2b-center/console/CardNewsStudioPage"));
 const PartnerCenterDashboard = lazy(() => import("./pages/PartnerCenterDashboard"));
 const PartnerCenterReferrals = lazy(() => import("./pages/PartnerCenterReferrals"));
 const BetaRecruitment = lazy(() => import("./pages/BetaRecruitment"));
@@ -663,6 +664,7 @@ const App = () => {
             <Route path="admin/beta-tracker" element={<CenterBetaTrackerPage />} />
             <Route path="marketing/landing" element={<LandingBuilderPage />} />
             <Route path="marketing/leads" element={<LeadsInboxPage />} />
+            <Route path="marketing/card-news" element={<CardNewsStudioPage />} />
           </Route>
           <Route path="/center/:slug" element={<CenterStorefrontPublic />} />
           <Route path="/parent/center" element={<ParentCenterPage />} />

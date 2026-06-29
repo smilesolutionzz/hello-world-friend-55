@@ -665,35 +665,3 @@ function UploadInline({ onFile }: { onFile: (f: File) => void }) {
   );
 }
 
-// Re-renders the public landing using current draft config by stubbing the RPC.
-function PreviewFrame({ row }: { row: { center_id: string; name: string; landing_config: LandingConfig } }) {
-  // Trick: CenterLandingPublic reads from useParams + supabase.rpc. We render a
-  // lightweight inline preview that uses the same component output, by mounting
-  // a small wrapper that monkey-patches supabase.rpc for this subtree is brittle.
-  // Simpler: import a memoized preview component below.
-  return <LandingPreviewInline row={row} />;
-}
-
-// Inline preview re-implements only the read path of CenterLandingPublic visually.
-// To avoid duplication, we re-import the same render by re-using the JSX via a
-// dynamic copy is overkill. Instead, render a focused recreation by reusing the
-// public component with a slug-less mode is not possible — so we delegate to the
-// public component through an iframe-less inline call by importing it as a fn.
-// We keep this simple: we re-render CenterLandingPublic in a portal-friendly way
-// using a custom hook is too much. So we directly render a static copy via
-// embedded module. To keep this code under control, we use an <iframe srcdoc=...>
-// is also heavy. So: render the actual published view via <CenterLandingPublic />
-// only when published with the saved slug; otherwise render a draft preview that
-// mirrors CenterLandingPublic visually.
-//
-// For draft fidelity, mount the actual public component inside a controlled tree
-// by feeding it via React state. This avoids duplication.
-function LandingPreviewInline({ row }: { row: { center_id: string; name: string; landing_config: LandingConfig } }) {
-  // We render the public component which calls supabase.rpc. To inject our draft,
-  // we provide a mocked supabase rpc layer via a context shim is overkill.
-  // Pragmatic approach: just render the public component statically by passing
-  // the draft via window state and let the component read it.
-  // — Implemented in CenterLandingPublic via `window.__LANDING_PREVIEW__`.
-  (window as any).__LANDING_PREVIEW__ = row;
-  return <CenterLandingPublic />;
-}

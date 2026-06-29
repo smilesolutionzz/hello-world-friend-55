@@ -97,6 +97,25 @@ ${String(anonymized_text).slice(0, 4000)}
       const m = raw.match(/\{[\s\S]*\}/);
       parsed = m ? JSON.parse(m[0]) : {};
     }
+    // AI 티 나는 마크다운 기호 제거 (네이버 블로그 본문/제목 포함 전 영역)
+    const stripMd = (s: any) => {
+      if (typeof s !== "string") return s;
+      return s
+        .replace(/^#{1,6}\s+/gm, "")        // ## 헤더
+        .replace(/\*\*(.+?)\*\*/g, "$1")    // **bold**
+        .replace(/__(.+?)__/g, "$1")        // __bold__
+        .replace(/^\s*[-*]\s+/gm, "")       // 불릿
+        .replace(/^\s*>\s+/gm, "")          // 인용
+        .replace(/^---+$/gm, "")            // 구분선
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    };
+    if (parsed?.naver_blog) {
+      parsed.naver_blog.title = stripMd(parsed.naver_blog.title);
+      parsed.naver_blog.body = stripMd(parsed.naver_blog.body);
+    }
+    parsed.instagram = stripMd(parsed.instagram);
+    parsed.short_promo = stripMd(parsed.short_promo);
     return new Response(JSON.stringify(parsed), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("card-news-generate error", e);

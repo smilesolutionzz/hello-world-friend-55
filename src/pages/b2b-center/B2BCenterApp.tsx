@@ -300,7 +300,9 @@ export default function B2BCenterApp() {
           </button>
         )}
 
-        <main className="flex-1 min-w-0 overflow-auto">
+        <main
+          className="flex-1 min-w-0 overflow-auto pb-[calc(env(safe-area-inset-bottom)+72px)] md:pb-0"
+        >
           {!demo && activeCenter?.id && (
             <div className="sticky top-0 z-30 bg-white/85 backdrop-blur border-b border-neutral-100 px-4 md:px-6 py-2 flex items-center justify-end gap-2">
               <NotificationBell centerId={activeCenter.id} />

@@ -243,6 +243,29 @@ export default function GroupTherapyNoteComposer({ open, onClose, centerId, week
                   여기 적은 내용은 선택한 아동 <b>{selected.size}명 전원의 주간 노트에 동일하게</b> 들어갑니다.
                   개인별 내용은 절대 여기 쓰지 마세요.
                 </p>
+                <div className="rounded-xl bg-white border border-[#C8B88A]/40 p-4 mb-4">
+                  <label className="block text-[11px] font-semibold text-[#9A8B5C] mb-2 tracking-wider uppercase">
+                    프로그램 / 활동명 한 줄 → 공통 영역 전체 자동 생성
+                  </label>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      value={activitySeed}
+                      onChange={(e) => setActivitySeed(e.target.value)}
+                      placeholder="예: 도형 매칭 + 집단 율동"
+                      className="flex-1 border border-neutral-200 rounded-lg px-3 py-2 text-sm bg-white"
+                    />
+                    <button
+                      onClick={autoGenerateAll}
+                      disabled={autoGenerating || !activitySeed.trim()}
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-neutral-900 text-white text-sm font-medium disabled:opacity-50"
+                    >
+                      {autoGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                      {autoGenerating ? "생성 중…" : "전체 자동 생성"}
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-neutral-500 mt-2">활동명만 적으면 인사·활동 내용·하이라이트·가정 활동·다음 주 방향까지 AI가 한 번에 채워줍니다. 이후 직접 수정 가능합니다.</p>
+                </div>
+
                 <div className="space-y-3">
                   <CommonInput label="제목 (선택)" value={common.title} onChange={(v) => setCommon((c) => ({ ...c, title: v }))} placeholder="예: 이번 주 도형 인식 활동" />
                   <CommonTextarea
@@ -265,11 +288,15 @@ export default function GroupTherapyNoteComposer({ open, onClose, centerId, week
                     value={common.highlights}
                     onChange={(v) => setCommon((c) => ({ ...c, highlights: v }))}
                     placeholder={"전원 협력 활동 완료\n새 친구 환영 시간"}
+                    onExpand={(inst) => expandCommonField("highlights", inst)}
+                    expanding={expanding === "c:highlights"}
                   />
                   <CommonTextarea
                     label="가정 활동 제안 (공통) — 한 줄에 하나씩"
                     value={common.home_tips}
                     onChange={(v) => setCommon((c) => ({ ...c, home_tips: v }))}
+                    onExpand={(inst) => expandCommonField("home_tips", inst)}
+                    expanding={expanding === "c:home_tips"}
                   />
                   <CommonTextarea
                     label="다음 주 집중 방향 (공통)"

@@ -84,6 +84,9 @@ export default function CenterLandingPublic({ previewRow }: { previewRow?: Landi
   } = copy;
   const heroImage = config.hero_image_url?.trim() || "";
   const gallery = (config.gallery || []).filter((u) => !!u?.trim());
+  const sec = config.sections ?? {};
+  const show = (k: "concerns"|"solutions"|"trust"|"programs"|"process"|"gallery"|"faqs") => sec[k] !== false;
+
 
   async function submit() {
     const parsed = formSchema.safeParse(form);

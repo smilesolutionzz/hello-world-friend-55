@@ -213,6 +213,34 @@ export default function LandingBuilderPage() {
       return { ...c, programs: arr };
     });
   }
+  const [programAiIdx, setProgramAiIdx] = useState<number | null>(null);
+  async function aiGenerateProgramImage(idx: number) {
+    if (!centerId) return;
+    const p = (config.programs ?? [])[idx];
+    if (!p?.title?.trim()) {
+      toast({ title: "프로그램명을 먼저 입력해주세요", variant: "destructive" });
+      return;
+    }
+    setProgramAiIdx(idx);
+    try {
+      const { data, error } = await supabase.functions.invoke("landing-program-image", {
+        body: { center_id: centerId, title: p.title, desc: p.desc ?? "", template },
+      });
+      if (error) throw error;
+      const j: any = data ?? {};
+      if (j.error || !j.url) throw new Error(j.error || "이미지 생성 실패");
+      setConfig((c) => {
+        const arr = [...(c.programs ?? [])];
+        arr[idx] = { ...(arr[idx] ?? { title: "", desc: "" }), image_url: j.url };
+        return { ...c, programs: arr };
+      });
+      toast({ title: "AI 이미지가 생성되었어요" });
+    } catch (e: any) {
+      toast({ title: "AI 이미지 실패", description: e?.message ?? "다시 시도해주세요", variant: "destructive" });
+    } finally {
+      setProgramAiIdx(null);
+    }
+  }
 
   function removeGallery(i: number) {
     setConfig((c) => ({ ...c, gallery: (c.gallery ?? []).filter((_, idx) => idx !== i) }));

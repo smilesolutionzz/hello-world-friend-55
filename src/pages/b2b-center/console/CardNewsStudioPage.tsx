@@ -441,6 +441,35 @@ export default function CardNewsStudioPage() {
     } catch { toast({ title: "이미지를 불러올 수 없습니다", variant: "destructive" }); }
   }
 
+  const [bgGenIndex, setBgGenIndex] = useState<number | null>(null);
+  async function generateAiBg(i: number) {
+    if (!result) return;
+    const card = result.cards[i];
+    if (!card) return;
+    setBgGenIndex(i);
+    try {
+      const { data, error } = await supabase.functions.invoke("card-news-bg-image", {
+        body: {
+          headline: card.headline,
+          body: card.body,
+          style_key: styleKey,
+          center_type: centerType,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const img = (data as any)?.image;
+      if (!img) throw new Error("이미지 응답이 비어 있어요");
+      updateCard(i, { bg: img });
+      toast({ title: "AI 배경 이미지가 적용됐어요" });
+    } catch (e: any) {
+      toast({ title: "AI 배경 생성 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setBgGenIndex(null);
+    }
+  }
+
+
   // =================== Save / Load ===================
   async function saveDraft() {
     if (!centerId || !result) return;

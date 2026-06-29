@@ -15,7 +15,11 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Loader2, ShieldAlert, Sparkles, Copy, Download, Check, ChevronRight,
   FileText, Plus, Trash2, ImagePlus, Save, History, RotateCcw,
+  Search, Calendar as CalendarIcon, Film, Send,
 } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
 
 type Report = {
   id: string;

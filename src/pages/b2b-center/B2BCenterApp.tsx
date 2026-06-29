@@ -198,7 +198,7 @@ export default function B2BCenterApp() {
         )}
         {/* Sidebar — 모바일은 드로어(슬라이드 인), 데스크톱은 정적 사이드바 */}
         <aside
-          className={`${mobileNavOpen ? "fixed translate-x-0" : "fixed -translate-x-full"} ${desktopNavCollapsed ? "md:hidden" : "md:flex md:translate-x-0"} md:static md:transform-none top-0 bottom-0 left-0 z-[60] w-[85vw] max-w-[320px] md:w-64 bg-white border-r border-neutral-200 flex flex-col transition-transform duration-300 ease-out shadow-2xl md:shadow-none h-[100dvh] md:h-auto`}
+          className={`${mobileNavOpen ? "fixed translate-x-0" : "fixed -translate-x-full"} ${desktopNavCollapsed ? "md:hidden" : "md:flex md:translate-x-0"} md:static md:transform-none top-0 bottom-0 left-0 z-[60] md:z-30 w-[85vw] max-w-[320px] md:w-64 bg-white border-r border-neutral-200 flex flex-col transition-transform duration-300 ease-out shadow-2xl md:shadow-none h-[100dvh] md:h-auto`}
         >
           <div className="p-4 border-b border-neutral-200 flex items-start justify-between gap-2 shrink-0">
             <div className="flex-1 min-w-0">

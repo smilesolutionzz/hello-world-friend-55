@@ -908,6 +908,8 @@ export default function CardNewsStudioPage() {
                   { k: "sharp", label: "더 선명하게" },
                   { k: "soft", label: "더 은은하게" },
                   { k: "readable", label: "텍스트 가독성 우선" },
+                  { k: "photo-doc", label: "실사·다큐 B&W" },
+                  { k: "photo-warm", label: "실사·따뜻한 일상" },
                 ] as { k: BgMode; label: string }[]).map((m) => (
                   <button
                     key={m.k}

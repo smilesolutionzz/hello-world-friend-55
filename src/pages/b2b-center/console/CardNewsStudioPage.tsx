@@ -441,12 +441,23 @@ export default function CardNewsStudioPage() {
     } catch { toast({ title: "이미지를 불러올 수 없습니다", variant: "destructive" }); }
   }
 
+  // AI 배경 — 모드 + 3가지 옵션 + 다중 카드 일괄 적용
+  type BgMode = "sharp" | "soft" | "readable";
+  const [bgMode, setBgMode] = useState<BgMode>("readable");
   const [bgGenIndex, setBgGenIndex] = useState<number | null>(null);
+  const [bgPickerOpen, setBgPickerOpen] = useState(false);
+  const [bgOptions, setBgOptions] = useState<string[]>([]);
+  const [bgSourceIndex, setBgSourceIndex] = useState<number>(0);
+  const [bgTargets, setBgTargets] = useState<number[]>([]);
+  const [bgChosen, setBgChosen] = useState<string | null>(null);
+
   async function generateAiBg(i: number) {
     if (!result) return;
     const card = result.cards[i];
     if (!card) return;
     setBgGenIndex(i);
+    setBgOptions([]);
+    setBgChosen(null);
     try {
       const { data, error } = await supabase.functions.invoke("card-news-bg-image", {
         body: {
@@ -454,19 +465,36 @@ export default function CardNewsStudioPage() {
           body: card.body,
           style_key: styleKey,
           center_type: centerType,
+          mode: bgMode,
+          variations: 3,
         },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-      const img = (data as any)?.image;
-      if (!img) throw new Error("이미지 응답이 비어 있어요");
-      updateCard(i, { bg: img });
-      toast({ title: "AI 배경 이미지가 적용됐어요" });
+      const imgs: string[] = (data as any)?.images ?? ((data as any)?.image ? [(data as any).image] : []);
+      if (!imgs.length) throw new Error("이미지 응답이 비어 있어요");
+      setBgOptions(imgs);
+      setBgSourceIndex(i);
+      setBgTargets([i]);
+      setBgChosen(imgs[0]);
+      setBgPickerOpen(true);
     } catch (e: any) {
       toast({ title: "AI 배경 생성 실패", description: e?.message ?? String(e), variant: "destructive" });
     } finally {
       setBgGenIndex(null);
     }
+  }
+
+  async function applyBgChoice() {
+    if (!result || !bgChosen || bgTargets.length === 0) { setBgPickerOpen(false); return; }
+    const targets = new Set(bgTargets);
+    const cards = result.cards.map((c, idx) => targets.has(idx) ? { ...c, bg: bgChosen } : c);
+    const next = { ...result, cards };
+    setResult(next);
+    setBgPickerOpen(false);
+    toast({ title: `배경을 ${bgTargets.length}장에 적용했어요` });
+    // 자동 저장(초안 업데이트)
+    try { await saveDraft(); } catch {}
   }
 
 

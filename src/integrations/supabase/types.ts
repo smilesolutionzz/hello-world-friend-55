@@ -9572,7 +9572,7 @@ export type Database = {
             foreignKeyName: "leads_center_id_fkey"
             columns: ["center_id"]
             isOneToOne: false
-            referencedRelation: "centers"
+            referencedRelation: "center_organizations"
             referencedColumns: ["id"]
           },
         ]

@@ -826,12 +826,14 @@ export default function CardNewsStudioPage() {
             </div>
 
             <div>
-              <Label className="text-xs mb-2 block">카드 스타일</Label>
+              <Label className="text-xs mb-2 block">카드 스타일 — 같은 카피로 미리보기</Label>
               <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
                 {CARD_STYLES.map((s) => (
                   <button key={s.key} onClick={() => setStyleKey(s.key)} type="button"
                     className={`text-left rounded-xl overflow-hidden border transition ${styleKey === s.key ? "ring-2 ring-foreground border-foreground" : "border-border hover:border-foreground/40"}`}>
-                    <div className="h-14 w-full" style={{ background: s.thumb }} />
+                    <div className="flex items-center justify-center bg-muted/30" style={{ height: 100 }}>
+                      <MiniStylePreview style={s.key} tokens={tokens} sample={sampleCard} />
+                    </div>
                     <div className="p-2">
                       <div className="text-xs font-medium">{s.label}</div>
                       <div className="text-[10px] text-muted-foreground line-clamp-2">{s.description}</div>

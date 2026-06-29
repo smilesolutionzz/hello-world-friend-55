@@ -23,6 +23,21 @@ export interface ProcessStep { title: string; desc: string; }
 export interface FaqItem { q: string; a: string; }
 export interface ProgramItem { title: string; desc: string; image_url?: string; }
 
+export type LandingSectionKey =
+  | "concerns" | "solutions" | "trust" | "programs" | "process" | "gallery" | "faqs";
+
+export type LandingSectionsToggle = Partial<Record<LandingSectionKey, boolean>>;
+
+export const LANDING_SECTION_LABELS: Record<LandingSectionKey, string> = {
+  concerns: "공감 (보호자 고민)",
+  solutions: "솔루션",
+  trust: "신뢰 지표 · 강점",
+  programs: "프로그램",
+  process: "진행 과정",
+  gallery: "공간 갤러리",
+  faqs: "FAQ",
+};
+
 export interface LandingConfig {
   template: LandingTemplateKey;
   hero_badge?: string;
@@ -48,7 +63,10 @@ export interface LandingConfig {
   hero_image_url?: string;
   gallery?: string[]; // ordered urls
   programs?: ProgramItem[];
+  // section visibility — undefined === true (shown by default)
+  sections?: LandingSectionsToggle;
 }
+
 
 export interface TemplateMeta {
   label: string;

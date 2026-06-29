@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "service role full batch jobs" ON public.center_batch_send_jobs;

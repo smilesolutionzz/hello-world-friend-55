@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Loader2, Building2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import {
   getActiveCenterId,
   setActiveCenterId,
+  resolveActiveCenter,
   listMyCenters,
   type CenterOrg,
 } from "@/lib/b2bCenter/centerClient";

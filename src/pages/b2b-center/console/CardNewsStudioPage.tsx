@@ -598,7 +598,7 @@ export default function CardNewsStudioPage() {
 
 
   return (
-    <div className="space-y-8 pb-24">
+    <div className="space-y-8 pb-24 px-4 sm:px-6 lg:px-8">
       <Helmet><title>카드뉴스 만들기 · 마케팅 스튜디오</title></Helmet>
 
       <header className="space-y-1">

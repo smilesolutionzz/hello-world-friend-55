@@ -51,7 +51,7 @@ export default function CenterLandingPublic() {
     (async () => {
       const { data, error } = await supabase.rpc("get_center_landing_by_slug", { _slug: slug });
       if (!error && Array.isArray(data) && data.length > 0) {
-        setRow(data[0] as LandingRow);
+        setRow(data[0] as unknown as LandingRow);
       }
       setLoading(false);
     })();

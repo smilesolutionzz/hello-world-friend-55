@@ -441,6 +441,35 @@ export default function CardNewsStudioPage() {
     } catch { toast({ title: "이미지를 불러올 수 없습니다", variant: "destructive" }); }
   }
 
+  const [bgGenIndex, setBgGenIndex] = useState<number | null>(null);
+  async function generateAiBg(i: number) {
+    if (!result) return;
+    const card = result.cards[i];
+    if (!card) return;
+    setBgGenIndex(i);
+    try {
+      const { data, error } = await supabase.functions.invoke("card-news-bg-image", {
+        body: {
+          headline: card.headline,
+          body: card.body,
+          style_key: styleKey,
+          center_type: centerType,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const img = (data as any)?.image;
+      if (!img) throw new Error("이미지 응답이 비어 있어요");
+      updateCard(i, { bg: img });
+      toast({ title: "AI 배경 이미지가 적용됐어요" });
+    } catch (e: any) {
+      toast({ title: "AI 배경 생성 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setBgGenIndex(null);
+    }
+  }
+
+
   // =================== Save / Load ===================
   async function saveDraft() {
     if (!centerId || !result) return;
@@ -598,7 +627,7 @@ export default function CardNewsStudioPage() {
 
 
   return (
-    <div className="space-y-8 pb-24">
+    <div className="space-y-8 pb-24 px-4 sm:px-6 lg:px-8">
       <Helmet><title>카드뉴스 만들기 · 마케팅 스튜디오</title></Helmet>
 
       <header className="space-y-1">
@@ -887,6 +916,19 @@ export default function CardNewsStudioPage() {
                         <input type="file" accept="image/*" className="hidden"
                           onChange={(e) => { const f = e.target.files?.[0]; if (f) pickCardBg(i, f); e.currentTarget.value = ""; }} />
                       </label>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-3 text-xs"
+                        disabled={bgGenIndex !== null}
+                        onClick={() => generateAiBg(i)}
+                      >
+                        {bgGenIndex === i ? (
+                          <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />AI 생성중…</>
+                        ) : (
+                          <><Sparkles className="w-3.5 h-3.5 mr-1" />AI 배경 생성</>
+                        )}
+                      </Button>
                       {c.bg && (
                         <Button size="sm" variant="ghost" onClick={() => updateCard(i, { bg: null })}>
                           <RotateCcw className="w-3.5 h-3.5 mr-1" />배경 제거

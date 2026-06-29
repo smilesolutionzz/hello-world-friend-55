@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { getActiveCenterId } from "@/lib/b2bCenter/centerClient";
@@ -11,10 +11,19 @@ import {
   TEMPLATE_META,
   type LandingTemplateKey,
   type LandingConfig,
+  type ProcessStep,
+  type FaqItem,
+  type SolutionItem,
+  type TrustItem,
+  type ProgramItem,
   emptyLandingConfig,
-  resolveLandingCopy,
 } from "@/lib/b2bCenter/landingTemplates";
-import { Loader2, Copy, ExternalLink, Eye, Save, Sparkles, ShieldCheck, CheckCircle2 } from "lucide-react";
+import CenterLandingPublic from "@/pages/CenterLandingPublic";
+import { compressImage, extFromMime } from "@/lib/imageCompress";
+import {
+  Loader2, Copy, ExternalLink, Save, Sparkles, Wand2,
+  Upload, Trash2, Plus, Image as ImageIcon, ArrowUp, ArrowDown,
+} from "lucide-react";
 
 interface OrgRow {
   id: string;
@@ -24,20 +33,14 @@ interface OrgRow {
   landing_config: any;
 }
 
-function slugify(s: string) {
-  return s
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[^a-z0-9-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 40);
-}
+const STORAGE_BUCKET = "partner-media";
+const MAX_GALLERY = 10;
+const MAX_FILE_BYTES = 8 * 1024 * 1024; // 8 MB raw before compression
 
-const themeStyles = {
-  light: { wrap: "bg-white text-neutral-900", muted: "text-neutral-500", chip: "bg-neutral-100 text-neutral-600", btn: "bg-neutral-900 text-white", card: "border-neutral-100" },
-  dark: { wrap: "bg-[#0f1813] text-white", muted: "text-white/60", chip: "bg-white/10 text-white/80", btn: "bg-[#d8ff3a] text-black", card: "border-white/10 bg-white/[0.04]" },
-  pastel: { wrap: "bg-[#eaf2ff] text-neutral-900", muted: "text-neutral-600", chip: "bg-white/80 text-neutral-700", btn: "bg-[#1c3fa3] text-white", card: "border-white/70 bg-white/70" },
-} as const;
+function slugify(s: string) {
+  return s.toLowerCase().normalize("NFKD")
+    .replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+}
 
 export default function LandingBuilderPage() {
   const { toast } = useToast();
@@ -46,6 +49,8 @@ export default function LandingBuilderPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [picker, setPicker] = useState(false);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiKeywords, setAiKeywords] = useState("");
 
   const [slug, setSlug] = useState("");
   const [published, setPublished] = useState(false);
@@ -65,13 +70,10 @@ export default function LandingBuilderPage() {
         setOrg(row);
         setSlug(row.landing_slug ?? slugify(row.name));
         setPublished(row.landing_published);
-        const cfg = (row.landing_config && Object.keys(row.landing_config).length > 0
-          ? row.landing_config
-          : emptyLandingConfig("dev_center")) as LandingConfig;
+        const hasCfg = row.landing_config && Object.keys(row.landing_config).length > 0;
+        const cfg = hasCfg ? (row.landing_config as LandingConfig) : emptyLandingConfig("dev_center");
         applyConfig(cfg);
-        if (!row.landing_config || Object.keys(row.landing_config).length === 0) {
-          setPicker(true);
-        }
+        if (!hasCfg) setPicker(true);
       }
       setLoading(false);
     })();
@@ -81,40 +83,38 @@ export default function LandingBuilderPage() {
   function applyConfig(cfg: LandingConfig) {
     const tpl = cfg.template ?? "dev_center";
     setTemplate(tpl);
-    const fallback = emptyLandingConfig(tpl);
+    const fb = emptyLandingConfig(tpl);
     setConfig({
       template: tpl,
-      hero_badge: cfg.hero_badge ?? "",
-      hero_title: cfg.hero_title ?? "",
-      hero_subtitle: cfg.hero_subtitle ?? "",
-      strengths: cfg.strengths?.length ? cfg.strengths : fallback.strengths,
-      specialties: cfg.specialties?.length ? cfg.specialties : fallback.specialties,
-      cta_label: cfg.cta_label ?? "",
+      hero_badge: cfg.hero_badge ?? fb.hero_badge,
+      hero_title: cfg.hero_title ?? fb.hero_title,
+      hero_subtitle: cfg.hero_subtitle ?? fb.hero_subtitle,
+      strengths: cfg.strengths?.length ? cfg.strengths : fb.strengths,
+      specialties: cfg.specialties?.length ? cfg.specialties : fb.specialties,
+      cta_label: cfg.cta_label ?? fb.cta_label,
       region: cfg.region ?? "",
-      highlight: cfg.highlight ?? "",
+      highlight: cfg.highlight ?? fb.highlight,
+      concerns_title: cfg.concerns_title ?? fb.concerns_title,
+      concerns: cfg.concerns?.length ? cfg.concerns : fb.concerns,
+      solutions_title: cfg.solutions_title ?? fb.solutions_title,
+      solutions: cfg.solutions?.length ? cfg.solutions : fb.solutions,
+      trust_title: cfg.trust_title ?? fb.trust_title,
+      trust: cfg.trust?.length ? cfg.trust : fb.trust,
+      process_title: cfg.process_title ?? fb.process_title,
+      process: cfg.process?.length ? cfg.process : fb.process,
+      faqs_title: cfg.faqs_title ?? fb.faqs_title,
+      faqs: cfg.faqs?.length ? cfg.faqs : fb.faqs,
+      hero_image_url: cfg.hero_image_url ?? "",
+      gallery: cfg.gallery ?? [],
+      programs: cfg.programs?.length ? cfg.programs : fb.programs,
     });
   }
 
-  const publicUrl = useMemo(() => {
-    if (!slug) return "";
-    return `${window.location.origin}/lp/${slug}`;
-  }, [slug]);
+  const publicUrl = useMemo(() => slug ? `${window.location.origin}/lp/${slug}` : "", [slug]);
 
   function pickTemplate(k: LandingTemplateKey) {
     applyConfig(emptyLandingConfig(k));
     setPicker(false);
-  }
-
-  function updateStrength(i: number, v: string) {
-    setConfig((c) => {
-      const arr = [...c.strengths];
-      arr[i] = v;
-      return { ...c, strengths: arr };
-    });
-  }
-
-  function updateSpecialtyInput(v: string) {
-    setConfig((c) => ({ ...c, specialties: v.split(",").map((x) => x.trim()).filter(Boolean) }));
   }
 
   async function save(opts?: { publish?: boolean }) {
@@ -145,9 +145,7 @@ export default function LandingBuilderPage() {
         description: e?.message?.includes("unique") ? "이미 사용중인 슬러그예요" : (e?.message ?? "다시 시도해주세요"),
         variant: "destructive",
       });
-    } finally {
-      setSaving(false);
-    }
+    } finally { setSaving(false); }
   }
 
   function copyUrl() {
@@ -156,21 +154,125 @@ export default function LandingBuilderPage() {
     toast({ title: "링크가 복사되었어요" });
   }
 
-  if (loading) return <div className="p-8"><Loader2 className="animate-spin" /></div>;
-  if (!centerId || !org) {
-    return <div className="p-8 text-sm text-neutral-500">먼저 활성 기관을 선택해주세요.</div>;
+  // ─── Image upload helpers ─────────────────────────────────────────────
+  async function uploadOne(file: File, subdir: string): Promise<string | null> {
+    if (!centerId) return null;
+    if (file.size > MAX_FILE_BYTES) {
+      toast({ title: "파일이 너무 큽니다", description: "원본 8MB 이하만 가능해요", variant: "destructive" });
+      return null;
+    }
+    try {
+      const blob = await compressImage(file, { maxSide: 1600, quality: 0.85 });
+      const ext = extFromMime(blob.type);
+      const path = `landing/${centerId}/${subdir}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(path, blob, {
+        contentType: blob.type, upsert: false,
+      });
+      if (error) throw error;
+      const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+      return data.publicUrl;
+    } catch (e: any) {
+      toast({ title: "업로드 실패", description: e?.message ?? "다시 시도해주세요", variant: "destructive" });
+      return null;
+    }
   }
 
-  void resolveLandingCopy; // preserved for reference; preview now uses inline editable fields
-  const theme = themeStyles[TEMPLATE_META[template].theme];
+  async function pickHeroImage(file: File) {
+    const url = await uploadOne(file, "hero");
+    if (url) setConfig((c) => ({ ...c, hero_image_url: url }));
+  }
+  async function pickGalleryFiles(files: FileList | null) {
+    if (!files) return;
+    const remaining = MAX_GALLERY - (config.gallery?.length ?? 0);
+    const toUpload = Array.from(files).slice(0, Math.max(0, remaining));
+    for (const f of toUpload) {
+      const url = await uploadOne(f, "gallery");
+      if (url) setConfig((c) => ({ ...c, gallery: [...(c.gallery ?? []), url] }));
+    }
+  }
+  async function pickProgramImage(idx: number, file: File) {
+    const url = await uploadOne(file, "programs");
+    if (!url) return;
+    setConfig((c) => {
+      const arr = [...(c.programs ?? [])];
+      arr[idx] = { ...(arr[idx] ?? { title: "", desc: "" }), image_url: url };
+      return { ...c, programs: arr };
+    });
+  }
+
+  function removeGallery(i: number) {
+    setConfig((c) => ({ ...c, gallery: (c.gallery ?? []).filter((_, idx) => idx !== i) }));
+  }
+  function moveGallery(i: number, dir: -1 | 1) {
+    setConfig((c) => {
+      const arr = [...(c.gallery ?? [])];
+      const j = i + dir;
+      if (j < 0 || j >= arr.length) return c;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+      return { ...c, gallery: arr };
+    });
+  }
+
+  // ─── AI generate ──────────────────────────────────────────────────────
+  async function runAi() {
+    if (!org) return;
+    setAiBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("landing-ai-generate", {
+        body: {
+          template,
+          center_name: org.name,
+          region: config.region ?? "",
+          keywords: aiKeywords.split(",").map((s) => s.trim()).filter(Boolean),
+        },
+      });
+      if (error) throw error;
+      const j: any = data ?? {};
+      if (j.error) throw new Error(j.error);
+      setConfig((c) => ({
+        ...c,
+        hero_subtitle: j.hero_subtitle?.trim() || c.hero_subtitle,
+        concerns: Array.isArray(j.concerns) && j.concerns.length ? j.concerns.slice(0, 4) : c.concerns,
+        solutions: Array.isArray(j.solutions) && j.solutions.length
+          ? j.solutions.slice(0, 4).map((s: any): SolutionItem => ({
+              icon: ["heart","users","clipboard","shield","sparkles","leaf","stethoscope","school","smile"].includes(s.icon) ? s.icon : "sparkles",
+              title: String(s.title ?? "").slice(0, 30),
+              desc: String(s.desc ?? "").slice(0, 200),
+            }))
+          : c.solutions,
+        trust: Array.isArray(j.trust) && j.trust.length
+          ? j.trust.slice(0, 4).map((t: any): TrustItem => ({ label: String(t.label ?? ""), value: String(t.value ?? "") }))
+          : c.trust,
+        process: Array.isArray(j.process) && j.process.length
+          ? j.process.slice(0, 4).map((p: any): ProcessStep => ({ title: String(p.title ?? ""), desc: String(p.desc ?? "") }))
+          : c.process,
+        faqs: Array.isArray(j.faqs) && j.faqs.length
+          ? j.faqs.slice(0, 6).map((f: any): FaqItem => ({ q: String(f.q ?? ""), a: String(f.a ?? "") }))
+          : c.faqs,
+      }));
+      toast({ title: "AI 카피 생성 완료", description: "필요한 부분만 다듬어 저장하세요" });
+    } catch (e: any) {
+      toast({ title: "AI 생성 실패", description: e?.message ?? "다시 시도해주세요", variant: "destructive" });
+    } finally { setAiBusy(false); }
+  }
+
+  // ─── Mock preview row so we can re-use the public component as-is ─────
+  const previewRow = useMemo(() => org ? ({
+    center_id: org.id,
+    name: org.name,
+    landing_config: { ...config, template } as LandingConfig,
+  }) : null, [org, config, template]);
+
+  if (loading) return <div className="p-8"><Loader2 className="animate-spin" /></div>;
+  if (!centerId || !org) return <div className="p-8 text-sm text-neutral-500">먼저 활성 기관을 선택해주세요.</div>;
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-6">
+    <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div className="space-y-1">
           <div className="text-xs tracking-[0.18em] text-neutral-400">MARKETING STUDIO</div>
           <h1 className="text-2xl font-semibold">랜딩 페이지 만들기</h1>
-          <p className="text-sm text-neutral-500">템플릿을 골라 내용을 채우면, 가입 없이 누구나 들어와 문의를 남길 수 있는 공개 링크가 생겨요.</p>
+          <p className="text-sm text-neutral-500">발달·심리·돌봄 기관용 롱폼 랜딩. 가입 없이 누구나 들어와 문의를 남길 수 있어요.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setPicker(true)} className="rounded-2xl">
@@ -196,93 +298,250 @@ export default function LandingBuilderPage() {
           <Button variant="outline" size="sm" onClick={copyUrl} disabled={!publicUrl} className="rounded-xl">
             <Copy className="w-3.5 h-3.5 mr-1.5" /> 복사
           </Button>
-          <Button variant="outline" size="sm" onClick={() => publicUrl && window.open(publicUrl, "_blank")} disabled={!publicUrl || !published} className="rounded-xl">
+          <Button variant="outline" size="sm" onClick={() => publicUrl && window.open(publicUrl, "_blank")}
+                  disabled={!publicUrl || !published} className="rounded-xl">
             <ExternalLink className="w-3.5 h-3.5 mr-1.5" /> 열기
           </Button>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr_1.1fr] gap-6">
-        {/* Editor */}
-        <section className="space-y-5 rounded-3xl border border-neutral-100 bg-white p-6">
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-neutral-900 text-white text-[11px] px-2.5 py-1">{TEMPLATE_META[template].label}</span>
-            <span className="text-[11px] text-neutral-400">{TEMPLATE_META[template].category}</span>
-          </div>
+      {/* AI generate bar */}
+      <div className="rounded-2xl border border-amber-100 bg-amber-50/60 p-4 space-y-3">
+        <div className="flex items-center gap-2 text-sm font-medium text-amber-900">
+          <Wand2 className="w-4 h-4" /> AI로 랜딩 내용 채우기
+        </div>
+        <div className="flex flex-col md:flex-row gap-2">
+          <Input
+            value={aiKeywords}
+            onChange={(e) => setAiKeywords(e.target.value)}
+            placeholder="핵심 특징 키워드 (쉼표로 구분) — 예: 강남구, 임상 10년, 부모코칭"
+            className="bg-white"
+          />
+          <Button onClick={runAi} disabled={aiBusy} className="rounded-xl bg-neutral-900 hover:bg-black text-white whitespace-nowrap">
+            {aiBusy ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+            AI 초안 생성
+          </Button>
+        </div>
+        <p className="text-[11px] text-amber-800/70">
+          기관 유형과 키워드에 맞춰 공감·솔루션·신뢰·과정·FAQ 섹션의 초안을 생성합니다. 생성 후에도 자유롭게 수정할 수 있어요.
+        </p>
+      </div>
 
-          <div className="space-y-2">
-            <div className="text-xs tracking-[0.18em] text-neutral-400">공개 URL 슬러그</div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-neutral-400">/lp/</span>
-              <Input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="our-center" />
-            </div>
-          </div>
+      <div className="grid lg:grid-cols-[1fr_1.2fr] gap-6">
+        {/* ─── Editor ─── */}
+        <section className="space-y-5">
+          <Block title="기본 설정">
+            <Field label="공개 URL 슬러그">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-neutral-400">/lp/</span>
+                <Input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="our-center" />
+              </div>
+            </Field>
+            <Field label="지역">
+              <Input value={config.region ?? ""} onChange={(e) => setConfig({ ...config, region: e.target.value })}
+                     placeholder="예: 서울 강남구" />
+            </Field>
+            <Field label="상단 배지">
+              <Input value={config.hero_badge ?? ""} onChange={(e) => setConfig({ ...config, hero_badge: e.target.value })} />
+            </Field>
+            <Field label="메인 타이틀">
+              <Textarea rows={2} value={config.hero_title ?? ""} onChange={(e) => setConfig({ ...config, hero_title: e.target.value })} />
+            </Field>
+            <Field label="강조 단어 (타이틀 안에서 노란 형광펜)">
+              <Input value={config.highlight ?? ""} onChange={(e) => setConfig({ ...config, highlight: e.target.value })} />
+            </Field>
+            <Field label="서브타이틀">
+              <Textarea rows={3} value={config.hero_subtitle ?? ""} onChange={(e) => setConfig({ ...config, hero_subtitle: e.target.value })} />
+            </Field>
+            <Field label="CTA 버튼 문구">
+              <Input value={config.cta_label ?? ""} onChange={(e) => setConfig({ ...config, cta_label: e.target.value })} />
+            </Field>
+            <Field label="전문 분야 / 태그 (쉼표 구분)">
+              <Input value={config.specialties.join(", ")}
+                     onChange={(e) => setConfig({ ...config, specialties: e.target.value.split(",").map((x) => x.trim()).filter(Boolean) })} />
+            </Field>
+          </Block>
 
-          <div className="space-y-2">
-            <div className="text-xs tracking-[0.18em] text-neutral-400">상단 배지 (작은 문구)</div>
-            <Input
-              value={config.hero_badge ?? ""}
-              onChange={(e) => setConfig({ ...config, hero_badge: e.target.value })}
-              placeholder={TEMPLATE_META[template].hero_badge}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-xs tracking-[0.18em] text-neutral-400">메인 타이틀</div>
-            <Textarea
-              rows={2}
-              value={config.hero_title ?? ""}
-              onChange={(e) => setConfig({ ...config, hero_title: e.target.value })}
-              placeholder={TEMPLATE_META[template].hero_title.split("{name}").join(org.name)}
-            />
-            <Input
-              value={config.highlight ?? ""}
-              onChange={(e) => setConfig({ ...config, highlight: e.target.value })}
-              placeholder="강조할 한 마디 (예: 단 3초 만에) — 타이틀 안에서 노란 형광펜으로 표시돼요"
-            />
-            <Textarea
-              rows={2}
-              value={config.hero_subtitle ?? ""}
-              onChange={(e) => setConfig({ ...config, hero_subtitle: e.target.value })}
-              placeholder={TEMPLATE_META[template].hero_subtitle}
-            />
-            <Input
-              value={config.region ?? ""}
-              onChange={(e) => setConfig({ ...config, region: e.target.value })}
-              placeholder="지역 (예: 서울 강남구)"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-xs tracking-[0.18em] text-neutral-400">전문 분야 / 태그 (쉼표로 구분)</div>
-            <Input
-              value={config.specialties.join(", ")}
-              onChange={(e) => updateSpecialtyInput(e.target.value)}
-              placeholder={TEMPLATE_META[template].defaultSpecialties.join(", ")}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-xs tracking-[0.18em] text-neutral-400">강점 / 체크포인트 3가지</div>
-            {[0, 1, 2].map((i) => (
-              <Textarea
-                key={i}
-                rows={2}
-                value={config.strengths[i] ?? ""}
-                onChange={(e) => updateStrength(i, e.target.value)}
-                placeholder={TEMPLATE_META[template].defaultStrengths[i]}
+          <Block title="이미지 업로드">
+            <p className="text-[11px] text-neutral-500 leading-relaxed">
+              원아·아동·이용자 얼굴이 포함된 사진은 보호자 서면동의를 받은 것만 업로드해주세요. 업로드 시 자동으로 1600px 이하로 리사이즈됩니다.
+            </p>
+            <Field label="히어로 배경 이미지">
+              <ImagePickerBox
+                url={config.hero_image_url ?? ""}
+                onPick={pickHeroImage}
+                onClear={() => setConfig((c) => ({ ...c, hero_image_url: "" }))}
+                ratio="aspect-[16/9]"
               />
-            ))}
-          </div>
+            </Field>
 
-          <div className="space-y-2">
-            <div className="text-xs tracking-[0.18em] text-neutral-400">문의 버튼 문구</div>
-            <Input
-              value={config.cta_label ?? ""}
-              onChange={(e) => setConfig({ ...config, cta_label: e.target.value })}
-              placeholder={TEMPLATE_META[template].cta_label}
-            />
-          </div>
+            <Field label={`공간 갤러리 (최대 ${MAX_GALLERY}장)`}>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                {(config.gallery ?? []).map((url, i) => (
+                  <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-neutral-200 group">
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 transition">
+                      <div className="flex gap-1">
+                        <button onClick={() => moveGallery(i, -1)} className="p-1 bg-white/80 rounded"><ArrowUp className="w-3 h-3" /></button>
+                        <button onClick={() => moveGallery(i, 1)} className="p-1 bg-white/80 rounded"><ArrowDown className="w-3 h-3" /></button>
+                      </div>
+                      <button onClick={() => removeGallery(i)} className="p-1 bg-white/80 rounded text-red-600"><Trash2 className="w-3 h-3" /></button>
+                    </div>
+                  </div>
+                ))}
+                {(config.gallery?.length ?? 0) < MAX_GALLERY && (
+                  <UploadTile multiple onFiles={pickGalleryFiles} />
+                )}
+              </div>
+            </Field>
+          </Block>
+
+          <Block title="공감 (보호자 고민)">
+            <Field label="섹션 타이틀">
+              <Input value={config.concerns_title ?? ""} onChange={(e) => setConfig({ ...config, concerns_title: e.target.value })} />
+            </Field>
+            {[0,1,2,3].map((i) => (
+              <Textarea key={i} rows={2} className="mt-2"
+                        value={config.concerns?.[i] ?? ""}
+                        onChange={(e) => {
+                          const arr = [...(config.concerns ?? [])];
+                          arr[i] = e.target.value;
+                          setConfig({ ...config, concerns: arr });
+                        }}
+                        placeholder={TEMPLATE_META[template].defaultConcerns[i] ?? ""} />
+            ))}
+          </Block>
+
+          <Block title="솔루션">
+            <Field label="섹션 타이틀">
+              <Input value={config.solutions_title ?? ""} onChange={(e) => setConfig({ ...config, solutions_title: e.target.value })} />
+            </Field>
+            {(config.solutions ?? []).map((s, i) => (
+              <div key={i} className="grid grid-cols-[1fr_2fr] gap-2 mt-2">
+                <Input value={s.title}
+                       onChange={(e) => {
+                         const arr = [...(config.solutions ?? [])];
+                         arr[i] = { ...arr[i], title: e.target.value };
+                         setConfig({ ...config, solutions: arr });
+                       }}
+                       placeholder="제목" />
+                <Textarea rows={2} value={s.desc}
+                          onChange={(e) => {
+                            const arr = [...(config.solutions ?? [])];
+                            arr[i] = { ...arr[i], desc: e.target.value };
+                            setConfig({ ...config, solutions: arr });
+                          }}
+                          placeholder="설명" />
+              </div>
+            ))}
+          </Block>
+
+          <Block title="강점 (체크리스트)">
+            {[0,1,2].map((i) => (
+              <Textarea key={i} rows={2} className="mt-2"
+                        value={config.strengths[i] ?? ""}
+                        onChange={(e) => {
+                          const arr = [...config.strengths]; arr[i] = e.target.value;
+                          setConfig({ ...config, strengths: arr });
+                        }}
+                        placeholder={TEMPLATE_META[template].defaultStrengths[i]} />
+            ))}
+          </Block>
+
+          <Block title="신뢰 지표">
+            {(config.trust ?? []).map((t, i) => (
+              <div key={i} className="grid grid-cols-2 gap-2 mt-2">
+                <Input value={t.label} placeholder="라벨"
+                       onChange={(e) => {
+                         const arr = [...(config.trust ?? [])];
+                         arr[i] = { ...arr[i], label: e.target.value };
+                         setConfig({ ...config, trust: arr });
+                       }} />
+                <Input value={t.value} placeholder="값"
+                       onChange={(e) => {
+                         const arr = [...(config.trust ?? [])];
+                         arr[i] = { ...arr[i], value: e.target.value };
+                         setConfig({ ...config, trust: arr });
+                       }} />
+              </div>
+            ))}
+          </Block>
+
+          <Block title="진행 과정 (4단계)">
+            {[0,1,2,3].map((i) => {
+              const step = config.process?.[i] ?? { title: "", desc: "" };
+              return (
+                <div key={i} className="grid grid-cols-[1fr_2fr] gap-2 mt-2">
+                  <Input value={step.title} placeholder={`0${i+1}. 제목`}
+                         onChange={(e) => {
+                           const arr = [...(config.process ?? [])];
+                           arr[i] = { ...step, title: e.target.value };
+                           setConfig({ ...config, process: arr });
+                         }} />
+                  <Textarea rows={2} value={step.desc} placeholder="설명"
+                            onChange={(e) => {
+                              const arr = [...(config.process ?? [])];
+                              arr[i] = { ...step, desc: e.target.value };
+                              setConfig({ ...config, process: arr });
+                            }} />
+                </div>
+              );
+            })}
+          </Block>
+
+          <Block title="FAQ">
+            {(config.faqs ?? []).map((f, i) => (
+              <div key={i} className="space-y-2 mt-2 border-t border-neutral-100 pt-2 first:border-t-0 first:pt-0">
+                <Input value={f.q} placeholder="질문"
+                       onChange={(e) => {
+                         const arr = [...(config.faqs ?? [])];
+                         arr[i] = { ...f, q: e.target.value };
+                         setConfig({ ...config, faqs: arr });
+                       }} />
+                <Textarea rows={2} value={f.a} placeholder="답변"
+                          onChange={(e) => {
+                            const arr = [...(config.faqs ?? [])];
+                            arr[i] = { ...f, a: e.target.value };
+                            setConfig({ ...config, faqs: arr });
+                          }} />
+              </div>
+            ))}
+            <Button variant="outline" size="sm" className="mt-2"
+                    onClick={() => setConfig({ ...config, faqs: [...(config.faqs ?? []), { q: "", a: "" }] })}>
+              <Plus className="w-3.5 h-3.5 mr-1" /> FAQ 추가
+            </Button>
+          </Block>
+
+          <Block title="프로그램">
+            {(config.programs ?? []).map((p, i) => (
+              <div key={i} className="grid grid-cols-[80px_1fr] gap-3 mt-3 items-start">
+                <div className="relative">
+                  <div className="aspect-square rounded-xl bg-neutral-100 overflow-hidden flex items-center justify-center border border-neutral-200">
+                    {p.image_url ? <img src={p.image_url} alt="" className="w-full h-full object-cover" /> : <ImageIcon className="w-5 h-5 text-neutral-300" />}
+                  </div>
+                  <UploadInline onFile={(f) => pickProgramImage(i, f)} />
+                </div>
+                <div className="space-y-2">
+                  <Input value={p.title} placeholder="프로그램명"
+                         onChange={(e) => {
+                           const arr = [...(config.programs ?? [])];
+                           arr[i] = { ...p, title: e.target.value };
+                           setConfig({ ...config, programs: arr });
+                         }} />
+                  <Textarea rows={2} value={p.desc} placeholder="설명"
+                            onChange={(e) => {
+                              const arr = [...(config.programs ?? [])];
+                              arr[i] = { ...p, desc: e.target.value };
+                              setConfig({ ...config, programs: arr });
+                            }} />
+                </div>
+              </div>
+            ))}
+            <Button variant="outline" size="sm" className="mt-3"
+                    onClick={() => setConfig({ ...config, programs: [...(config.programs ?? []), { title: "", desc: "" }] })}>
+              <Plus className="w-3.5 h-3.5 mr-1" /> 프로그램 추가
+            </Button>
+          </Block>
 
           <div className="flex gap-2 pt-2">
             <Button variant="outline" onClick={() => save({ publish: false })} disabled={saving} className="flex-1 rounded-2xl">
@@ -294,142 +553,115 @@ export default function LandingBuilderPage() {
           </div>
         </section>
 
-        {/* Preview - 클릭해서 바로 편집 가능 */}
+        {/* ─── Live preview: full long-form ─── */}
         <section className="space-y-3">
-          <div className="flex items-center gap-2 text-xs tracking-[0.18em] text-neutral-400">
-            <Eye className="w-3.5 h-3.5" /> LIVE PREVIEW · 텍스트를 클릭해서 바로 편집하세요
-          </div>
-          <div className={`rounded-3xl border ${theme.card} ${theme.wrap} p-7 space-y-6`}>
-            <div className="flex justify-center">
-              <EditableText
-                value={config.hero_badge ?? ""}
-                placeholder={TEMPLATE_META[template].hero_badge}
-                onChange={(v) => setConfig({ ...config, hero_badge: v })}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] tracking-[0.18em] ${theme.chip}`}
-              />
+          <div className="text-xs tracking-[0.18em] text-neutral-400">LIVE PREVIEW · 전체 랜딩페이지</div>
+          <div className="rounded-3xl border border-neutral-200 overflow-hidden bg-neutral-50">
+            <div className="h-[80vh] overflow-y-auto bg-white">
+              {previewRow && <CenterLandingPublic previewRow={previewRow} />}
             </div>
-            <EditableText
-              as="h2"
-              value={(config.hero_title || "").split("{name}").join(org.name)}
-              placeholder={TEMPLATE_META[template].hero_title.split("{name}").join(org.name)}
-              onChange={(v) => setConfig({ ...config, hero_title: v })}
-              className="text-2xl md:text-3xl font-semibold text-center leading-snug break-keep block"
-            />
-            <EditableText
-              as="p"
-              value={config.hero_subtitle ?? ""}
-              placeholder={TEMPLATE_META[template].hero_subtitle}
-              onChange={(v) => setConfig({ ...config, hero_subtitle: v })}
-              className={`text-sm text-center break-keep block ${theme.muted}`}
-            />
-            {config.specialties.length > 0 && (
-              <div className="flex flex-wrap gap-2 justify-center">
-                {config.specialties.map((s) => (
-                  <span key={s} className={`rounded-full text-[11px] px-2.5 py-1 ${theme.chip}`}>#{s}</span>
-                ))}
-              </div>
-            )}
-            <ul className="space-y-3 pt-2 max-w-sm mx-auto">
-              {[0, 1, 2].map((i) => (
-                <li key={i} className="flex items-start gap-2 text-sm break-keep">
-                  <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0 opacity-70" />
-                  <EditableText
-                    value={config.strengths[i] ?? ""}
-                    placeholder={TEMPLATE_META[template].defaultStrengths[i]}
-                    onChange={(v) => updateStrength(i, v)}
-                    className="flex-1 block"
-                  />
-                </li>
-              ))}
-            </ul>
-            <EditableText
-              value={config.cta_label ?? ""}
-              placeholder={TEMPLATE_META[template].cta_label}
-              onChange={(v) => setConfig({ ...config, cta_label: v })}
-              className={`block rounded-2xl text-sm text-center py-3 font-medium ${theme.btn}`}
-            />
           </div>
         </section>
-
       </div>
 
-      {/* Template picker modal */}
       {picker && createPortal(
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-start sm:items-center justify-center p-4 overflow-y-auto" onClick={() => setPicker(false)}>
           <div className="bg-white rounded-3xl w-full max-w-5xl max-h-[90vh] overflow-y-auto p-6 my-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h2 className="text-lg font-semibold">페이지 템플릿 선택</h2>
-                <p className="text-xs text-neutral-500 mt-1">사용할 페이지 템플릿을 선택해주세요. 내용은 언제든 다시 바꿀 수 있어요.</p>
+                <p className="text-xs text-neutral-500 mt-1">사용할 기관 유형을 선택해주세요. 내용은 언제든 수정·AI 재생성이 가능해요.</p>
               </div>
               <button onClick={() => setPicker(false)} className="text-neutral-400 hover:text-neutral-700 text-lg">×</button>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {(Object.keys(TEMPLATE_META) as LandingTemplateKey[]).map((k) => {
                 const meta = TEMPLATE_META[k];
-                const t = themeStyles[meta.theme];
+                const active = template === k;
                 return (
-                  <button
-                    key={k}
-                    onClick={() => pickTemplate(k)}
-                    className={`text-left border rounded-2xl overflow-hidden hover:border-neutral-900 transition ${template === k ? "border-neutral-900 ring-2 ring-neutral-900/10" : "border-neutral-200"}`}
-                  >
-                    <div className="p-3">
-                      <div className="text-sm font-semibold">{meta.label}</div>
-                      <div className="text-[11px] text-neutral-500">{meta.category}</div>
-                    </div>
-                    <div className={`${t.wrap} p-4 text-center space-y-2 min-h-[180px]`}>
-                      <div className={`text-[9px] tracking-[0.18em] ${t.muted}`}>{meta.hero_badge}</div>
-                      <div className="text-xs font-semibold leading-snug break-keep line-clamp-3">{meta.hero_title.split("{name}").join(org.name)}</div>
-                      <div className={`text-[10px] ${t.muted} line-clamp-2`}>{meta.hero_subtitle}</div>
-                      <div className={`inline-block text-[10px] px-3 py-1 rounded-full ${t.btn}`}>{meta.cta_label}</div>
-                    </div>
+                  <button key={k} onClick={() => pickTemplate(k)}
+                          className={`text-left border rounded-2xl p-4 hover:border-neutral-900 transition ${active ? "border-neutral-900 ring-2 ring-neutral-900/10" : "border-neutral-200"}`}>
+                    <div className="text-sm font-semibold">{meta.label}</div>
+                    <div className="text-[11px] text-neutral-500 mt-0.5">{meta.category}</div>
+                    <div className="mt-3 text-[12px] text-neutral-600 leading-relaxed line-clamp-3 break-keep">{meta.hero_subtitle}</div>
                   </button>
                 );
               })}
             </div>
           </div>
-        </div>,
-        document.body
-      )}
+        </div>, document.body)}
     </div>
   );
 }
 
-function EditableText({
-  value,
-  placeholder,
-  onChange,
-  className,
-  as: Tag = "span",
-}: {
-  value: string;
-  placeholder?: string;
-  onChange: (v: string) => void;
-  className?: string;
-  as?: "span" | "p" | "h2" | "div";
-}) {
-  const display = value && value.trim().length > 0 ? value : (placeholder ?? "");
-  const isEmpty = !value || value.trim().length === 0;
+// ─── helper UI ─────────────────────────────────────────────────────────
+function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <Tag
-      contentEditable
-      suppressContentEditableWarning
-      onBlur={(e) => {
-        const next = (e.currentTarget.textContent ?? "").trim();
-        if (next !== value) onChange(next);
-      }}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" && Tag !== "div") {
-          e.preventDefault();
-          (e.currentTarget as HTMLElement).blur();
-        }
-      }}
-      className={`${className ?? ""} outline-none focus:ring-2 focus:ring-amber-300/60 rounded-md cursor-text ${isEmpty ? "opacity-50 italic" : ""}`}
-      title="클릭해서 편집"
-    >
-      {display}
-    </Tag>
+    <div className="rounded-3xl border border-neutral-100 bg-white p-5 md:p-6 space-y-3">
+      <div className="text-xs tracking-[0.18em] text-neutral-400">{title}</div>
+      {children}
+    </div>
+  );
+}
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <div className="text-[11px] text-neutral-500">{label}</div>
+      {children}
+    </div>
+  );
+}
+
+function ImagePickerBox({
+  url, onPick, onClear, ratio = "aspect-video",
+}: { url: string; onPick: (f: File) => void; onClear: () => void; ratio?: string }) {
+  const ref = useRef<HTMLInputElement>(null);
+  return (
+    <div className={`relative ${ratio} w-full rounded-2xl overflow-hidden border border-dashed border-neutral-300 bg-neutral-50 flex items-center justify-center`}>
+      {url ? (
+        <>
+          <img src={url} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute top-2 right-2 flex gap-1">
+            <button onClick={() => ref.current?.click()} className="px-2 py-1 text-[11px] bg-white/90 rounded-md flex items-center gap-1">
+              <Upload className="w-3 h-3" /> 변경
+            </button>
+            <button onClick={onClear} className="px-2 py-1 text-[11px] bg-white/90 rounded-md flex items-center gap-1 text-red-600">
+              <Trash2 className="w-3 h-3" /> 제거
+            </button>
+          </div>
+        </>
+      ) : (
+        <button onClick={() => ref.current?.click()} className="text-sm text-neutral-500 flex flex-col items-center gap-1.5">
+          <Upload className="w-5 h-5" /> 클릭해서 이미지 업로드
+        </button>
+      )}
+      <input ref={ref} type="file" accept="image/*" className="hidden"
+             onChange={(e) => e.target.files?.[0] && onPick(e.target.files[0])} />
+    </div>
+  );
+}
+function UploadTile({ onFiles, multiple = false }: { onFiles: (f: FileList | null) => void; multiple?: boolean }) {
+  const ref = useRef<HTMLInputElement>(null);
+  return (
+    <button onClick={() => ref.current?.click()} type="button"
+            className="aspect-square rounded-xl border-2 border-dashed border-neutral-300 flex items-center justify-center text-neutral-400 hover:border-neutral-500 hover:text-neutral-700 transition">
+      <Plus className="w-5 h-5" />
+      <input ref={ref} type="file" accept="image/*" className="hidden" multiple={multiple}
+             onChange={(e) => onFiles(e.target.files)} />
+    </button>
+  );
+}
+function UploadInline({ onFile }: { onFile: (f: File) => void }) {
+  const ref = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      <button onClick={() => ref.current?.click()} type="button"
+              className="mt-1 w-full text-[10px] text-neutral-500 hover:text-neutral-800 flex items-center justify-center gap-1">
+        <Upload className="w-3 h-3" /> 사진
+      </button>
+      <input ref={ref} type="file" accept="image/*" className="hidden"
+             onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
+    </>
   );
 }
 

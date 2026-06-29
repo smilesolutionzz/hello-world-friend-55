@@ -558,7 +558,7 @@ export default function LandingBuilderPage() {
           <div className="text-xs tracking-[0.18em] text-neutral-400">LIVE PREVIEW · 전체 랜딩페이지</div>
           <div className="rounded-3xl border border-neutral-200 overflow-hidden bg-neutral-50">
             <div className="h-[80vh] overflow-y-auto bg-white">
-              {previewRow && <PreviewFrame row={previewRow} />}
+              {previewRow && <CenterLandingPublic previewRow={previewRow} />}
             </div>
           </div>
         </section>

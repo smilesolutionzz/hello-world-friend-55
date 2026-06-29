@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2, Download, FileSpreadsheet, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
+import { Upload, Sparkles, Loader2, FileText, Wand2, Send, Image as ImageIcon, Trash2, Download, FileSpreadsheet, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Share2, Users, User } from "lucide-react";
 import * as XLSX from "xlsx";
 import ShareWithParentDialog from "@/components/b2b-center/ShareWithParentDialog";
 import WeeklySessionRecords from "@/components/b2b-center/WeeklySessionRecords";
+import GroupTherapyNoteComposer from "@/components/b2b-center/GroupTherapyNoteComposer";
 import {
   resolveTemplate,
   WEEKLY_SECTION_KEYS,
@@ -157,6 +158,8 @@ export default function TherapyNotesPage() {
   const [viewingHistory, setViewingHistory] = useState<any>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [weeklyTpl, setWeeklyTpl] = useState<WeeklyTpl>(DEFAULT_TEMPLATE.weekly);
+  const [mode, setMode] = useState<"individual" | "group">("individual");
+  const [groupOpen, setGroupOpen] = useState(false);
 
   // Load per-center weekly template (from center_organizations.branding.template).
   useEffect(() => {
@@ -343,6 +346,21 @@ export default function TherapyNotesPage() {
         <div>
           <h1 className="text-2xl font-semibold">치료노트</h1>
           <p className="text-sm text-neutral-500 mt-1 break-keep">회기 일지 사진을 올리면 AI가 주간 치료노트 초안을 만들어드려요. 편집 후 보호자에게 바로 공유하세요.</p>
+          {/* Mode toggle */}
+          <div className="mt-3 inline-flex rounded-full border border-neutral-200 bg-neutral-50 p-1 text-xs">
+            <button
+              onClick={() => setMode("individual")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full transition ${mode === "individual" ? "bg-white shadow-sm font-medium text-neutral-900" : "text-neutral-500"}`}
+            >
+              <User className="w-3.5 h-3.5" /> 개인 작성
+            </button>
+            <button
+              onClick={() => { setMode("group"); setGroupOpen(true); }}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full transition ${mode === "group" ? "bg-white shadow-sm font-medium text-neutral-900" : "text-neutral-500"}`}
+            >
+              <Users className="w-3.5 h-3.5" /> 그룹 작성 (같은 반 일괄)
+            </button>
+          </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <select
@@ -584,6 +602,15 @@ export default function TherapyNotesPage() {
           childName={clientName}
         />
       )}
+
+      {/* Group batch composer */}
+      <GroupTherapyNoteComposer
+        open={groupOpen}
+        onClose={() => { setGroupOpen(false); setMode("individual"); }}
+        centerId={centerId}
+        weekKey={weekKey}
+        onCreated={() => { loadWeek(); loadHistory(); }}
+      />
     </div>
   );
 }

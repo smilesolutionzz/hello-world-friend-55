@@ -335,7 +335,7 @@ export default function CardNewsStudioPage() {
         supabase.from("center_organizations").select("name, branding").eq("id", centerId).maybeSingle(),
         supabase.from("card_news_drafts")
           .select("id, title, created_at, updated_at, style_key, anonymized_text, result_json, branding")
-          .eq("center_id", centerId).order("updated_at", { ascending: false }).limit(30),
+          .eq("center_id", centerId).order("updated_at", { ascending: false }).limit(200),
       ]);
       setReports((rs.data as Report[]) || []);
       if ((org.data as any)?.name) setCenterName((org.data as any).name);

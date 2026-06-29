@@ -120,6 +120,8 @@ export default function B2BCenterApp() {
     }
     supabase.auth.getUser().then(({ data }) => {
       setAuthed(!!data.user);
+      const uid = data.user?.id ?? null;
+      setUserId(uid);
       if (data.user) {
         listMyCenters().then((cs) => {
           setCenters(cs);
@@ -127,7 +129,9 @@ export default function B2BCenterApp() {
             setShowWelcome(true);
             localStorage.setItem(WELCOME_KEY, "1");
           }
-          if (!activeId && cs[0]) { setActive(cs[0].id); setActiveCenterId(cs[0].id); }
+          // 저장된 활성 기관이 멤버십에 있으면 유지, 없으면 1개일 때만 자동 선택, 여러 개면 선택 UI를 띄움
+          const resolved = resolveActiveCenter(cs, uid);
+          setActive(resolved);
         }).finally(() => setLoaded(true));
       } else {
         setLoaded(true);

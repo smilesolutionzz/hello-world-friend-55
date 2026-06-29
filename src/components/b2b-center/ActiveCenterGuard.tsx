@@ -18,29 +18,32 @@ import {
  * - 없으면 기관 등록 페이지로 보냄
  */
 export default function ActiveCenterGuard({ children }: { children: React.ReactNode }) {
+  const [userId, setUserId] = useState<string | null>(null);
   const [centerId, setCenterId] = useState<string | null>(() => getActiveCenterId());
   const [loading, setLoading] = useState(!centerId);
   const [orgs, setOrgs] = useState<CenterOrg[]>([]);
 
   useEffect(() => {
-    if (centerId) return;
     let mounted = true;
     (async () => {
       try {
+        const { data } = await supabase.auth.getUser();
+        const uid = data.user?.id ?? null;
+        if (!mounted) return;
+        setUserId(uid);
         const mine = await listMyCenters();
         if (!mounted) return;
-        if (mine.length === 1) {
-          setActiveCenterId(mine[0].id);
-          setCenterId(mine[0].id);
-        } else {
-          setOrgs(mine);
-        }
+        setOrgs(mine);
+        // 저장된 활성 기관이 멤버십에 있으면 유지, 없으면 1개일 때만 자동 선택
+        const resolved = resolveActiveCenter(mine, uid);
+        if (resolved) setCenterId(resolved);
+        else setCenterId(null);
       } finally {
         if (mounted) setLoading(false);
       }
     })();
     return () => { mounted = false; };
-  }, [centerId]);
+  }, []);
 
   if (centerId) return <>{children}</>;
 

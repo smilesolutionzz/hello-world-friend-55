@@ -195,9 +195,88 @@ export default function B2BCenterApp() {
         <aside
           className={`${mobileNavOpen ? "fixed translate-x-0" : "fixed -translate-x-full"} ${desktopNavCollapsed ? "md:hidden" : "md:flex md:translate-x-0"} md:static md:transform-none top-0 bottom-0 left-0 z-[60] w-[85vw] max-w-[320px] md:w-64 bg-white border-r border-neutral-200 flex flex-col transition-transform duration-300 ease-out shadow-2xl md:shadow-none h-[100dvh] md:h-auto`}
         >
-...
+          <div className="p-4 border-b border-neutral-200 flex items-start justify-between gap-2 shrink-0">
+            <div className="flex-1 min-w-0">
+              {BETA_MODE && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#C8B88A]/15 text-[#8C7A3E] text-[10px] font-semibold tracking-wider mb-2">
+                  BETA
+                  <span className="font-normal text-[#8C7A3E]/80">베타 모드</span>
+                </span>
+              )}
+              <p className="text-xs text-neutral-500 mb-1 mt-1">기관</p>
+              <select
+                value={activeId ?? ""}
+                onChange={(e) => { setActive(e.target.value); setActiveCenterId(e.target.value); }}
+                className="w-full text-sm font-medium bg-transparent focus:outline-none mb-2"
+                disabled={demo}
+              >
+                {centers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+              {!demo && (
+                <button
+                  onClick={handleAddCenter}
+                  disabled={adding}
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg border border-neutral-200 text-xs text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  {adding ? "추가 중…" : "새 기관 추가"}
+                </button>
+              )}
+            </div>
+            <div className="flex flex-col gap-1 shrink-0">
+              <button
+                onClick={toggleDesktopNav}
+                className="hidden md:inline-flex p-2 rounded-lg hover:bg-neutral-100 text-neutral-500"
+                aria-label="사이드바 접기"
+                title="사이드바 접기"
+              >
+                <PanelLeftClose className="w-4 h-4" />
+              </button>
+              <button onClick={() => setMobileNavOpen(false)} className="md:hidden p-2 -mr-2 rounded-lg hover:bg-neutral-100" aria-label="메뉴 닫기">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
           <nav className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-3 space-y-4">
-...
+            {Object.entries(grouped).map(([group, items]) => {
+              const isIntel = group === "인텔리전스";
+              return (
+                <div
+                  key={group}
+                  className={isIntel ? "rounded-xl bg-gradient-to-b from-[#FAF6E8] to-white border border-[#C8B88A]/30 p-2" : ""}
+                >
+                  <div className="flex items-center gap-1.5 px-3 mb-1">
+                    {isIntel && <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#C8B88A]" />}
+                    <p className={`text-[10px] tracking-widest uppercase ${isIntel ? "text-[#8C7A3E] font-semibold" : "text-neutral-400"}`}>
+                      {isIntel ? `${group} · AI` : group}
+                    </p>
+                    {isIntel && <span className="ml-auto text-[9px] tracking-wider text-[#8C7A3E]/70">NEW</span>}
+                  </div>
+                  {items.map((n) => (
+                    <NavLink
+                      key={n.to}
+                      to={demo ? `${n.to}?demo=1` : n.to}
+                      end
+                      className={({ isActive }) =>
+                        `flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
+                          isActive
+                            ? isIntel
+                              ? "bg-[#C8B88A] text-white shadow-sm"
+                              : "bg-neutral-900 text-white"
+                            : isIntel
+                              ? "text-[#5B4E26] hover:bg-[#C8B88A]/15"
+                              : "text-neutral-700 hover:bg-neutral-100"
+                        }`
+                      }
+                    >
+                      <n.icon className={`w-4 h-4 ${isIntel ? "text-[#C8B88A]" : ""}`} />
+                      {n.label}
+                    </NavLink>
+                  ))}
+                </div>
+              );
+            })}
+          </nav>
           <div
             className="p-3 border-t border-neutral-200 shrink-0"
             style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 0.75rem)' }}

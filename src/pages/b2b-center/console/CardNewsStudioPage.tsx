@@ -944,14 +944,93 @@ export default function CardNewsStudioPage() {
             </Card>
           </section>
 
+          {/* 숏폼(베타) 진입 — 무료 흐름과 분리된 상위 옵션 */}
+          <section>
+            <Card className="p-6 border-dashed bg-gradient-to-br from-amber-50/50 to-transparent">
+              <div className="flex items-start gap-4 flex-wrap">
+                <div className="w-12 h-12 rounded-2xl bg-foreground text-background flex items-center justify-center shrink-0">
+                  <Film className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-[240px] space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium">이 카드로 숏폼 만들기</h3>
+                    <Badge variant="outline" className="text-[10px]">BETA · 준비 중</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    지금 만든 카드 {result.cards.length}장과 SNS 카피를 그대로 이어받아, 인스타그램 릴스·유튜브 쇼츠용 세로 영상으로 자동 변환해 드려요.
+                    새로 입력할 필요 없이 같은 콘텐츠를 영상까지 한 번에 — 원하시는 분만 신청하시면 우선 안내드릴게요.
+                  </p>
+                  <ul className="text-xs text-muted-foreground space-y-0.5 pt-1">
+                    <li>· 카드 5장 → 9:16 영상 시퀀스로 자동 구성</li>
+                    <li>· 캡션·해시태그 자동 동기화</li>
+                    <li>· 별도 유료 옵션으로 출시 예정 (무료 카드뉴스 흐름과 분리)</li>
+                  </ul>
+                </div>
+                <div className="shrink-0">
+                  {shortsRequested ? (
+                    <Button variant="outline" disabled>
+                      <Check className="w-4 h-4 mr-1" />신청 완료
+                    </Button>
+                  ) : (
+                    <Button onClick={() => setShortsOpen(true)}>
+                      <Film className="w-4 h-4 mr-2" />
+                      숏폼 베타 신청
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </section>
+
           <div className="flex justify-between">
             <Button variant="ghost" onClick={() => setStep(1)}>이전 (검수로 돌아가기)</Button>
-            <Button variant="outline" onClick={() => { setStep(0); setResult(null); setAnonText(""); setReviewed(false); setSelectedReportId(null); setManualText(""); setCurrentDraftId(null); }}>
+            <Button variant="outline" onClick={() => { setStep(0); setResult(null); setAnonText(""); setReviewed(false); setSelectedReportId(null); setManualText(""); setCurrentDraftId(null); setShortsRequested(false); }}>
               처음부터 다시
             </Button>
           </div>
         </div>
       )}
+
+      {/* 숏폼 베타 신청 다이얼로그 */}
+      <Dialog open={shortsOpen} onOpenChange={setShortsOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>숏폼 만들기 · 베타 신청</DialogTitle>
+            <DialogDescription>
+              지금 만든 카드뉴스와 카피가 그대로 신청 자료에 포함돼요. 영상 변환 엔진이 준비되는 대로 가장 먼저 연락드릴게요.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label className="text-xs">간단 메모 (선택)</Label>
+              <Textarea
+                rows={3}
+                value={shortsNote}
+                onChange={(e) => setShortsNote(e.target.value)}
+                placeholder="예: 인스타 릴스 위주, 30초 내외, 자막 강조 원함"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">연락 받을 수단 (선택)</Label>
+              <Input
+                value={shortsContact}
+                onChange={(e) => setShortsContact(e.target.value)}
+                placeholder="휴대폰 또는 이메일"
+              />
+            </div>
+            <div className="text-[11px] text-muted-foreground">
+              · 신청 시 카드 {result?.cards.length ?? 0}장 + SNS 카피 스냅샷이 함께 저장돼요.
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setShortsOpen(false)}>취소</Button>
+            <Button onClick={submitShortsRequest} disabled={shortsSubmitting}>
+              {shortsSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
+              신청 보내기
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

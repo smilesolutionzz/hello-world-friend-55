@@ -161,7 +161,7 @@ export default function LandingBuilderPage() {
     return <div className="p-8 text-sm text-neutral-500">먼저 활성 기관을 선택해주세요.</div>;
   }
 
-  const preview = resolveLandingCopy(org.name, { ...config, template });
+  void resolveLandingCopy; // preserved for reference; preview now uses inline editable fields
   const theme = themeStyles[TEMPLATE_META[template].theme];
 
   return (
@@ -294,21 +294,34 @@ export default function LandingBuilderPage() {
           </div>
         </section>
 
-        {/* Preview */}
+        {/* Preview - 클릭해서 바로 편집 가능 */}
         <section className="space-y-3">
           <div className="flex items-center gap-2 text-xs tracking-[0.18em] text-neutral-400">
-            <Eye className="w-3.5 h-3.5" /> LIVE PREVIEW · 공개 페이지와 동일
+            <Eye className="w-3.5 h-3.5" /> LIVE PREVIEW · 텍스트를 클릭해서 바로 편집하세요
           </div>
           <div className={`rounded-3xl border ${theme.card} ${theme.wrap} p-7 space-y-6`}>
             <div className="flex justify-center">
-              <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] tracking-[0.18em] ${theme.chip}`}>
-                <ShieldCheck className="w-3 h-3" /> {preview.heroBadge}
-              </span>
+              <EditableText
+                value={config.hero_badge ?? ""}
+                placeholder={TEMPLATE_META[template].hero_badge}
+                onChange={(v) => setConfig({ ...config, hero_badge: v })}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] tracking-[0.18em] ${theme.chip}`}
+              />
             </div>
-            <h2 className="text-2xl md:text-3xl font-semibold text-center leading-snug break-keep">
-              {renderHighlighted(preview.heroTitle, preview.highlight, TEMPLATE_META[template].theme)}
-            </h2>
-            <p className={`text-sm text-center break-keep ${theme.muted}`}>{preview.heroSub}</p>
+            <EditableText
+              as="h2"
+              value={(config.hero_title || "").split("{name}").join(org.name)}
+              placeholder={TEMPLATE_META[template].hero_title.split("{name}").join(org.name)}
+              onChange={(v) => setConfig({ ...config, hero_title: v })}
+              className="text-2xl md:text-3xl font-semibold text-center leading-snug break-keep block"
+            />
+            <EditableText
+              as="p"
+              value={config.hero_subtitle ?? ""}
+              placeholder={TEMPLATE_META[template].hero_subtitle}
+              onChange={(v) => setConfig({ ...config, hero_subtitle: v })}
+              className={`text-sm text-center break-keep block ${theme.muted}`}
+            />
             {config.specialties.length > 0 && (
               <div className="flex flex-wrap gap-2 justify-center">
                 {config.specialties.map((s) => (
@@ -317,16 +330,27 @@ export default function LandingBuilderPage() {
               </div>
             )}
             <ul className="space-y-3 pt-2 max-w-sm mx-auto">
-              {config.strengths.filter(Boolean).map((s, i) => (
+              {[0, 1, 2].map((i) => (
                 <li key={i} className="flex items-start gap-2 text-sm break-keep">
                   <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0 opacity-70" />
-                  <span>{s}</span>
+                  <EditableText
+                    value={config.strengths[i] ?? ""}
+                    placeholder={TEMPLATE_META[template].defaultStrengths[i]}
+                    onChange={(v) => updateStrength(i, v)}
+                    className="flex-1 block"
+                  />
                 </li>
               ))}
             </ul>
-            <div className={`rounded-2xl text-sm text-center py-3 font-medium ${theme.btn}`}>{preview.cta}</div>
+            <EditableText
+              value={config.cta_label ?? ""}
+              placeholder={TEMPLATE_META[template].cta_label}
+              onChange={(v) => setConfig({ ...config, cta_label: v })}
+              className={`block rounded-2xl text-sm text-center py-3 font-medium ${theme.btn}`}
+            />
           </div>
         </section>
+
       </div>
 
       {/* Template picker modal */}
@@ -372,16 +396,40 @@ export default function LandingBuilderPage() {
   );
 }
 
-function renderHighlighted(text: string, highlight: string, theme: "light" | "dark" | "pastel") {
-  if (!highlight) return text;
-  const idx = text.indexOf(highlight);
-  if (idx < 0) return text;
-  const bg = theme === "dark" ? "bg-[#d8ff3a] text-black" : theme === "pastel" ? "bg-[#1c3fa3] text-white" : "bg-[#FFF299] text-neutral-900";
+function EditableText({
+  value,
+  placeholder,
+  onChange,
+  className,
+  as: Tag = "span",
+}: {
+  value: string;
+  placeholder?: string;
+  onChange: (v: string) => void;
+  className?: string;
+  as?: "span" | "p" | "h2" | "div";
+}) {
+  const display = value && value.trim().length > 0 ? value : (placeholder ?? "");
+  const isEmpty = !value || value.trim().length === 0;
   return (
-    <>
-      {text.slice(0, idx)}
-      <mark className={`${bg} px-1.5 rounded`}>{highlight}</mark>
-      {text.slice(idx + highlight.length)}
-    </>
+    <Tag
+      contentEditable
+      suppressContentEditableWarning
+      onBlur={(e) => {
+        const next = (e.currentTarget.textContent ?? "").trim();
+        if (next !== value) onChange(next);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && Tag !== "div") {
+          e.preventDefault();
+          (e.currentTarget as HTMLElement).blur();
+        }
+      }}
+      className={`${className ?? ""} outline-none focus:ring-2 focus:ring-amber-300/60 rounded-md cursor-text ${isEmpty ? "opacity-50 italic" : ""}`}
+      title="클릭해서 편집"
+    >
+      {display}
+    </Tag>
   );
 }
+

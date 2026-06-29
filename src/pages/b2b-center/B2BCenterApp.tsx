@@ -28,6 +28,7 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string; betaVis
   { to: "schedule", label: "일정", icon: Calendar, group: "일정", betaVisible: true },
   // 이용자 및 상담/평가
   { to: "clients", label: "이용자 관리", icon: Users, group: "이용자 및 상담/평가", betaVisible: true },
+  { to: "groups", label: "그룹(반) · 동시 전송", icon: Users, group: "이용자 및 상담/평가", betaVisible: true },
   { to: "assessments", label: "상담 및 평가 관리", icon: BookOpen, group: "이용자 및 상담/평가", betaVisible: false },
   // 재활 서비스 — 케어플 구조
   { to: "services/monthly", label: "월 서비스 관리", icon: LayoutDashboard, group: "재활 서비스", betaVisible: false },

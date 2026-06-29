@@ -199,6 +199,8 @@ const CenterLandingPublic = lazy(() => import("./pages/CenterLandingPublic"));
 const LandingBuilderPage = lazy(() => import("./pages/b2b-center/console/LandingBuilderPage"));
 const LeadsInboxPage = lazy(() => import("./pages/b2b-center/console/LeadsInboxPage"));
 const CardNewsStudioPage = lazy(() => import("./pages/b2b-center/console/CardNewsStudioPage"));
+const CenterGroupsPage = lazy(() => import("./pages/b2b-center/console/GroupsPage"));
+const CenterGroupBatchSendPage = lazy(() => import("./pages/b2b-center/console/GroupBatchSendPage"));
 const PartnerCenterDashboard = lazy(() => import("./pages/PartnerCenterDashboard"));
 const PartnerCenterReferrals = lazy(() => import("./pages/PartnerCenterReferrals"));
 const BetaRecruitment = lazy(() => import("./pages/BetaRecruitment"));
@@ -665,6 +667,8 @@ const App = () => {
             <Route path="marketing/landing" element={<LandingBuilderPage />} />
             <Route path="marketing/leads" element={<LeadsInboxPage />} />
             <Route path="marketing/card-news" element={<CardNewsStudioPage />} />
+            <Route path="groups" element={<CenterGroupsPage />} />
+            <Route path="groups/:groupId/batch-send" element={<CenterGroupBatchSendPage />} />
           </Route>
           <Route path="/center/:slug" element={<CenterStorefrontPublic />} />
           <Route path="/parent/center" element={<ParentCenterPage />} />

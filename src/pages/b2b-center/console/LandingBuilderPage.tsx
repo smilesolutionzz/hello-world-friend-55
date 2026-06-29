@@ -47,6 +47,10 @@ function slugify(s: string) {
 }
 
 export default function LandingBuilderPage() {
+  return <ActiveCenterGuard><LandingBuilderInner /></ActiveCenterGuard>;
+}
+
+function LandingBuilderInner() {
   const { toast } = useToast();
   const centerId = getActiveCenterId();
   const [org, setOrg] = useState<OrgRow | null>(null);

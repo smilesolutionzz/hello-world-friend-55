@@ -110,8 +110,10 @@ export default function LandingBuilderPage() {
       hero_image_url: cfg.hero_image_url ?? "",
       gallery: cfg.gallery ?? [],
       programs: cfg.programs?.length ? cfg.programs : fb.programs,
+      sections: cfg.sections ?? {},
     });
   }
+
 
   const publicUrl = useMemo(() => slug ? `${window.location.origin}/lp/${slug}` : "", [slug]);
 

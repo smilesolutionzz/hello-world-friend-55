@@ -365,7 +365,8 @@ export default function LandingBuilderPage() {
               })}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

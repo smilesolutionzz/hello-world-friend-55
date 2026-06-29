@@ -474,7 +474,7 @@ export default function CardNewsStudioPage() {
       }
       const { data: ds } = await supabase.from("card_news_drafts")
         .select("id, title, created_at, updated_at, style_key, anonymized_text, result_json, branding")
-        .eq("center_id", centerId).order("updated_at", { ascending: false }).limit(30);
+        .eq("center_id", centerId).order("updated_at", { ascending: false }).limit(200);
       setDrafts((ds as DraftRow[]) || []);
     } catch (e: any) {
       toast({ title: "저장 실패", description: e?.message ?? String(e), variant: "destructive" });

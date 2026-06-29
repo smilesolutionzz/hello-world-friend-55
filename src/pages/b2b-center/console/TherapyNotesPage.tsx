@@ -602,6 +602,15 @@ export default function TherapyNotesPage() {
           childName={clientName}
         />
       )}
+
+      {/* Group batch composer */}
+      <GroupTherapyNoteComposer
+        open={groupOpen}
+        onClose={() => { setGroupOpen(false); setMode("individual"); }}
+        centerId={centerId}
+        weekKey={weekKey}
+        onCreated={() => { loadWeek(); loadHistory(); }}
+      />
     </div>
   );
 }

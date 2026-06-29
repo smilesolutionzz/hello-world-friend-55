@@ -56,6 +56,9 @@ export default function GroupTherapyNoteComposer({ open, onClose, centerId, week
   const [submitting, setSubmitting] = useState(false);
   const [expanding, setExpanding] = useState<string | null>(null);
   const [openChild, setOpenChild] = useState<string | null>(null);
+  const [activitySeed, setActivitySeed] = useState("");
+  const [autoGenerating, setAutoGenerating] = useState(false);
+
 
   // Load groups
   useEffect(() => {

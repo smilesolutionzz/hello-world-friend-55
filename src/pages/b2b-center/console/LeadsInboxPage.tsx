@@ -24,6 +24,10 @@ const STATUS_OPTS = [
 ];
 
 export default function LeadsInboxPage() {
+  return <ActiveCenterGuard><LeadsInboxInner /></ActiveCenterGuard>;
+}
+
+function LeadsInboxInner() {
   const { toast } = useToast();
   const centerId = getActiveCenterId();
   const [leads, setLeads] = useState<Lead[]>([]);

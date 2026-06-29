@@ -15,7 +15,11 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Loader2, ShieldAlert, Sparkles, Copy, Download, Check, ChevronRight,
   FileText, Plus, Trash2, ImagePlus, Save, History, RotateCcw,
+  Search, Calendar as CalendarIcon, Film, Send,
 } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
 
 type Report = {
   id: string;
@@ -251,6 +255,32 @@ function CardRender({
   }
 }
 
+// =================== Mini Style Preview ===================
+// 스타일 선택 칩에서 보이는 실제 카드와 동일한 축소 프리뷰.
+// 생성 전/후 모두 동일한 렌더러로 미리보기를 제공한다.
+function MiniStylePreview({
+  style, tokens, sample,
+}: {
+  style: CardNewsStyleKey;
+  tokens: RenderTokens;
+  sample: CardItem;
+}) {
+  // 360px 카드를 100px로 축소 (스케일 0.278). 컨테이너는 정사각 100px.
+  const PREVIEW = 100;
+  const BASE = 360;
+  const scale = PREVIEW / BASE;
+  return (
+    <div className="relative overflow-hidden" style={{ width: PREVIEW, height: PREVIEW }}>
+      <div
+        style={{ width: BASE, height: BASE, transform: `scale(${scale})`, transformOrigin: "top left" }}
+        className="pointer-events-none"
+      >
+        <CardRender card={sample} idx={0} total={1} style={style} tokens={tokens} refCb={() => {}} />
+      </div>
+    </div>
+  );
+}
+
 // =================== Page ===================
 export default function CardNewsStudioPage() {
   const { toast } = useToast();
@@ -280,6 +310,18 @@ export default function CardNewsStudioPage() {
   const [savingDraft, setSavingDraft] = useState(false);
   const [currentDraftId, setCurrentDraftId] = useState<string | null>(null);
 
+  // 생성 내역 필터/검색
+  const [draftSearch, setDraftSearch] = useState("");
+  const [draftMonth, setDraftMonth] = useState<string>("all"); // YYYY-MM or "all"
+  const [draftStyle, setDraftStyle] = useState<string>("all");
+
+  // 숏폼 베타 신청 상태
+  const [shortsOpen, setShortsOpen] = useState(false);
+  const [shortsNote, setShortsNote] = useState("");
+  const [shortsContact, setShortsContact] = useState("");
+  const [shortsSubmitting, setShortsSubmitting] = useState(false);
+  const [shortsRequested, setShortsRequested] = useState(false);
+
   // 로드: 발행된 노트 + 브랜딩 + 저장된 카드뉴스 내역
   useEffect(() => {
     if (!centerId) return;
@@ -293,7 +335,7 @@ export default function CardNewsStudioPage() {
         supabase.from("center_organizations").select("name, branding").eq("id", centerId).maybeSingle(),
         supabase.from("card_news_drafts")
           .select("id, title, created_at, updated_at, style_key, anonymized_text, result_json, branding")
-          .eq("center_id", centerId).order("updated_at", { ascending: false }).limit(30),
+          .eq("center_id", centerId).order("updated_at", { ascending: false }).limit(200),
       ]);
       setReports((rs.data as Report[]) || []);
       if ((org.data as any)?.name) setCenterName((org.data as any).name);
@@ -432,7 +474,7 @@ export default function CardNewsStudioPage() {
       }
       const { data: ds } = await supabase.from("card_news_drafts")
         .select("id, title, created_at, updated_at, style_key, anonymized_text, result_json, branding")
-        .eq("center_id", centerId).order("updated_at", { ascending: false }).limit(30);
+        .eq("center_id", centerId).order("updated_at", { ascending: false }).limit(200);
       setDrafts((ds as DraftRow[]) || []);
     } catch (e: any) {
       toast({ title: "저장 실패", description: e?.message ?? String(e), variant: "destructive" });
@@ -467,6 +509,93 @@ export default function CardNewsStudioPage() {
     logoText: branding.logoText || centerName.slice(0, 2) || "C",
     centerName: centerName || "",
   };
+
+  // 스타일 칩 미리보기에 사용할 샘플 카드
+  const sampleCard: CardItem = useMemo(() => ({
+    tag: "PREVIEW",
+    headline: "오늘의 작은 변화",
+    body: "스타일 미리보기 · 같은 카드가 어떻게 보이는지 확인하세요.",
+    bg: null,
+  }), []);
+
+  // 생성 내역 필터링
+  const filteredDrafts = useMemo(() => {
+    const q = draftSearch.trim().toLowerCase();
+    return drafts.filter((d) => {
+      if (draftMonth !== "all") {
+        const ym = (d.updated_at || d.created_at).slice(0, 7);
+        if (ym !== draftMonth) return false;
+      }
+      if (draftStyle !== "all" && (d.style_key ?? "") !== draftStyle) return false;
+      if (q) {
+        const hay = `${d.title ?? ""} ${d.anonymized_text ?? ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [drafts, draftSearch, draftMonth, draftStyle]);
+
+  // 월 그룹핑 (YYYY-MM → 주차 → 카드 배열)
+  const draftMonthOptions = useMemo(() => {
+    const set = new Set<string>();
+    drafts.forEach((d) => set.add((d.updated_at || d.created_at).slice(0, 7)));
+    return Array.from(set).sort().reverse();
+  }, [drafts]);
+
+  function weekOfMonth(dateStr: string): number {
+    const d = new Date(dateStr);
+    const first = new Date(d.getFullYear(), d.getMonth(), 1);
+    return Math.ceil((d.getDate() + first.getDay()) / 7);
+  }
+
+  const groupedDrafts = useMemo(() => {
+    const groups: Record<string, Record<number, DraftRow[]>> = {};
+    filteredDrafts.forEach((d) => {
+      const ts = d.updated_at || d.created_at;
+      const ym = ts.slice(0, 7);
+      const w = weekOfMonth(ts);
+      if (!groups[ym]) groups[ym] = {};
+      if (!groups[ym][w]) groups[ym][w] = [];
+      groups[ym][w].push(d);
+    });
+    return groups;
+  }, [filteredDrafts]);
+
+  async function submitShortsRequest() {
+    if (!centerId || !result) return;
+    setShortsSubmitting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("로그인이 필요합니다");
+      const snapshot = {
+        cards: result.cards,
+        instagram: result.instagram,
+        short_promo: result.short_promo,
+        hashtags: result.hashtags,
+        center_name: centerName,
+        center_type: centerType,
+      };
+      const { error } = await (supabase as any).from("card_news_shorts_requests").insert({
+        center_id: centerId,
+        owner_id: user.id,
+        draft_id: currentDraftId,
+        source_snapshot: snapshot,
+        style_key: styleKey,
+        note: shortsNote || null,
+        contact: shortsContact || null,
+        status: "pending",
+      });
+      if (error) throw error;
+      setShortsRequested(true);
+      setShortsOpen(false);
+      toast({ title: "베타 신청이 접수됐어요", description: "준비되면 가장 먼저 안내드릴게요." });
+    } catch (e: any) {
+      toast({ title: "신청 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setShortsSubmitting(false);
+    }
+  }
+
 
   return (
     <div className="space-y-8 pb-24">
@@ -530,27 +659,93 @@ export default function CardNewsStudioPage() {
             </div>
           </Card>
 
-          {/* 생성 내역 */}
+          {/* 생성 내역 — 월/주별 캘린더 + 검색/필터 */}
           <Card className="p-6 space-y-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <History className="w-4 h-4" />
               <h2 className="font-medium">생성 내역</h2>
-              <span className="text-xs text-muted-foreground">({drafts.length})</span>
+              <span className="text-xs text-muted-foreground">
+                ({filteredDrafts.length}{filteredDrafts.length !== drafts.length ? ` / ${drafts.length}` : ""})
+              </span>
             </div>
+
+            {drafts.length > 0 && (
+              <div className="grid sm:grid-cols-3 gap-2">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    className="h-9 pl-8 text-sm"
+                    placeholder="제목·본문 검색"
+                    value={draftSearch}
+                    onChange={(e) => setDraftSearch(e.target.value)}
+                  />
+                </div>
+                <select
+                  className="h-9 rounded-md border bg-background text-sm px-2"
+                  value={draftMonth}
+                  onChange={(e) => setDraftMonth(e.target.value)}
+                >
+                  <option value="all">전체 월</option>
+                  {draftMonthOptions.map((m) => {
+                    const [y, mm] = m.split("-");
+                    return <option key={m} value={m}>{y}년 {Number(mm)}월</option>;
+                  })}
+                </select>
+                <select
+                  className="h-9 rounded-md border bg-background text-sm px-2"
+                  value={draftStyle}
+                  onChange={(e) => setDraftStyle(e.target.value)}
+                >
+                  <option value="all">전체 스타일</option>
+                  {CARD_STYLES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
+                </select>
+              </div>
+            )}
+
             {drafts.length === 0 ? (
               <p className="text-sm text-muted-foreground">아직 저장된 카드뉴스가 없어요. 편집 화면에서 "내역에 저장"을 누르면 여기로 모입니다.</p>
+            ) : filteredDrafts.length === 0 ? (
+              <p className="text-sm text-muted-foreground">조건에 맞는 카드뉴스가 없어요.</p>
             ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {drafts.map((d) => (
-                  <div key={d.id} className="p-4 rounded-xl border hover:bg-muted/30 transition space-y-2">
-                    <div className="text-sm font-medium line-clamp-1">{d.title ?? "카드뉴스"}</div>
-                    <div className="text-[11px] text-muted-foreground">{new Date(d.updated_at).toLocaleString("ko-KR")} · {d.style_key}</div>
-                    <div className="flex gap-2 pt-1">
-                      <Button size="sm" variant="outline" className="flex-1" onClick={() => loadDraft(d)}>불러오기</Button>
-                      <Button size="sm" variant="ghost" onClick={() => deleteDraft(d.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+              <div className="space-y-5">
+                {Object.keys(groupedDrafts).sort().reverse().map((ym) => {
+                  const [y, mm] = ym.split("-");
+                  const weeks = groupedDrafts[ym];
+                  const weekKeys = Object.keys(weeks).map(Number).sort((a, b) => b - a);
+                  return (
+                    <div key={ym} className="space-y-3">
+                      <div className="flex items-center gap-2 pt-2 border-t">
+                        <CalendarIcon className="w-3.5 h-3.5 text-muted-foreground" />
+                        <div className="text-sm font-medium">{y}년 {Number(mm)}월</div>
+                        <div className="text-[11px] text-muted-foreground">
+                          {Object.values(weeks).reduce((a, b) => a + b.length, 0)}건
+                        </div>
+                      </div>
+                      {weekKeys.map((w) => (
+                        <div key={w} className="space-y-2">
+                          <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{w}주차</div>
+                          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {weeks[w].map((d) => {
+                              const styleLabel = CARD_STYLES.find((s) => s.key === d.style_key)?.label ?? d.style_key ?? "—";
+                              return (
+                                <div key={d.id} className="p-4 rounded-xl border hover:bg-muted/30 transition space-y-2">
+                                  <div className="text-sm font-medium line-clamp-1">{d.title ?? "카드뉴스"}</div>
+                                  <div className="text-[11px] text-muted-foreground">
+                                    {new Date(d.updated_at).toLocaleString("ko-KR")} · {styleLabel}
+                                  </div>
+                                  <div className="flex gap-2 pt-1">
+                                    <Button size="sm" variant="outline" className="flex-1" onClick={() => loadDraft(d)}>불러오기</Button>
+                                    <Button size="sm" variant="ghost" onClick={() => deleteDraft(d.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </Card>
@@ -631,12 +826,14 @@ export default function CardNewsStudioPage() {
             </div>
 
             <div>
-              <Label className="text-xs mb-2 block">카드 스타일</Label>
+              <Label className="text-xs mb-2 block">카드 스타일 — 같은 카피로 미리보기</Label>
               <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
                 {CARD_STYLES.map((s) => (
                   <button key={s.key} onClick={() => setStyleKey(s.key)} type="button"
                     className={`text-left rounded-xl overflow-hidden border transition ${styleKey === s.key ? "ring-2 ring-foreground border-foreground" : "border-border hover:border-foreground/40"}`}>
-                    <div className="h-14 w-full" style={{ background: s.thumb }} />
+                    <div className="flex items-center justify-center bg-muted/30" style={{ height: 100 }}>
+                      <MiniStylePreview style={s.key} tokens={tokens} sample={sampleCard} />
+                    </div>
                     <div className="p-2">
                       <div className="text-xs font-medium">{s.label}</div>
                       <div className="text-[10px] text-muted-foreground line-clamp-2">{s.description}</div>
@@ -747,14 +944,93 @@ export default function CardNewsStudioPage() {
             </Card>
           </section>
 
+          {/* 숏폼(베타) 진입 — 무료 흐름과 분리된 상위 옵션 */}
+          <section>
+            <Card className="p-6 border-dashed bg-gradient-to-br from-amber-50/50 to-transparent">
+              <div className="flex items-start gap-4 flex-wrap">
+                <div className="w-12 h-12 rounded-2xl bg-foreground text-background flex items-center justify-center shrink-0">
+                  <Film className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-[240px] space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium">이 카드로 숏폼 만들기</h3>
+                    <Badge variant="outline" className="text-[10px]">BETA · 준비 중</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    지금 만든 카드 {result.cards.length}장과 SNS 카피를 그대로 이어받아, 인스타그램 릴스·유튜브 쇼츠용 세로 영상으로 자동 변환해 드려요.
+                    새로 입력할 필요 없이 같은 콘텐츠를 영상까지 한 번에 — 원하시는 분만 신청하시면 우선 안내드릴게요.
+                  </p>
+                  <ul className="text-xs text-muted-foreground space-y-0.5 pt-1">
+                    <li>· 카드 5장 → 9:16 영상 시퀀스로 자동 구성</li>
+                    <li>· 캡션·해시태그 자동 동기화</li>
+                    <li>· 별도 유료 옵션으로 출시 예정 (무료 카드뉴스 흐름과 분리)</li>
+                  </ul>
+                </div>
+                <div className="shrink-0">
+                  {shortsRequested ? (
+                    <Button variant="outline" disabled>
+                      <Check className="w-4 h-4 mr-1" />신청 완료
+                    </Button>
+                  ) : (
+                    <Button onClick={() => setShortsOpen(true)}>
+                      <Film className="w-4 h-4 mr-2" />
+                      숏폼 베타 신청
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </section>
+
           <div className="flex justify-between">
             <Button variant="ghost" onClick={() => setStep(1)}>이전 (검수로 돌아가기)</Button>
-            <Button variant="outline" onClick={() => { setStep(0); setResult(null); setAnonText(""); setReviewed(false); setSelectedReportId(null); setManualText(""); setCurrentDraftId(null); }}>
+            <Button variant="outline" onClick={() => { setStep(0); setResult(null); setAnonText(""); setReviewed(false); setSelectedReportId(null); setManualText(""); setCurrentDraftId(null); setShortsRequested(false); }}>
               처음부터 다시
             </Button>
           </div>
         </div>
       )}
+
+      {/* 숏폼 베타 신청 다이얼로그 */}
+      <Dialog open={shortsOpen} onOpenChange={setShortsOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>숏폼 만들기 · 베타 신청</DialogTitle>
+            <DialogDescription>
+              지금 만든 카드뉴스와 카피가 그대로 신청 자료에 포함돼요. 영상 변환 엔진이 준비되는 대로 가장 먼저 연락드릴게요.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label className="text-xs">간단 메모 (선택)</Label>
+              <Textarea
+                rows={3}
+                value={shortsNote}
+                onChange={(e) => setShortsNote(e.target.value)}
+                placeholder="예: 인스타 릴스 위주, 30초 내외, 자막 강조 원함"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">연락 받을 수단 (선택)</Label>
+              <Input
+                value={shortsContact}
+                onChange={(e) => setShortsContact(e.target.value)}
+                placeholder="휴대폰 또는 이메일"
+              />
+            </div>
+            <div className="text-[11px] text-muted-foreground">
+              · 신청 시 카드 {result?.cards.length ?? 0}장 + SNS 카피 스냅샷이 함께 저장돼요.
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setShortsOpen(false)}>취소</Button>
+            <Button onClick={submitShortsRequest} disabled={shortsSubmitting}>
+              {shortsSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
+              신청 보내기
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

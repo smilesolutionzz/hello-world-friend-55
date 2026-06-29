@@ -2295,6 +2295,60 @@ export type Database = {
           },
         ]
       }
+      card_news_shorts_requests: {
+        Row: {
+          center_id: string
+          contact: string | null
+          created_at: string
+          draft_id: string | null
+          id: string
+          note: string | null
+          owner_id: string
+          source_snapshot: Json
+          status: string
+          style_key: string | null
+        }
+        Insert: {
+          center_id: string
+          contact?: string | null
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          note?: string | null
+          owner_id: string
+          source_snapshot?: Json
+          status?: string
+          style_key?: string | null
+        }
+        Update: {
+          center_id?: string
+          contact?: string | null
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          note?: string | null
+          owner_id?: string
+          source_snapshot?: Json
+          status?: string
+          style_key?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_news_shorts_requests_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "card_news_shorts_requests_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "card_news_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       center_activity_notifications: {
         Row: {
           actor_user_id: string | null

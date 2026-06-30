@@ -102,7 +102,7 @@ export default function NotificationBell({ centerId }: { centerId: string }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-[min(360px,calc(100vw-1.5rem))] max-w-[360px] max-h-[70vh] sm:max-h-[480px] bg-white rounded-xl border border-neutral-200 shadow-xl z-50 overflow-hidden flex flex-col">
+        <div className="fixed left-3 right-3 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-[360px] sm:max-w-[360px] max-h-[70vh] sm:max-h-[480px] bg-white rounded-xl border border-neutral-200 shadow-xl z-[70] overflow-hidden flex flex-col">
           <div className="px-4 py-3 border-b border-neutral-100 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <p className="text-sm font-semibold">알림</p>

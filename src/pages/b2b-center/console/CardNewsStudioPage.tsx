@@ -442,8 +442,8 @@ export default function CardNewsStudioPage() {
   }
 
   // AI 배경 — 모드 + 3가지 옵션 + 다중 카드 일괄 적용
-  type BgMode = "sharp" | "soft" | "readable" | "photo-doc" | "photo-warm";
-  const [bgMode, setBgMode] = useState<BgMode>("readable");
+  type BgMode = "photo-warm" | "photo-doc" | "readable" | "sharp" | "soft";
+  const [bgMode, setBgMode] = useState<BgMode>("photo-warm");
   const [bgGenIndex, setBgGenIndex] = useState<number | null>(null);
   const [bgPickerOpen, setBgPickerOpen] = useState(false);
   const [bgOptions, setBgOptions] = useState<string[]>([]);
@@ -905,11 +905,11 @@ export default function CardNewsStudioPage() {
               <Label className="text-xs">AI 배경 모드 — 카드 콘텐츠에 맞게 결과를 조절</Label>
               <div className="flex flex-wrap gap-2">
                 {([
+                  { k: "photo-warm", label: "실사·따뜻한 일상" },
+                  { k: "photo-doc", label: "실사·다큐 B&W" },
+                  { k: "readable", label: "텍스트 가독성 우선" },
                   { k: "sharp", label: "더 선명하게" },
                   { k: "soft", label: "더 은은하게" },
-                  { k: "readable", label: "텍스트 가독성 우선" },
-                  { k: "photo-doc", label: "실사·다큐 B&W" },
-                  { k: "photo-warm", label: "실사·따뜻한 일상" },
                 ] as { k: BgMode; label: string }[]).map((m) => (
                   <button
                     key={m.k}

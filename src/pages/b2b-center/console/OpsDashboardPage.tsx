@@ -6,13 +6,13 @@ import {
   DEMO_CLIENTS,
   DEMO_THERAPISTS,
   DEMO_PROGRAMS,
-  DEMO_ASSESSMENTS,
+  
   DEMO_PARENT_REPORTS,
 } from "@/lib/b2bCenter/demoData";
 import {
   TrendingUp,
   Users,
-  AlertCircle,
+  
   Calendar,
   Wallet,
   Clock,
@@ -48,7 +48,13 @@ interface DashboardData {
   // 액션
   waitingClients: number;
   reportsDue: number;
-  scheduledAssessments: Array<{ id: string; clientName: string; date: string; type: string }>;
+  // 이번 주 주간노트 작성 현황
+  weeklyNoteDraft: number;
+  weeklyNotePublished: number;
+  weeklyNoteExpected: number; // 서비스 이용 이용자 수 기반 목표
+  // 부모 공유 열람 현황 (최근 7일)
+  shareLinksSent: number;
+  shareLinksViewed: number;
   // 치료사 가동률 top
   topTherapists: Array<{ name: string; color: string; sessions: number }>;
   cancelRate: number;
@@ -79,7 +85,6 @@ export default function OpsDashboardPage() {
   const goBilling = () => nav("/b2b-center/app/billing");
   const goClients = () => nav("/b2b-center/app/clients");
   const goReports = () => nav("/b2b-center/app/parent-reports");
-  const goAssessments = () => nav("/b2b-center/app/assessments");
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
@@ -248,29 +253,67 @@ export default function OpsDashboardPage() {
         <div className="bg-white rounded-2xl border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-amber-500" />
-              <h3 className="font-semibold">다가오는 평가 일정</h3>
+              <FileText className="w-4 h-4 text-neutral-500" />
+              <h3 className="font-semibold">이번 주 주간노트 작성 현황</h3>
             </div>
-            <button onClick={goAssessments} className="text-xs text-neutral-500 hover:text-neutral-900 inline-flex items-center gap-1">
-              전체 <ArrowRight className="w-3 h-3" />
+            <button onClick={() => nav("/b2b-center/app/intelligence/therapy-notes")} className="text-xs text-neutral-500 hover:text-neutral-900 inline-flex items-center gap-1">
+              치료노트 <ArrowRight className="w-3 h-3" />
             </button>
           </div>
-          {data.scheduledAssessments.length === 0 ? (
-            <div className="py-8 text-center text-sm text-neutral-400">예정된 평가가 없어요.</div>
-          ) : (
-            <div className="space-y-2">
-              {data.scheduledAssessments.map((a) => (
-                <div key={a.id} className="flex items-center gap-3 p-3 rounded-xl bg-amber-50/50 border border-amber-100">
-                  <Calendar className="w-4 h-4 text-amber-600 shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{a.clientName}</p>
-                    <p className="text-xs text-neutral-500">{a.type}</p>
-                  </div>
-                  <span className="text-xs font-mono text-neutral-600">{a.date.slice(5)}</span>
+          {(() => {
+            const done = data.weeklyNotePublished;
+            const draft = data.weeklyNoteDraft;
+            const total = Math.max(data.weeklyNoteExpected, done + draft, 1);
+            const donePct = (done / total) * 100;
+            const draftPct = (draft / total) * 100;
+            return (
+              <>
+                <div className="flex items-baseline gap-2 mb-3">
+                  <p className="text-2xl font-semibold">{done}</p>
+                  <p className="text-xs text-neutral-500">/ 목표 {data.weeklyNoteExpected}건 발행</p>
                 </div>
-              ))}
+                <div className="h-2 bg-neutral-100 rounded-full overflow-hidden flex mb-3">
+                  <div className="h-full bg-emerald-400" style={{ width: `${donePct}%` }} />
+                  <div className="h-full bg-amber-300" style={{ width: `${draftPct}%` }} />
+                </div>
+                <div className="flex gap-4 text-xs text-neutral-600">
+                  <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400" /> 발행 {done}</span>
+                  <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-300" /> 초안 {draft}</span>
+                  <span className="inline-flex items-center gap-1 text-neutral-400"><span className="w-2 h-2 rounded-full bg-neutral-200" /> 미작성 {Math.max(0, data.weeklyNoteExpected - done - draft)}</span>
+                </div>
+              </>
+            );
+          })()}
+
+          <div className="pt-4 mt-4 border-t border-neutral-100">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-neutral-500" />
+                <h4 className="text-sm font-semibold">부모 공유 열람 (최근 7일)</h4>
+              </div>
+              <button onClick={goReports} className="text-xs text-neutral-500 hover:text-neutral-900 inline-flex items-center gap-1">
+                리포트 <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
-          )}
+            {data.shareLinksSent === 0 ? (
+              <p className="text-xs text-neutral-400 py-2">아직 공유된 링크가 없어요.</p>
+            ) : (
+              <>
+                <div className="flex items-baseline gap-2 mb-2">
+                  <p className="text-xl font-semibold">{data.shareLinksViewed}</p>
+                  <p className="text-xs text-neutral-500">
+                    / 발송 {data.shareLinksSent}건 · 열람률 {Math.round((data.shareLinksViewed / data.shareLinksSent) * 100)}%
+                  </p>
+                </div>
+                <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-neutral-800 rounded-full"
+                    style={{ width: `${(data.shareLinksViewed / data.shareLinksSent) * 100}%` }}
+                  />
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -384,15 +427,11 @@ function buildDemoData(): DashboardData {
     outstandingCount: 3,
     waitingClients: DEMO_CLIENTS.filter((c) => c.status === "대기").length,
     reportsDue: DEMO_PARENT_REPORTS.filter((r) => r.status === "draft").length,
-    scheduledAssessments: DEMO_ASSESSMENTS
-      .filter((a) => a.status === "scheduled")
-      .slice(0, 4)
-      .map((a) => ({
-        id: a.id,
-        clientName: DEMO_CLIENTS.find((c) => c.id === a.client_id)?.display_name ?? "—",
-        date: a.assessment_date,
-        type: a.assessment_type,
-      })),
+    weeklyNoteDraft: 2,
+    weeklyNotePublished: 5,
+    weeklyNoteExpected: DEMO_CLIENTS.filter((c) => c.status === "enrolled" || c.status === "이용중").length || 8,
+    shareLinksSent: 6,
+    shareLinksViewed: 4,
     topTherapists,
     cancelRate: cancelled.length / Math.max(DEMO_SESSIONS.length, 1),
   };
@@ -406,7 +445,9 @@ async function buildLiveData(centerId: string): Promise<DashboardData> {
   const monthStartStr = ymd(monthStart);
 
   const sb: any = supabase;
-  const [todayRes, weekRes, prevWeekRes, monthPayRes, clientRes, therRes, programRes, reportRes, assessRes, outstandingRes] = await Promise.all([
+  const weeklyStart = weekStart; // 이번 주 월요일
+  const shareSince = ymd(new Date(Date.now() - 7 * 86400000));
+  const [todayRes, weekRes, prevWeekRes, monthPayRes, clientRes, therRes, programRes, reportRes, weeklyNoteRes, shareLinkRes, outstandingRes] = await Promise.all([
     sb.from("center_sessions").select("id, start_time, end_time, client_id, therapist_id, program_id, status").eq("center_id", centerId).eq("session_date", today).order("start_time"),
     sb.from("center_sessions").select("status, price_krw, therapist_id").eq("center_id", centerId).gte("session_date", weekStart),
     sb.from("center_sessions").select("price_krw, status").eq("center_id", centerId).gte("session_date", prevWeekStart).lt("session_date", weekStart),
@@ -415,7 +456,8 @@ async function buildLiveData(centerId: string): Promise<DashboardData> {
     sb.from("center_therapists").select("id, name"),
     sb.from("center_programs").select("id, name").eq("center_id", centerId),
     sb.from("center_parent_reports").select("id, status").eq("center_id", centerId).eq("status", "draft"),
-    sb.from("center_assessments").select("id, client_id, assessment_date, assessment_type, status").eq("center_id", centerId).eq("status", "scheduled").gte("assessment_date", today).order("assessment_date").limit(4),
+    sb.from("center_parent_reports").select("id, status, client_id").eq("center_id", centerId).eq("period_type", "weekly").gte("period_start", weeklyStart),
+    sb.from("center_parent_share_links").select("id, last_accessed_at, access_count, revoked_at").eq("center_id", centerId).gte("sms_sent_at", shareSince),
     sb.from("center_payments").select("amount_krw, status").eq("center_id", centerId).eq("status", "pending"),
   ]);
 
@@ -459,6 +501,16 @@ async function buildLiveData(centerId: string): Promise<DashboardData> {
   const outstanding = outstandingRes.data ?? [];
   const outstandingKRW = outstanding.reduce((sum: number, p: any) => sum + (p.amount_krw ?? 0), 0);
 
+  const weeklyNotes = weeklyNoteRes.data ?? [];
+  const weeklyNotePublished = weeklyNotes.filter((r: any) => r.status === "published" || r.status === "sent").length;
+  const weeklyNoteDraft = weeklyNotes.filter((r: any) => r.status === "draft").length;
+  const activeClientCount = clients.filter((c: any) => c.status === "enrolled" || c.status === "이용중" || c.status === "active").length;
+  const weeklyNoteExpected = Math.max(activeClientCount, weeklyNotePublished + weeklyNoteDraft);
+
+  const shareLinks = (shareLinkRes.data ?? []).filter((l: any) => !l.revoked_at);
+  const shareLinksSent = shareLinks.length;
+  const shareLinksViewed = shareLinks.filter((l: any) => (l.access_count ?? 0) > 0 || l.last_accessed_at).length;
+
   return {
     todaySessions,
     todayCount: todaySessions.length,
@@ -474,12 +526,11 @@ async function buildLiveData(centerId: string): Promise<DashboardData> {
     outstandingCount: outstanding.length,
     waitingClients: clients.filter((c: any) => c.status === "waiting" || c.status === "대기").length,
     reportsDue: (reportRes.data ?? []).length,
-    scheduledAssessments: (assessRes.data ?? []).map((a: any) => ({
-      id: a.id,
-      clientName: clientMap.get(a.client_id) ?? "—",
-      date: a.assessment_date,
-      type: a.assessment_type ?? "평가",
-    })),
+    weeklyNoteDraft,
+    weeklyNotePublished,
+    weeklyNoteExpected,
+    shareLinksSent,
+    shareLinksViewed,
     topTherapists,
     cancelRate: week.length > 0 ? weekCancelled.length / week.length : 0,
   };

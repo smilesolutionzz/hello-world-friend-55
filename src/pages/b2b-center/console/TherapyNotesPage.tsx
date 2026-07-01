@@ -480,7 +480,7 @@ export default function TherapyNotesPage() {
           </div>
           <button disabled={generating || !selectedClient} onClick={generate} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8B88A] text-neutral-900 text-sm font-medium disabled:opacity-50">
             {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {generating ? "생성 중…" : uploads.length === 0 ? "일정 기반 자동 생성" : "주간 치료노트 자동 생성"}
+            {generating ? "생성 중…" : "주간 노트 자동 생성"}
           </button>
         </div>
         {uploads.length === 0 ? (

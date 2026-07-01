@@ -69,10 +69,10 @@ Deno.serve(async (req) => {
       .maybeSingle();
     const isOrgOwner = await admin
       .from("center_organizations")
-      .select("owner_user_id")
+      .select("owner_id")
       .eq("id", therapist.center_id)
       .single()
-      .then(({ data }) => data?.owner_user_id === user.id);
+      .then(({ data }) => data?.owner_id === user.id);
     const allowed = isOrgOwner || (member && ["owner", "admin"].includes(member.role));
     if (!allowed) return json({ error: "FORBIDDEN" }, 403);
 

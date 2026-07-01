@@ -255,6 +255,7 @@ const CareerPackage = lazy(() => import("./pages/CareerPackage"));
 
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
+import { VersionUpdateWatcher } from "./components/pwa/VersionUpdateWatcher";
 import { InstallPromptBanner } from "./components/pwa/InstallPromptBanner";
 import { MobileBottomTab } from "./components/navigation/MobileBottomTab";
 

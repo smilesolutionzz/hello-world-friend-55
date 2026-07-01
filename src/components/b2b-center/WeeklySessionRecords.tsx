@@ -7,6 +7,60 @@ const PHOTO_BUCKET = "center-session-uploads";
 
 type SessionPhoto = { path: string; uploaded_at?: string };
 
+// 과목별 예시 풀 — 프로그램명 감지 + 세션 id 해시로 매 회기마다 다른 예시
+const EXAMPLE_POOL: { match: RegExp; samples: string[] }[] = [
+  { match: /특수체육|체육|감통|운동/, samples: [
+    "미끄럼틀 5회, 처음엔 거부 → 후반엔 자발 시도. 종료 시 정리 잘함",
+    "트램폴린 3분 점프 유지, 균형 흔들림 감소",
+    "장애물 코스 2바퀴 완주, 지시 따르기 향상",
+    "공 주고받기 10회 성공, 시선 맞춤 늘어남",
+  ]},
+  { match: /미술|아트|그리기|만들기/, samples: [
+    "크레파스 자유화, 색 3가지 선택. 마무리 정리 스스로",
+    "찰흙 주무르기 거부 → 도구 사용 후 참여",
+    "가위질 직선 3회 성공, 손 협응 개선",
+    "물감 놀이 집중 15분, 색 이름 5개 표현",
+  ]},
+  { match: /언어|말|발음|스피치/, samples: [
+    "/ㅅ/ 발음 단어 10개 중 7개 정조음",
+    "그림카드 문장 만들기 5회, 조사 사용 자연스러움",
+    "지시 따르기 3단계 성공, 반응 속도 향상",
+    "이야기 순서 4장면 정확히 배열",
+  ]},
+  { match: /인지|학습|수학|한글/, samples: [
+    "숫자 1~20 순서 맞추기 성공, 실수 감소",
+    "같은 그림 찾기 8/10, 집중 15분 유지",
+    "한글 자음 5개 읽기 정확, 쓰기 도움 필요",
+    "패턴 완성 4단계, 스스로 수정 시도",
+  ]},
+  { match: /놀이|심리|정서|사회|상담/, samples: [
+    "역할놀이 10분 몰입, 감정 단어 3개 표현",
+    "보드게임 규칙 지키기 성공, 순서 기다림 향상",
+    "감정 카드 · '속상함' 상황 자발 이야기",
+    "블록 협동 놀이, 양보 2회 관찰됨",
+  ]},
+  { match: /음악|악기|리듬/, samples: [
+    "리듬 따라치기 4마디 성공, 박자 안정",
+    "노래 후렴구 자발 참여, 발성 커짐",
+    "악기 3종 탐색, 선호 악기 스스로 선택",
+    "손뼉치기·발구르기 연속 8회 유지",
+  ]},
+  { match: /.*/, samples: [
+    "목표 활동 3회기 중 2회 성공, 협조도 향상",
+    "초반 거부 있었으나 후반 자발 참여 늘어남",
+    "지시 이해도 좋아짐, 마무리 정리 스스로 시도",
+    "컨디션 양호, 다음 회기 동일 활동 심화 예정",
+  ]},
+];
+
+function pickExample(programName: string | undefined, seed: string) {
+  const name = programName ?? "";
+  const bucket = EXAMPLE_POOL.find((b) => b.match.test(name)) ?? EXAMPLE_POOL[EXAMPLE_POOL.length - 1];
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return bucket.samples[h % bucket.samples.length];
+}
+
 function SessionPhotoStrip({
   centerId, clientId, sessionId, photos, onChange,
 }: {
@@ -265,7 +319,7 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
                     value={e.keywords ?? ""}
                     onChange={(ev) => updateEdit(s.id, "keywords", ev.target.value)}
                     onKeyDown={(ev) => { if (ev.key === "Enter") { ev.preventDefault(); expandWithAI(s.id); } }}
-                    placeholder="예) 미끄럼틀 5회, 처음엔 거부 → 후반엔 자발 시도. 종료 시 정리 잘함"
+                    placeholder={`예) ${pickExample(pg?.name, s.id)}`}
                     className="flex-1 px-3 py-2 rounded-lg border border-[#C8B88A]/50 bg-[#FBF8F1] text-sm focus:outline-none focus:border-[#C8B88A]"
                   />
                   <button

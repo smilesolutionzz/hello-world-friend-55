@@ -326,12 +326,21 @@ export default function TherapyNotesPage() {
   const publish = async () => {
     if (!report) return;
     if (!confirm("치료노트를 발행하시겠어요?\n발행 후 '부모 공유' 버튼으로 카톡 공유 링크를 보내주세요.")) return;
-    await supabase.from("center_parent_reports").update({
+    const { data, error } = await supabase.from("center_parent_reports").update({
       ai_draft_json: editedDraft,
       title: editedDraft?.title ?? null,
       status: "published",
       published_at: new Date().toISOString(),
-    }).eq("id", report.id);
+    }).eq("id", report.id).select("id, status, published_at");
+    if (error) {
+      console.error("[publish] failed", error);
+      toast({ title: "발행 실패", description: error.message, variant: "destructive" });
+      return;
+    }
+    if (!data || data.length === 0) {
+      toast({ title: "발행 실패", description: "권한이 없거나 리포트를 찾을 수 없어요. (RLS)", variant: "destructive" });
+      return;
+    }
     toast({ title: "발행 완료", description: "이제 '부모 공유' 버튼으로 카톡 공유 링크를 만들 수 있어요." });
     loadWeek();
     loadHistory();

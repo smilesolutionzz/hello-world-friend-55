@@ -411,7 +411,7 @@ async function buildLiveData(centerId: string): Promise<DashboardData> {
     sb.from("center_sessions").select("status, price_krw, therapist_id").eq("center_id", centerId).gte("session_date", weekStart),
     sb.from("center_sessions").select("price_krw, status").eq("center_id", centerId).gte("session_date", prevWeekStart).lt("session_date", weekStart),
     sb.from("center_payments").select("amount_krw").eq("center_id", centerId).gte("paid_at", monthStartStr),
-    sb.from("center_clients").select("id, display_name, status").eq("center_id", centerId),
+    sb.from("center_clients").select("id, name, status").eq("center_id", centerId),
     sb.from("center_therapists").select("id, name"),
     sb.from("center_programs").select("id, name").eq("center_id", centerId),
     sb.from("center_parent_reports").select("id, status").eq("center_id", centerId).eq("status", "draft"),

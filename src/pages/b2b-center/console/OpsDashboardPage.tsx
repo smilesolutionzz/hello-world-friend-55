@@ -100,6 +100,7 @@ export default function OpsDashboardPage() {
       </div>
 
       {/* === 1. 액션 카드: 즉시 처리 필요한 것 === */}
+      <Reveal>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <ActionCard
           title="오늘 회기"
@@ -109,6 +110,11 @@ export default function OpsDashboardPage() {
           color="#A0C4FF"
           cta="일정 보기"
           onClick={goSchedule}
+          details={[
+            "타임라인에서 오늘 진행되는 모든 회기를 시간순으로 확인해요.",
+            "회기 카드를 눌러 완료 · 취소 · 노쇼로 상태를 바로 바꿀 수 있어요.",
+            "치료사별 색상으로 배정 현황을 한눈에 파악할 수 있어요.",
+          ]}
         />
         <ActionCard
           title="미수금"
@@ -119,6 +125,11 @@ export default function OpsDashboardPage() {
           alert={data.outstandingCount > 0}
           cta="수납 관리"
           onClick={goBilling}
+          details={[
+            "본인부담금 · 바우처 미청구 건을 한 화면에서 정리해요.",
+            "월말 마감 시점의 청구 대상 건을 자동으로 표시해요.",
+            "청구 완료 후 상태를 draft → approved 로 넘기면 통계에 즉시 반영돼요.",
+          ]}
         />
         <ActionCard
           title="대기 이용자"
@@ -129,6 +140,11 @@ export default function OpsDashboardPage() {
           alert={data.waitingClients > 0}
           cta="이용자 관리"
           onClick={goClients}
+          details={[
+            "치료사 미배정 상태의 신규 이용자를 표시해요.",
+            "이용자 상세에서 담당 치료사 · 프로그램을 지정하면 대기 목록에서 사라져요.",
+            "그룹(반) 배정도 함께 하면 그룹 동시 전송을 활용할 수 있어요.",
+          ]}
         />
         <ActionCard
           title="부모 리포트"
@@ -139,8 +155,15 @@ export default function OpsDashboardPage() {
           alert={data.reportsDue > 0}
           cta="리포트 작성"
           onClick={goReports}
+          details={[
+            "이번 달 이용자별 월간 리포트 초안 상태를 보여줘요.",
+            "치료 트랙별(미술 · 특수체육 등)로 페이지가 자동 구성돼요.",
+            "발행 시 SMS · 링크로 보호자에게 안전하게 공유할 수 있어요.",
+          ]}
         />
       </div>
+      </Reveal>
+
 
       {/* === 2. 이번 주 성과 + 오늘 일정 === */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">

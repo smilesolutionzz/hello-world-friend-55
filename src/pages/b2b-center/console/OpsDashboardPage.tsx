@@ -87,7 +87,7 @@ export default function OpsDashboardPage() {
   const goSchedule = () => nav("/b2b-center/app/schedule");
   const goBilling = () => nav("/b2b-center/app/billing");
   const goClients = () => nav("/b2b-center/app/clients");
-  const goReports = () => nav("/b2b-center/app/parent-reports");
+  const goReports = () => nav("/b2b-center/app/intelligence/parent-reports");
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto">

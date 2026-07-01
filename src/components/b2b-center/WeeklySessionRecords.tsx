@@ -319,7 +319,7 @@ export default function WeeklySessionRecords({ centerId, clientId, weekKey }: Pr
                     value={e.keywords ?? ""}
                     onChange={(ev) => updateEdit(s.id, "keywords", ev.target.value)}
                     onKeyDown={(ev) => { if (ev.key === "Enter") { ev.preventDefault(); expandWithAI(s.id); } }}
-                    placeholder="예) 미끄럼틀 5회, 처음엔 거부 → 후반엔 자발 시도. 종료 시 정리 잘함"
+                    placeholder={`예) ${pickExample(pg?.name, s.id)}`}
                     className="flex-1 px-3 py-2 rounded-lg border border-[#C8B88A]/50 bg-[#FBF8F1] text-sm focus:outline-none focus:border-[#C8B88A]"
                   />
                   <button

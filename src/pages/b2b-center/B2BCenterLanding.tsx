@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { B2B_CENTER_MONTHLY } from "@/constants/tokenCosts";
 import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
 const KRW = (n: number) => `₩${n.toLocaleString("ko-KR")}`;

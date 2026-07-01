@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' &&
     componentTagger(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'AI하이라이트PRO - 심리검사',
@@ -53,34 +53,41 @@ export default defineConfig(({ mode }) => ({
         scope: '/',
         start_url: '/',
         icons: [
-          {
-            src: '/pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: '/pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: '/pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable'
-          }
-        ]
+          { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
       },
       workbox: {
         cleanupOutdatedCaches: true,
         clientsClaim: true,
-        navigateFallbackDenylist: [/^\/~oauth/],
-        maximumFileSizeToCacheInBytes: 30 * 1024 * 1024 // 30MB
-      }
-    })
+        skipWaiting: true,
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/~oauth/, /^\/version\.json$/],
+        // index.html 은 항상 네트워크 우선 → 배포 즉시 반영
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'html-cache',
+              networkTimeoutSeconds: 3,
+              expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 },
+            },
+          },
+          {
+            urlPattern: /\/version\.json$/,
+            handler: 'NetworkOnly',
+          },
+        ],
+        maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
+      },
+    }),
+    versionJsonPlugin(),
   ].filter(Boolean),
+  define: {
+    __APP_VERSION__: JSON.stringify(BUILD_VERSION),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

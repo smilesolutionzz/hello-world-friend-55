@@ -502,6 +502,16 @@ async function buildLiveData(centerId: string): Promise<DashboardData> {
   const outstanding = outstandingRes.data ?? [];
   const outstandingKRW = outstanding.reduce((sum: number, p: any) => sum + (p.amount_krw ?? 0), 0);
 
+  const weeklyNotes = weeklyNoteRes.data ?? [];
+  const weeklyNotePublished = weeklyNotes.filter((r: any) => r.status === "published" || r.status === "sent").length;
+  const weeklyNoteDraft = weeklyNotes.filter((r: any) => r.status === "draft").length;
+  const activeClientCount = clients.filter((c: any) => c.status === "enrolled" || c.status === "이용중" || c.status === "active").length;
+  const weeklyNoteExpected = Math.max(activeClientCount, weeklyNotePublished + weeklyNoteDraft);
+
+  const shareLinks = (shareLinkRes.data ?? []).filter((l: any) => !l.revoked_at);
+  const shareLinksSent = shareLinks.length;
+  const shareLinksViewed = shareLinks.filter((l: any) => (l.access_count ?? 0) > 0 || l.last_accessed_at).length;
+
   return {
     todaySessions,
     todayCount: todaySessions.length,
@@ -517,12 +527,11 @@ async function buildLiveData(centerId: string): Promise<DashboardData> {
     outstandingCount: outstanding.length,
     waitingClients: clients.filter((c: any) => c.status === "waiting" || c.status === "대기").length,
     reportsDue: (reportRes.data ?? []).length,
-    scheduledAssessments: (assessRes.data ?? []).map((a: any) => ({
-      id: a.id,
-      clientName: clientMap.get(a.client_id) ?? "—",
-      date: a.assessment_date,
-      type: a.assessment_type ?? "평가",
-    })),
+    weeklyNoteDraft,
+    weeklyNotePublished,
+    weeklyNoteExpected,
+    shareLinksSent,
+    shareLinksViewed,
     topTherapists,
     cancelRate: week.length > 0 ? weekCancelled.length / week.length : 0,
   };

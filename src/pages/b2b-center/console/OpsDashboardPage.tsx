@@ -102,7 +102,7 @@ export default function OpsDashboardPage() {
 
       {/* === 1. 액션 카드: 즉시 처리 필요한 것 === */}
       <Reveal>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <ActionCard
           title="오늘 회기"
           value={`${data.todayCount}건`}
@@ -117,21 +117,7 @@ export default function OpsDashboardPage() {
             "치료사별 색상으로 배정 현황을 한눈에 파악할 수 있어요.",
           ]}
         />
-        <ActionCard
-          title="미수금"
-          value={data.outstandingKRW > 0 ? fmtKRW(data.outstandingKRW) : "0원"}
-          sub={data.outstandingCount > 0 ? `미수 ${data.outstandingCount}건 · 청구 필요` : "모두 수납 완료"}
-          icon={Wallet}
-          color="#FFB4A2"
-          alert={data.outstandingCount > 0}
-          cta="수납 관리"
-          onClick={goBilling}
-          details={[
-            "본인부담금 · 바우처 미청구 건을 한 화면에서 정리해요.",
-            "월말 마감 시점의 청구 대상 건을 자동으로 표시해요.",
-            "청구 완료 후 상태를 draft → approved 로 넘기면 통계에 즉시 반영돼요.",
-          ]}
-        />
+
         <ActionCard
           title="대기 이용자"
           value={`${data.waitingClients}명`}

@@ -365,25 +365,63 @@ function Reveal({ children }: { children: React.ReactNode }) {
 }
 
 function ActionCard({
-  title, value, sub, icon: Icon, color, cta, onClick, alert,
-}: { title: string; value: string; sub: string; icon: any; color: string; cta: string; onClick: () => void; alert?: boolean }) {
+  title, value, sub, icon: Icon, color, cta, onClick, alert, details,
+}: { title: string; value: string; sub: string; icon: any; color: string; cta: string; onClick: () => void; alert?: boolean; details?: string[] }) {
+  const [open, setOpen] = useState(false);
   return (
-    <button
-      onClick={onClick}
-      className={`text-left bg-white rounded-2xl border p-5 transition hover:shadow-md hover:-translate-y-0.5 ${alert ? "border-amber-300 ring-1 ring-amber-100" : "border-neutral-200"}`}
+    <motion.div
+      whileHover={{ y: -2 }}
+      transition={{ type: "spring", stiffness: 300, damping: 22 }}
+      className={`bg-white rounded-2xl border p-5 hover:shadow-md ${alert ? "border-amber-300 ring-1 ring-amber-100" : "border-neutral-200"}`}
     >
-      <div className="flex items-start justify-between mb-3">
-        <p className="text-xs text-neutral-500">{title}</p>
-        <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: color + "33" }}>
-          <Icon className="w-4 h-4" style={{ color }} />
+      <button onClick={onClick} className="w-full text-left">
+        <div className="flex items-start justify-between mb-3">
+          <p className="text-xs text-neutral-500">{title}</p>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: color + "33" }}>
+            <Icon className="w-4 h-4" style={{ color }} />
+          </div>
         </div>
+        <p className="text-2xl font-semibold mb-1">{value}</p>
+        <p className="text-xs text-neutral-500 mb-3 min-h-[16px]">{sub}</p>
+      </button>
+      <div className="flex items-center justify-between">
+        <button onClick={onClick} className="inline-flex items-center gap-1 text-xs font-medium text-neutral-700 hover:text-neutral-900">
+          {cta} <ArrowRight className="w-3 h-3" />
+        </button>
+        {details && details.length > 0 && (
+          <button
+            onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
+            className="inline-flex items-center gap-1 text-[11px] text-neutral-500 hover:text-neutral-900 px-2 py-1 rounded-full hover:bg-neutral-100"
+            aria-expanded={open}
+          >
+            {open ? "접기" : "자세히"}
+            <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
+              <ChevronDown className="w-3 h-3" />
+            </motion.span>
+          </button>
+        )}
       </div>
-      <p className="text-2xl font-semibold mb-1">{value}</p>
-      <p className="text-xs text-neutral-500 mb-3 min-h-[16px]">{sub}</p>
-      <div className="inline-flex items-center gap-1 text-xs font-medium text-neutral-700">
-        {cta} <ArrowRight className="w-3 h-3" />
-      </div>
-    </button>
+      <AnimatePresence initial={false}>
+        {open && details && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="overflow-hidden"
+          >
+            <ul className="mt-3 pt-3 border-t border-neutral-100 space-y-1.5">
+              {details.map((d, i) => (
+                <li key={i} className="text-[11px] leading-relaxed text-neutral-600 flex gap-1.5">
+                  <span className="text-neutral-300 shrink-0">·</span>
+                  <span>{d}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 

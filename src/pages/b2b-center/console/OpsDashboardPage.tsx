@@ -166,6 +166,7 @@ export default function OpsDashboardPage() {
 
 
       {/* === 2. 이번 주 성과 + 오늘 일정 === */}
+      <Reveal>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         {/* 이번 주 성과 */}
         <div className="lg:col-span-1 bg-white rounded-2xl border border-neutral-200 p-6">

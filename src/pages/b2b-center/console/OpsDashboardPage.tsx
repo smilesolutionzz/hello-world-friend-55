@@ -446,7 +446,9 @@ async function buildLiveData(centerId: string): Promise<DashboardData> {
   const monthStartStr = ymd(monthStart);
 
   const sb: any = supabase;
-  const [todayRes, weekRes, prevWeekRes, monthPayRes, clientRes, therRes, programRes, reportRes, assessRes, outstandingRes] = await Promise.all([
+  const weeklyStart = weekStart; // 이번 주 월요일
+  const shareSince = ymd(new Date(Date.now() - 7 * 86400000));
+  const [todayRes, weekRes, prevWeekRes, monthPayRes, clientRes, therRes, programRes, reportRes, weeklyNoteRes, shareLinkRes, outstandingRes] = await Promise.all([
     sb.from("center_sessions").select("id, start_time, end_time, client_id, therapist_id, program_id, status").eq("center_id", centerId).eq("session_date", today).order("start_time"),
     sb.from("center_sessions").select("status, price_krw, therapist_id").eq("center_id", centerId).gte("session_date", weekStart),
     sb.from("center_sessions").select("price_krw, status").eq("center_id", centerId).gte("session_date", prevWeekStart).lt("session_date", weekStart),
@@ -455,7 +457,8 @@ async function buildLiveData(centerId: string): Promise<DashboardData> {
     sb.from("center_therapists").select("id, name"),
     sb.from("center_programs").select("id, name").eq("center_id", centerId),
     sb.from("center_parent_reports").select("id, status").eq("center_id", centerId).eq("status", "draft"),
-    sb.from("center_assessments").select("id, client_id, assessment_date, assessment_type, status").eq("center_id", centerId).eq("status", "scheduled").gte("assessment_date", today).order("assessment_date").limit(4),
+    sb.from("center_parent_reports").select("id, status, client_id").eq("center_id", centerId).eq("period_type", "weekly").gte("period_start", weeklyStart),
+    sb.from("center_parent_share_links").select("id, last_accessed_at, access_count, revoked_at").eq("center_id", centerId).gte("sms_sent_at", shareSince),
     sb.from("center_payments").select("amount_krw, status").eq("center_id", centerId).eq("status", "pending"),
   ]);
 

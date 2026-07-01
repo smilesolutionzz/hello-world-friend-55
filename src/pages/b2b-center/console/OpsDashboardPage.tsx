@@ -24,6 +24,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import OnboardingChecklist from "@/components/b2b-center/OnboardingChecklist";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 type Ctx = { centerId: string; demo?: boolean };
 

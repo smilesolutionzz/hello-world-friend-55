@@ -238,8 +238,10 @@ export default function OpsDashboardPage() {
           )}
         </div>
       </div>
+      </Reveal>
 
       {/* === 3. 가동률 + 평가 일정 === */}
+      <Reveal>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-white rounded-2xl border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">

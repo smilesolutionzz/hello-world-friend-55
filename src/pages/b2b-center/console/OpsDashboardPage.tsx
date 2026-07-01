@@ -48,7 +48,13 @@ interface DashboardData {
   // 액션
   waitingClients: number;
   reportsDue: number;
-  scheduledAssessments: Array<{ id: string; clientName: string; date: string; type: string }>;
+  // 이번 주 주간노트 작성 현황
+  weeklyNoteDraft: number;
+  weeklyNotePublished: number;
+  weeklyNoteExpected: number; // 서비스 이용 이용자 수 기반 목표
+  // 부모 공유 열람 현황 (최근 7일)
+  shareLinksSent: number;
+  shareLinksViewed: number;
   // 치료사 가동률 top
   topTherapists: Array<{ name: string; color: string; sessions: number }>;
   cancelRate: number;

@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Check, ArrowRight, Users, Calendar, CreditCard, LogIn, LayoutDashboard,
   FileText, Sparkles, Palette, Share2, ShieldCheck, MessageSquare, Image as ImageIcon,

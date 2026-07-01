@@ -15060,6 +15060,7 @@ export type Database = {
           guardian_contact_phone: string | null
           guardian_notified_at: string | null
           guardian_token: string | null
+          guardian_token_hash: string | null
           guest_session_id: string | null
           id: string
           matched_centers: Json
@@ -15085,6 +15086,7 @@ export type Database = {
           guardian_contact_phone?: string | null
           guardian_notified_at?: string | null
           guardian_token?: string | null
+          guardian_token_hash?: string | null
           guest_session_id?: string | null
           id?: string
           matched_centers?: Json
@@ -15110,6 +15112,7 @@ export type Database = {
           guardian_contact_phone?: string | null
           guardian_notified_at?: string | null
           guardian_token?: string | null
+          guardian_token_hash?: string | null
           guest_session_id?: string | null
           id?: string
           matched_centers?: Json

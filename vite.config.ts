@@ -1,8 +1,33 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import fs from "fs";
 import { componentTagger } from "lovable-tagger";
 import { VitePWA } from 'vite-plugin-pwa';
+
+// 빌드 시점마다 /version.json 을 생성해 프론트가 폴링으로 최신 배포 여부를 감지.
+const BUILD_VERSION = `${Date.now()}`;
+function versionJsonPlugin(): Plugin {
+  return {
+    name: 'aihpro-version-json',
+    apply: 'build',
+    generateBundle() {
+      this.emitFile({
+        type: 'asset',
+        fileName: 'version.json',
+        source: JSON.stringify({ version: BUILD_VERSION, builtAt: new Date().toISOString() }),
+      });
+    },
+    configureServer(server) {
+      // 개발 환경에서도 /version.json 이 404 나지 않도록 응답.
+      server.middlewares.use('/version.json', (_req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Cache-Control', 'no-store');
+        res.end(JSON.stringify({ version: 'dev', builtAt: new Date().toISOString() }));
+      });
+    },
+  };
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({

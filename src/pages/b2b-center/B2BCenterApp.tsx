@@ -22,7 +22,7 @@ import AuthMenu from "@/components/b2b-center/AuthMenu";
 const NAV: Array<{ to: string; label: string; icon: any; group?: string; betaVisible: boolean }> = [
   // 시작
   { to: "setup", label: "시작 가이드", icon: Sparkles, group: "시작", betaVisible: true },
-  { to: "intelligence/ops-dashboard", label: "대시보드", icon: Sparkles, group: "시작", betaVisible: false },
+  { to: "intelligence/ops-dashboard", label: "대시보드", icon: Sparkles, group: "시작", betaVisible: true },
   { to: "guide", label: "운영 가이드", icon: Compass, group: "시작", betaVisible: false },
   // 일정
   { to: "schedule", label: "일정", icon: Calendar, group: "일정", betaVisible: true },

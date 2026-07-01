@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import {
   Check, ArrowRight, Users, Calendar, CreditCard, LogIn, LayoutDashboard,
   FileText, Sparkles, Palette, Share2, ShieldCheck, MessageSquare, Image as ImageIcon,
-  UserPlus, Layers, Smartphone, Plus, X,
+  UserPlus, Layers, Smartphone, Plus,
 } from "lucide-react";
 import { B2B_CENTER_MONTHLY } from "@/constants/tokenCosts";
 import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";

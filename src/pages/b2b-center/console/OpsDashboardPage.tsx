@@ -428,15 +428,11 @@ function buildDemoData(): DashboardData {
     outstandingCount: 3,
     waitingClients: DEMO_CLIENTS.filter((c) => c.status === "대기").length,
     reportsDue: DEMO_PARENT_REPORTS.filter((r) => r.status === "draft").length,
-    scheduledAssessments: DEMO_ASSESSMENTS
-      .filter((a) => a.status === "scheduled")
-      .slice(0, 4)
-      .map((a) => ({
-        id: a.id,
-        clientName: DEMO_CLIENTS.find((c) => c.id === a.client_id)?.display_name ?? "—",
-        date: a.assessment_date,
-        type: a.assessment_type,
-      })),
+    weeklyNoteDraft: 2,
+    weeklyNotePublished: 5,
+    weeklyNoteExpected: DEMO_CLIENTS.filter((c) => c.status === "enrolled" || c.status === "이용중").length || 8,
+    shareLinksSent: 6,
+    shareLinksViewed: 4,
     topTherapists,
     cancelRate: cancelled.length / Math.max(DEMO_SESSIONS.length, 1),
   };

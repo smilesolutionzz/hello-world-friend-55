@@ -256,7 +256,7 @@ export default function OpsDashboardPage() {
               <FileText className="w-4 h-4 text-neutral-500" />
               <h3 className="font-semibold">이번 주 주간노트 작성 현황</h3>
             </div>
-            <button onClick={() => nav("/b2b-center/app/notes")} className="text-xs text-neutral-500 hover:text-neutral-900 inline-flex items-center gap-1">
+            <button onClick={() => nav("/b2b-center/app/intelligence/therapy-notes")} className="text-xs text-neutral-500 hover:text-neutral-900 inline-flex items-center gap-1">
               치료노트 <ArrowRight className="w-3 h-3" />
             </button>
           </div>

@@ -1,14 +1,15 @@
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Check, ArrowRight, Users, Calendar, CreditCard, LogIn, LayoutDashboard,
   FileText, Sparkles, Palette, Share2, ShieldCheck, MessageSquare, Image as ImageIcon,
-  UserPlus, Layers, Smartphone, Plus, X,
+  UserPlus, Layers, Smartphone, Plus,
 } from "lucide-react";
 import { B2B_CENTER_MONTHLY } from "@/constants/tokenCosts";
 import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
 const KRW = (n: number) => `₩${n.toLocaleString("ko-KR")}`;
@@ -183,19 +184,40 @@ function ExpandableCard({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <motion.div
-      layout
-      transition={{ layout: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } }}
-      className={`bg-white rounded-2xl border transition-all cursor-pointer overflow-hidden ${
-        open ? "border-[#C8B88A] shadow-[0_20px_60px_-20px_rgba(200,184,138,0.35)]" : "border-neutral-200 hover:border-[#C8B88A]/60 hover:-translate-y-0.5"
-      }`}
-      onClick={() => setOpen((v) => !v)}
-    >
-      <motion.div layout="position" className="p-6 md:p-7">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1">
-            {num && <p className="text-xs tracking-widest text-[#C8B88A] mb-3">{num}</p>}
-            <div className="flex items-center gap-2 mb-3">
+    <>
+      <motion.div
+        whileHover={{ y: -2 }}
+        transition={{ type: "spring", stiffness: 300, damping: 22 }}
+        className="bg-white rounded-2xl border border-neutral-200 hover:border-[#C8B88A]/60 transition-all cursor-pointer overflow-hidden"
+        onClick={() => setOpen(true)}
+      >
+        <div className="p-6 md:p-7">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1">
+              {num && <p className="text-xs tracking-widest text-[#C8B88A] mb-3">{num}</p>}
+              <div className="flex items-center gap-2 mb-3">
+                <Icon className="w-5 h-5 text-neutral-900" strokeWidth={1.5} />
+                {tag && (
+                  <span className="text-[10px] tracking-widest uppercase text-[#8C7A3D] bg-[#FAF6E8] rounded-full px-2 py-0.5">
+                    {tag}
+                  </span>
+                )}
+              </div>
+              <h3 className="text-base md:text-lg font-semibold mb-2">{title}</h3>
+              <p className="text-sm text-neutral-600 break-keep leading-relaxed">{desc}</p>
+            </div>
+            <div className="shrink-0 w-8 h-8 rounded-full grid place-items-center border border-neutral-200 text-neutral-500">
+              <Plus className="w-4 h-4" />
+            </div>
+          </div>
+          <p className="mt-4 text-[11px] tracking-widest text-neutral-400">TAP TO OPEN USE GUIDE</p>
+        </div>
+      </motion.div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <div className="flex items-center gap-2 mb-1">
               <Icon className="w-5 h-5 text-neutral-900" strokeWidth={1.5} />
               {tag && (
                 <span className="text-[10px] tracking-widest uppercase text-[#8C7A3D] bg-[#FAF6E8] rounded-full px-2 py-0.5">
@@ -203,56 +225,27 @@ function ExpandableCard({
                 </span>
               )}
             </div>
-            <h3 className="text-base md:text-lg font-semibold mb-2">{title}</h3>
-            <p className="text-sm text-neutral-600 break-keep leading-relaxed">{desc}</p>
+            <DialogTitle className="text-lg">{title}</DialogTitle>
+            <DialogDescription className="text-sm text-neutral-600 break-keep">{desc}</DialogDescription>
+          </DialogHeader>
+          <div className="mt-3 pt-3 border-t border-neutral-100">
+            <p className="text-[11px] tracking-widest text-neutral-400 mb-4">USE GUIDE</p>
+            <ol className="space-y-3">
+              {guide.map((g, i) => (
+                <li key={i} className="flex gap-3 text-sm text-neutral-700">
+                  <span className={`shrink-0 w-6 h-6 rounded-full grid place-items-center text-[11px] font-semibold ${
+                    accent === "gold" ? "bg-[#FAF6E8] text-[#8C7A3D]" : "bg-neutral-900 text-white"
+                  }`}>
+                    {g.step}
+                  </span>
+                  <span className="break-keep leading-relaxed">{g.text}</span>
+                </li>
+              ))}
+            </ol>
           </div>
-          <motion.div
-            animate={{ rotate: open ? 45 : 0 }}
-            transition={{ duration: 0.25 }}
-            className={`shrink-0 w-8 h-8 rounded-full grid place-items-center border ${
-              open ? "border-[#C8B88A] bg-[#FAF6E8] text-[#8C7A3D]" : "border-neutral-200 text-neutral-500"
-            }`}
-          >
-            {open ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-          </motion.div>
-        </div>
-
-        <AnimatePresence initial={false}>
-          {open && (
-            <motion.div
-              key="guide"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="overflow-hidden"
-            >
-              <div className="mt-5 pt-5 border-t border-neutral-100">
-                <p className="text-[11px] tracking-widest text-neutral-400 mb-4">USE GUIDE</p>
-                <ol className="space-y-3">
-                  {guide.map((g, i) => (
-                    <motion.li
-                      key={i}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.05 + i * 0.06 }}
-                      className="flex gap-3 text-sm text-neutral-700"
-                    >
-                      <span className={`shrink-0 w-6 h-6 rounded-full grid place-items-center text-[11px] font-semibold ${
-                        accent === "gold" ? "bg-[#FAF6E8] text-[#8C7A3D]" : "bg-neutral-900 text-white"
-                      }`}>
-                        {g.step}
-                      </span>
-                      <span className="break-keep leading-relaxed">{g.text}</span>
-                    </motion.li>
-                  ))}
-                </ol>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </motion.div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

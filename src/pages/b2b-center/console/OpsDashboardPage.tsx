@@ -24,6 +24,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import OnboardingChecklist from "@/components/b2b-center/OnboardingChecklist";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -369,59 +370,70 @@ function ActionCard({
 }: { title: string; value: string; sub: string; icon: any; color: string; cta: string; onClick: () => void; alert?: boolean; details?: string[] }) {
   const [open, setOpen] = useState(false);
   return (
-    <motion.div
-      whileHover={{ y: -2 }}
-      transition={{ type: "spring", stiffness: 300, damping: 22 }}
-      className={`bg-white rounded-2xl border p-5 hover:shadow-md ${alert ? "border-amber-300 ring-1 ring-amber-100" : "border-neutral-200"}`}
-    >
-      <button onClick={onClick} className="w-full text-left">
-        <div className="flex items-start justify-between mb-3">
-          <p className="text-xs text-neutral-500">{title}</p>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: color + "33" }}>
-            <Icon className="w-4 h-4" style={{ color }} />
+    <>
+      <motion.div
+        whileHover={{ y: -2 }}
+        transition={{ type: "spring", stiffness: 300, damping: 22 }}
+        className={`bg-white rounded-2xl border p-5 hover:shadow-md ${alert ? "border-amber-300 ring-1 ring-amber-100" : "border-neutral-200"}`}
+      >
+        <button onClick={onClick} className="w-full text-left">
+          <div className="flex items-start justify-between mb-3">
+            <p className="text-xs text-neutral-500">{title}</p>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: color + "33" }}>
+              <Icon className="w-4 h-4" style={{ color }} />
+            </div>
           </div>
-        </div>
-        <p className="text-2xl font-semibold mb-1">{value}</p>
-        <p className="text-xs text-neutral-500 mb-3 min-h-[16px]">{sub}</p>
-      </button>
-      <div className="flex items-center justify-between">
-        <button onClick={onClick} className="inline-flex items-center gap-1 text-xs font-medium text-neutral-700 hover:text-neutral-900">
-          {cta} <ArrowRight className="w-3 h-3" />
+          <p className="text-2xl font-semibold mb-1">{value}</p>
+          <p className="text-xs text-neutral-500 mb-3 min-h-[16px]">{sub}</p>
         </button>
-        {details && details.length > 0 && (
-          <button
-            onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
-            className="inline-flex items-center gap-1 text-[11px] text-neutral-500 hover:text-neutral-900 px-2 py-1 rounded-full hover:bg-neutral-100"
-            aria-expanded={open}
-          >
-            {open ? "접기" : "자세히"}
-            <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
-              <ChevronDown className="w-3 h-3" />
-            </motion.span>
+        <div className="flex items-center justify-between">
+          <button onClick={onClick} className="inline-flex items-center gap-1 text-xs font-medium text-neutral-700 hover:text-neutral-900">
+            {cta} <ArrowRight className="w-3 h-3" />
           </button>
-        )}
-      </div>
-      <AnimatePresence initial={false}>
-        {open && details && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="overflow-hidden"
-          >
-            <ul className="mt-3 pt-3 border-t border-neutral-100 space-y-1.5">
-              {details.map((d, i) => (
-                <li key={i} className="text-[11px] leading-relaxed text-neutral-600 flex gap-1.5">
-                  <span className="text-neutral-300 shrink-0">·</span>
-                  <span>{d}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+          {details && details.length > 0 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setOpen(true); }}
+              className="inline-flex items-center gap-1 text-[11px] text-neutral-500 hover:text-neutral-900 px-2 py-1 rounded-full hover:bg-neutral-100"
+            >
+              사용 가이드
+              <ChevronDown className="w-3 h-3 rotate-[-90deg]" />
+            </button>
+          )}
+        </div>
+      </motion.div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: color + "33" }}>
+                <Icon className="w-4 h-4" style={{ color }} />
+              </div>
+              <DialogTitle className="text-base">{title} · 사용 가이드</DialogTitle>
+            </div>
+            <DialogDescription className="text-xs">단계별로 따라 하면 됩니다.</DialogDescription>
+          </DialogHeader>
+          <ol className="mt-2 space-y-3">
+            {(details ?? []).map((d, i) => (
+              <li key={i} className="flex gap-3 text-sm text-neutral-700">
+                <span className="shrink-0 w-6 h-6 rounded-full grid place-items-center text-[11px] font-semibold bg-neutral-900 text-white">
+                  {i + 1}
+                </span>
+                <span className="break-keep leading-relaxed">{d}</span>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={() => { setOpen(false); onClick(); }}
+              className="inline-flex items-center gap-1 text-xs font-medium text-white bg-neutral-900 hover:bg-neutral-800 rounded-full px-4 py-2"
+            >
+              {cta} <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

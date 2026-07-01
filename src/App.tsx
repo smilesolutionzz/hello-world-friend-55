@@ -291,6 +291,7 @@ const App = () => {
               <NetworkStatus />
               <SessionManager />
               <UpdatePrompt />
+              <VersionUpdateWatcher />
               <InstallPromptBanner />
 
               <Suspense fallback={<RouteFallback />}>

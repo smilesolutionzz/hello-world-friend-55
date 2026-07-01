@@ -21,6 +21,7 @@ import {
   FileText,
   UserPlus,
   CheckCircle2,
+  ChevronDown,
 } from "lucide-react";
 import OnboardingChecklist from "@/components/b2b-center/OnboardingChecklist";
 
